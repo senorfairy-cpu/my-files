@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Industrial Product Visual Portfolio - Soft Reference Version</title>
+  <style>
+    @page { size: 13.333in 7.5in; margin: 0; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #f5f8fb;
+      background: #0b111a;
+      font-family: "Microsoft YaHei", "HarmonyOS Sans SC", "PingFang SC", "Inter", Arial, sans-serif;
+      line-height: 1.45;
+    }
+    .page {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      page-break-after: always;
+      background: #f6f7f8;
+      color: #111827;
+      padding: 54px 68px;
+    }
+    .page:last-child { page-break-after: auto; }
+    .dark {
+      color: #f7fbff;
+      background:
+        linear-gradient(135deg, rgba(8,14,24,.96), rgba(13,37,52,.94)),
+        radial-gradient(circle at 78% 24%, rgba(0,191,255,.26), transparent 24%),
+        radial-gradient(circle at 16% 82%, rgba(255,181,71,.16), transparent 28%);
+    }
+    .light { background: #f6f7f8; color: #111827; }
+    .blue {
+      background:
+        linear-gradient(135deg, rgba(9,22,38,.96), rgba(10,89,112,.9)),
+        radial-gradient(circle at 70% 28%, rgba(35,215,255,.28), transparent 26%);
+      color: #f7fbff;
+    }
+    .kicker {
+      color: #12c8f4;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .dark .kicker, .blue .kicker { color: #61e6ff; }
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      max-width: 760px;
+      margin-top: 106px;
+      font-size: 68px;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    h2 {
+      margin-top: 20px;
+      font-size: 48px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    h3 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      line-height: 1.18;
+    }
+    p, li {
+      color: #46515f;
+      font-size: 17px;
+    }
+    .dark p, .dark li, .blue p, .blue li { color: #dce8ef; }
+    .lead {
+      max-width: 760px;
+      margin-top: 24px;
+      font-size: 24px;
+      line-height: 1.48;
+      color: #dfeaf0;
+    }
+    .light .lead { color: #253142; }
+    .small { font-size: 14px; color: #788392; }
+    .footer {
+      position: absolute;
+      left: 68px;
+      right: 68px;
+      bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #7d8796;
+      font-size: 13px;
+    }
+    .dark .footer, .blue .footer { color: #b9c8d2; }
+    .split {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 44px;
+      height: 100%;
+      align-items: stretch;
+    }
+    .side {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 58px;
+    }
+    .side h2 {
+      margin-top: 22px;
+      font-size: 40px;
+      line-height: 1.08;
+    }
+    .side .lead,
+    .side p {
+      max-width: 265px;
+      font-size: 15px;
+      line-height: 1.62;
+      color: #526070;
+    }
+    .dark .side .lead,
+    .dark .side p,
+    .blue .side .lead,
+    .blue .side p {
+      color: #dce8ef;
+    }
+    .side-rule {
+      width: 18px;
+      height: 2px;
+      margin: 24px 0;
+      background: #111827;
+    }
+    .dark .side-rule,
+    .blue .side-rule {
+      background: #61e6ff;
+    }
+    .stage {
+      min-width: 0;
+      align-self: center;
+    }
+    .compact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .compact-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .compact-grid.four { grid-template-columns: repeat(4, 1fr); }
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .42;
+      filter: saturate(1.06) contrast(1.08);
+    }
+    .hero-layer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(5,11,20,.96) 0%, rgba(5,11,20,.76) 44%, rgba(5,11,20,.18) 100%);
+    }
+    .content { position: relative; z-index: 2; }
+    .title-row {
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      gap: 54px;
+      align-items: center;
+      height: 100%;
+    }
+    .image-stack {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+    .poster {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #e9edf2;
+      box-shadow: 0 18px 46px rgba(0,0,0,.28);
+    }
+    .poster.contain {
+      object-fit: contain;
+      background: #edf1f4;
+      padding: 14px;
+    }
+    .poster.short { height: 360px; }
+    .poster.mid { height: 420px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 34px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 34px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 28px;
+    }
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .card {
+      min-height: 150px;
+      padding: 26px;
+      border: 1px solid #dfe4ea;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .dark .card, .blue .card {
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(3px);
+    }
+    .card p, .card li { font-size: 16px; }
+    ul { margin: 12px 0 0; padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+    .tag {
+      padding: 9px 13px;
+      border: 1px solid rgba(18,200,244,.45);
+      border-radius: 999px;
+      color: #1b7f99;
+      background: rgba(18,200,244,.08);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .dark .tag, .blue .tag { color: #dff8ff; background: rgba(18,200,244,.13); }
+    .skill-map {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      margin-top: 44px;
+    }
+    .skill-card {
+      min-height: 340px;
+      padding: 28px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #dfe4ea;
+    }
+    .icon-dot {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0ea5c6, #73e8ff);
+      box-shadow: 0 0 0 9px rgba(14,165,198,.1);
+    }
+    .big-number {
+      color: #10bde9;
+      font-size: 64px;
+      font-weight: 900;
+      line-height: .9;
+    }
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .matrix img {
+      width: 100%;
+      height: 250px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #eef2f5;
+    }
+    .matrix.tall img { height: 360px; object-fit: contain; padding: 8px; }
+    .split .matrix {
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 0;
+    }
+    .split .matrix img { height: 218px; }
+    .split .matrix.tall img { height: 242px; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      margin-top: 34px;
+      align-items: stretch;
+    }
+    .fake-before, .scene-box {
+      min-height: 380px;
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, #dfe4ea, #f7f8fa),
+        repeating-linear-gradient(45deg, rgba(0,0,0,.06) 0 1px, transparent 1px 12px);
+      border: 1px solid #d9dfe6;
+    }
+    .scene-box {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(7,18,31,.96), rgba(18,112,134,.84)),
+        repeating-linear-gradient(35deg, rgba(255,255,255,.12) 0 1px, transparent 1px 13px);
+    }
+    .scene-box::before {
+      content: "";
+      position: absolute;
+      inset: 34px 38px auto;
+      height: 132px;
+      border: 1px solid rgba(255,255,255,.36);
+      border-radius: 8px;
+    }
+    .scene-box::after {
+      content: "";
+      position: absolute;
+      left: 40px;
+      right: 40px;
+      bottom: 42px;
+      height: 7px;
+      border-radius: 999px;
+      background: #13c8f4;
+      box-shadow: 0 -64px 0 rgba(255,255,255,.15), 90px -108px 0 rgba(255,255,255,.2);
+    }
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+      margin-top: 56px;
+      align-items: stretch;
+    }
+    .step {
+      position: relative;
+      min-height: 210px;
+      padding: 24px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #dfe4ea;
+    }
+    .step::after {
+      content: "→";
+      position: absolute;
+      right: -18px;
+      top: 86px;
+      color: #12c8f4;
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .step:last-child::after { content: ""; }
+    .lang-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 34px;
+    }
+    .lang-row img {
+      width: 100%;
+      height: 430px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #eef2f5;
+      padding: 10px;
+    }
+    .split .lang-row { margin-top: 0; }
+    .split .lang-row img { height: 500px; }
+    .band {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 170px;
+      background: linear-gradient(90deg, rgba(16,189,233,.88), rgba(10,89,112,.88));
+    }
+    .visual-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      margin-top: 30px;
+    }
+    .visual-strip img {
+      width: 100%;
+      height: 310px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #eef2f5;
+    }
+    .work-matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .work-matrix img {
+      width: 100%;
+      height: 190px;
+      display: block;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #eef2f5;
+    }
+    .split .work-matrix {
+      margin-top: 0;
+    }
+
+    /* Soft reference version: keeps the original page framework, changes only the visual skin. */
+    body {
+      background: #dedbd4;
+      color: #22221d;
+      font-family: "Inter", "Helvetica Neue", Arial, "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+    }
+    .page {
+      background: #f7f3eb;
+      color: #24241e;
+      padding: 42px 50px;
+      box-shadow: inset 0 0 0 1px rgba(58,55,45,.08);
+    }
+    .light,
+    .dark,
+    .blue {
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.72), rgba(255,255,255,0) 42%),
+        #f7f3eb;
+      color: #24241e;
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.92) 0 2px, transparent 2px 100%),
+        linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,0));
+      opacity: .28;
+    }
+    .kicker,
+    .dark .kicker,
+    .blue .kicker {
+      color: #5f6547;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .32em;
+      line-height: 1.9;
+    }
+    h1 {
+      max-width: 780px;
+      margin-top: 118px;
+      color: #25251f;
+      font-size: 72px;
+      line-height: 1;
+      letter-spacing: .18em;
+      font-weight: 900;
+    }
+    h2 {
+      color: #343426;
+      font-size: 38px;
+      line-height: 1.08;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    h3 {
+      color: #53583d;
+      font-size: 18px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    p,
+    li,
+    .dark p,
+    .dark li,
+    .blue p,
+    .blue li {
+      color: #5e5b50;
+      font-size: 14px;
+      line-height: 1.72;
+    }
+    .lead,
+    .light .lead {
+      max-width: 620px;
+      color: #6f7358;
+      font-size: 17px;
+      line-height: 1.85;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .small { color: #787060; }
+    .footer,
+    .dark .footer,
+    .blue .footer {
+      left: 50px;
+      right: 50px;
+      bottom: 24px;
+      min-height: 58px;
+      padding: 0 34px;
+      background: #a4a487;
+      color: #fffaf0;
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .hero-img {
+      inset: 0 0 0 auto;
+      width: 62%;
+      height: 100%;
+      opacity: .92;
+      object-position: center;
+      filter: saturate(.82) contrast(.94) brightness(1.08);
+      clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+    }
+    .hero-layer {
+      background:
+        linear-gradient(90deg, #f7f3eb 0%, #f7f3eb 42%, rgba(247,243,235,.72) 58%, rgba(247,243,235,.18) 100%);
+    }
+    .content {
+      z-index: 3;
+    }
+    .content .tag-row {
+      max-width: 460px;
+    }
+    .tag,
+    .dark .tag,
+    .blue .tag {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #7d6650;
+      padding: 4px 0;
+      font-size: 12px;
+      letter-spacing: .18em;
+    }
+    .tag::before,
+    .dark .tag::before,
+    .blue .tag::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: #9a9d7a;
+      vertical-align: -1px;
+    }
+    .split {
+      grid-template-columns: 220px 1fr;
+      gap: 0;
+      height: calc(100% - 66px);
+      background: rgba(255,255,255,.48);
+      border: 1px solid rgba(100,94,78,.14);
+      box-shadow: 0 12px 30px rgba(63,56,45,.12);
+    }
+    .side {
+      justify-content: flex-start;
+      gap: 36px;
+      padding: 36px 30px;
+      background: rgba(255,255,255,.76);
+      border-right: 1px solid rgba(100,94,78,.14);
+    }
+    .side h2 {
+      color: #6d7051;
+      margin-top: 20px;
+      font-size: 29px;
+      line-height: 1.12;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .side .lead,
+    .side p,
+    .dark .side .lead,
+    .dark .side p,
+    .blue .side .lead,
+    .blue .side p {
+      max-width: 165px;
+      color: #615d51;
+      font-size: 12px;
+      line-height: 1.85;
+    }
+    .side-rule,
+    .dark .side-rule,
+    .blue .side-rule {
+      width: 22px;
+      height: 1px;
+      margin: 22px 0;
+      background: #5e5a4f;
+    }
+    .stage {
+      align-self: stretch;
+      padding: 26px;
+      display: grid;
+      align-items: center;
+      min-width: 0;
+    }
+    .card,
+    .dark .card,
+    .blue .card,
+    .skill-card {
+      border: 1px solid rgba(98,92,76,.15);
+      border-radius: 0;
+      background: rgba(255,255,255,.68);
+      box-shadow: none;
+    }
+    .icon-dot {
+      background: #9a9d7a;
+      box-shadow:
+        26px 0 0 #d5b98c,
+        52px 0 0 #d89a78,
+        78px 0 0 #b9b6c6,
+        104px 0 0 #91a4b8;
+    }
+    .poster,
+    .matrix img,
+    .lang-row img,
+    .visual-strip img,
+    .work-matrix img {
+      border-radius: 0;
+      background: #efe8dc;
+      box-shadow: 0 10px 26px rgba(74,64,49,.13);
+      filter: saturate(.76) contrast(.95) brightness(1.06);
+    }
+    .poster {
+      height: 500px;
+      object-fit: cover;
+    }
+    .matrix {
+      gap: 12px;
+      margin-top: 0;
+    }
+    .matrix.tall img {
+      height: 470px;
+      padding: 8px;
+      object-fit: contain;
+    }
+    .split .matrix {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .split .matrix img,
+    .split .matrix.tall img {
+      height: 430px;
+    }
+    .compact-grid,
+    .compact-grid.three,
+    .compact-grid.four {
+      gap: 14px;
+    }
+    .title-row {
+      grid-template-columns: 42% 58%;
+      gap: 0;
+      height: calc(100% - 66px);
+      background: rgba(255,255,255,.46);
+      border: 1px solid rgba(100,94,78,.14);
+      box-shadow: 0 12px 30px rgba(63,56,45,.12);
+    }
+    .title-row > div:first-child {
+      padding: 44px 38px;
+      background: rgba(255,255,255,.76);
+      border-right: 1px solid rgba(100,94,78,.14);
+    }
+    .image-stack {
+      height: 100%;
+      padding: 26px;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 14px;
+    }
+    .image-stack .poster {
+      height: 100%;
+    }
+    .grid-6 {
+      gap: 14px;
+    }
+    .scene-box {
+      border-radius: 0;
+      border: 0;
+      min-height: 150px;
+      background:
+        linear-gradient(135deg, rgba(93,101,71,.78), rgba(211,185,140,.55)),
+        repeating-linear-gradient(35deg, rgba(255,255,255,.38) 0 1px, transparent 1px 12px);
+    }
+    .scene-box::before {
+      border-color: rgba(255,255,255,.5);
+      border-radius: 0;
+    }
+    .scene-box::after {
+      background: #fff8ea;
+      box-shadow: 70px -62px 0 rgba(255,255,255,.36), 130px -110px 0 rgba(255,255,255,.24);
+    }
+    .workflow {
+      gap: 0;
+      border: 1px solid rgba(83,80,66,.25);
+    }
+    .step {
+      border: 0;
+      border-right: 1px solid rgba(83,80,66,.25);
+      border-radius: 0;
+      background: rgba(255,255,255,.72);
+    }
+    .step:last-child { border-right: 0; }
+    .step::after {
+      display: none;
+    }
+    .big-number {
+      color: #a9805e;
+      font-size: 54px;
+    }
+    .band {
+      height: 84px;
+      background: #a4a487;
+    }
+    .work-matrix {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .work-matrix img {
+      height: 218px;
+    }
+  </style>
+</head>
+<body>
+<main id="deck"></main>
+<script>
+const A = "portfolio_assets/";
+const pages = [
+  { theme:"dark", type:"hero", img:"rtk_10.jpg", kicker:"Create With Strategy / Visualize The Product", title:"PORTFOLIO", lead:"Industrial Product Visual Design / Overseas Marketing / AI Creative Design", foot:["Hello / Industrial Product Visual Designer","Portfolio 2026"] },
+
+  { theme:"light", type:"about", kicker:"PART 01 / P2", title:"About Me", lead:"专注于工业科技产品视觉与商业传播设计，擅长将复杂技术产品转化为易理解、高可信、高转化的视觉表达。", cards:[
+    ["长期参与", ["产品营销海报","海外视觉本地化","工程应用场景构建","AI视觉创意","品牌视觉升级"]],
+    ["Skill / Design", ["Visual Design","Marketing Design","Branding","Product Rendering"]],
+    ["Tools", ["Photoshop","Illustrator","Figma","Blender / C4D","Midjourney","ChatGPT"]]
+  ]},
+
+  { theme:"light", type:"skillmap", kicker:"PART 01 / P3", title:"能力地图", items:[
+    ["品牌视觉","海报 / Banner / 展会","把品牌识别延展到不同商业触点。"],
+    ["产品表达","精修 / 合成 / 场景","把技术产品做成可理解、可信赖的视觉资产。"],
+    ["AI 创意","AI场景生成 / 海外KV","用 AI 提高工业视觉方案探索与生产效率。"],
+    ["多语言营销","英语 / 法语 / 阿拉伯语","适配不同市场的语言长度、阅读方向与版式重心。"]
+  ]},
+
+  { theme:"dark", type:"caseCover", kicker:"PART 02 / CORE PROJECT 01", title:"TOKNAV RTK Marketing Visual System", lead:"海外营销视觉升级", imgs:["rtk_02.jpg","rtk_10.jpg"], foot:["Role: Visual Design / Scene Rendering / Poster Design / AI Visual Production","P4"] },
+  { theme:"light", type:"challenge", kicker:"P5 / Project Background", title:"Challenge & Goal", cols:[
+    ["Challenge", ["产品科技感不足","海外视觉不统一","产品卖点难以理解"]],
+    ["Goal", ["建立统一科技视觉","强化专业可信感","提升营销效率"]]
+  ]},
+  { theme:"blue", type:"strategy", kicker:"P6 / Design Strategy", title:"Design Strategy", tags:["PRECISION","RELIABILITY","TECHNOLOGY","PROFESSIONAL"], cards:[
+    ["Design Direction","工业科技风 / 海外硬件广告风 / 深色高端调性"],
+    ["Color System","科技蓝、深灰、荧光点缀。用冷色建立专业可信，用高对比强化硬件广告感。"],
+    ["Visual Logic","从参数页转向商业传播：让精度、稳定、可靠通过场景、光线和产品细节被快速感知。"]
+  ]},
+  { theme:"light", type:"posterSystem", kicker:"P7 / Product Poster System", title:"产品海报系统", imgs:["rtk_16.jpg","rtk_17.jpg","rtk_18.jpg","rtk_19.jpg","rtk_20.jpg"], note:"主KV、功能卖点海报、电池、激光、Camera、AR Stake 等信息模块保持统一排版，形成品牌化产品海报系统。" },
+  { theme:"light", type:"localization", kicker:"P8 / Overseas Localization", title:"海外本地化视觉", imgs:["rtk_02.jpg","rtk_03.jpg","rtk_04.jpg"], labels:["English","French","Arabic"] },
+  { theme:"dark", type:"scenarios", kicker:"P9 / Real Working Scenarios", title:"产品工作场景", items:["隧道","地下停车场","桥梁检测","电力巡检","水下测深","铁路工程"] },
+  { theme:"light", type:"workflow", kicker:"P10 / AI Visual Workflow", title:"AI视觉生成流程", steps:["需求","Prompt","合成","修图","成品"], note:"AI 辅助用于快速建立工业场景方向，再通过合成、精修与品牌规范控制，把探索效率转化为可交付素材。" },
+  { theme:"light", type:"beforeAfter", kicker:"P11 / Before & After", title:"Before / After", img:"rtk_10.jpg", note:"从普通产品图转为高级营销图：增强场景氛围、产品体积感、信息层级和品牌识别。" },
+
+  { theme:"dark", type:"section", kicker:"PART 03 / CORE PROJECT 02", title:"Industrial Product Scene Visual System", lead:"工业产品场景视觉系统：真实工程可信度与商业传播画面的结合。", foot:["P12","Engineering Scenarios"] },
+  { theme:"light", type:"sceneDetail", kicker:"P13 / Underground Space", title:"地下空间", items:["矿洞","隧道","地下停车场"], note:"低照度、高反差和空间纵深，让设备能力进入真实工程语境。" },
+  { theme:"light", type:"sceneDetail", kicker:"P14 / Earthwork & Mining", title:"土方工程 / 露天矿", items:["矿区定位","土方测量","施工管理"], note:"强调大尺度空间、机械环境与定位精度，让画面具备现场可信度。" },
+  { theme:"light", type:"sceneDetail", kicker:"P15 / Power & Forestry", title:"电力巡检 / 林业调查", items:["高压塔架","线路巡检","树木扫描"], note:"通过专业场景说明产品在复杂环境中的适用性，而不仅是单一产品展示。" },
+  { theme:"light", type:"sceneDetail", kicker:"P16 / Heritage & Point Cloud", title:"历史建筑建模 / 点云扫描", items:["建筑保护","数据采集","点云建模"], note:"把不可见的数据能力转化成可视化科技表达。" },
+  { theme:"light", type:"sceneDetail", kicker:"P17 / Bridge Monitoring", title:"桥梁检测 / 结构监测", items:["桥梁测绘","结构监测","安全评估"], note:"工程场景的重点是可信度：环境、产品、数据反馈和商业文案需要互相支撑。" },
+
+  { theme:"dark", type:"caseCover", kicker:"PART 04 / CORE PROJECT 03", title:"Brand Marketing Poster Design", lead:"品牌营销海报设计系统：新品、卖点、展会与社媒素材统一化。", imgs:["festival_15.jpg","rtk_19.jpg"], foot:["Poster / Banner / Packaging / Exhibition / Social Media","P18"] },
+  { theme:"light", type:"posterSystem", kicker:"P19 / Product Launch", title:"Product Launch", imgs:["rtk_16.jpg","rtk_17.jpg","rtk_18.jpg","rtk_19.jpg","rtk_20.jpg"], note:"新品海报统一产品角度、标题比例、参数模块与底部信息，让系列产品在同一系统内表达。" },
+  { theme:"light", type:"posterSystem", kicker:"P20 / Feature Campaign", title:"Feature Campaign", imgs:["rtk_05.jpg","rtk_08.jpg","rtk_11.jpg","rtk_14.jpg","rtk_01.jpg"], note:"卖点海报围绕型号差异组织信息，同时保持品牌色、版面节奏与产品识别一致。" },
+  { theme:"light", type:"posterSystem", kicker:"P21 / Exhibition & Social", title:"Exhibition Promotion / Social Media", imgs:["festival_01.jpg","festival_02.jpg","festival_05.jpg","festival_07.jpg","festival_13.jpg"], note:"社媒 KV 用节日节点和产品信息共同承担品牌曝光，兼顾传播效率和视觉记忆点。" },
+  { theme:"light", type:"posterSystem", kicker:"P22 / Festival Campaign", title:"TOKNAV 节日社媒营销视觉", imgs:["festival_10.jpg","festival_12.jpg","festival_14.jpg","festival_15.jpg","festival_16.jpg"], note:"春节、元旦、圣诞等节日内容以品牌蓝为主线，结合节日符号、产品矩阵和社媒信息模块。" },
+
+  { theme:"dark", type:"section", kicker:"PART 05 / STYLE EXPLORATION", title:"Style Exploration", lead:"风格探索只占少量篇幅，用于展示审美跨度与 AI 创意控制能力。", foot:["P23","Creative Range"] },
+  { theme:"light", type:"style", kicker:"P24 / City Pop & Vaporwave", title:"City Pop / Vaporwave", palettes:["#ff6f91","#ffd166","#20114a","#00e5ff","#ff3df2"], note:"通过高饱和色彩、霓虹空间和复古构图探索年轻化传播语气。" },
+  { theme:"light", type:"style", kicker:"P25 / Illustration & Color Study", title:"插画视觉 / 色彩分析", palettes:["#f4efe3","#111827","#2f80ed","#f2994a","#27ae60"], note:"风格不是随机换皮，而是根据目标人群、渠道和产品阶段选择表达方式。" },
+  { theme:"light", type:"posterSystem", kicker:"P26 / AI Creative Experiment", title:"AI Creative Experiment", imgs:["festival_11.jpg","festival_17.jpg","festival_08.jpg","festival_09.jpg","festival_06.jpg"], note:"AI 图像生成用于快速探索节日氛围、产品场景和海外 KV 方向，再进入人工筛选与精修。" },
+
+  { theme:"light", type:"posterSystem", kicker:"P27 / Multilingual Localization", title:"多语言本地化视觉", imgs:["festival_18.jpg","festival_19.jpg","festival_20.jpg","festival_23.jpg","festival_24.jpg"], note:"同一视觉框架下适配英语、法语、俄语、阿拉伯语等市场，处理文本长度、阅读方向和版面重心。" },
+  { theme:"light", type:"matrixPage", kicker:"P28 / Selected Works Matrix", title:"作品矩阵", imgs:["rtk_02.jpg","rtk_10.jpg","rtk_16.jpg","rtk_19.jpg","festival_10.jpg","festival_15.jpg","festival_18.jpg","festival_20.jpg","festival_14.jpg","festival_17.jpg"] },
+  { theme:"dark", type:"contact", kicker:"PART 06 / CONTACT", title:"Thank You", lead:"Industrial Visual Design / Marketing Design / AI Creative Design", foot:["Email: name@example.com","Behance / Portfolio Link"] },
+  { theme:"blue", type:"end", kicker:"Portfolio 2026", title:"Visual Designer for Industrial Technology Products", lead:"工业科技产品视觉设计师", foot:["Industrial Product Visual · Overseas Marketing · AI Creative Design","30"] }
+];
+
+function img(name, cls = "") {
+  return `<img class="${cls}" src="${A + name}" alt="">`;
+}
+function list(items) {
+  return `<ul>${items.map(i => `<li>${i}</li>`).join("")}</ul>`;
+}
+function footer(p, i) {
+  const a = p.foot?.[0] || "Industrial Product Marketing Visual Designer";
+  const b = p.foot?.[1] || String(i + 1).padStart(2, "0");
+  return `<div class="footer"><span>${a}</span><span>${b}</span></div>`;
+}
+function card(title, body) {
+  const content = Array.isArray(body) ? list(body) : `<p>${body}</p>`;
+  return `<div class="card"><h3>${title}</h3>${content}</div>`;
+}
+function splitPage(p, stage, copy = "") {
+  const text = copy || p.lead || p.note || "Selected works and project details.";
+  return `<div class="split"><aside class="side"><div><div class="kicker">${p.kicker}</div><h2>${p.title}</h2><div class="side-rule"></div></div><p>${text}</p></aside><div class="stage">${stage}</div></div>`;
+}
+function render(p, i) {
+  const cls = `page ${p.theme || "light"}`;
+  let html = "";
+  if (p.type === "hero") {
+    html = `${img(p.img, "hero-img")}<div class="hero-layer"></div><div class="content"><div class="kicker">${p.kicker}</div><h1>${p.title}</h1><p class="lead">${p.lead}</p><div class="tag-row"><span class="tag">工业产品视觉</span><span class="tag">海外营销设计</span><span class="tag">AI视觉生成</span><span class="tag">多语言本地化视觉</span></div></div>`;
+  } else if (p.type === "about") {
+    html = splitPage(p, `<div class="compact-grid three">${p.cards.map(c => card(c[0], c[1])).join("")}</div>`, p.lead);
+  } else if (p.type === "skillmap") {
+    html = splitPage(p, `<div class="compact-grid four">${p.items.map(x => `<div class="skill-card" style="min-height:500px"><div class="icon-dot"></div><h3>${x[0]}</h3><p><strong>${x[1]}</strong></p><p style="margin-top:18px">${x[2]}</p></div>`).join("")}</div>`, "四类能力对应后续案例：品牌视觉、产品表达、AI 创意和多语言营销。");
+  } else if (p.type === "caseCover") {
+    html = `<div class="title-row"><div><div class="kicker">${p.kicker}</div><h2>${p.title}</h2><p class="lead">${p.lead}</p></div><div class="image-stack">${p.imgs.map(x => img(x, "poster")).join("")}</div></div>`;
+  } else if (p.type === "challenge") {
+    html = splitPage(p, `<div class="compact-grid">${p.cols.map(c => card(c[0], c[1])).join("")}</div>`, "先讲问题，再讲目标。让面试官看到设计不是堆图，而是围绕商业传播效率解决问题。");
+  } else if (p.type === "strategy") {
+    html = splitPage(p, `<div class="tag-row" style="margin-top:0">${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div><div class="compact-grid three" style="margin-top:28px">${p.cards.map(c => card(c[0], c[1])).join("")}</div>`, "关键词、方向和色彩系统统一后，后续海报、场景和本地化版本才能形成品牌系统。");
+  } else if (p.type === "posterSystem") {
+    html = splitPage(p, `<div class="matrix tall">${p.imgs.map(x => img(x, "")).join("")}</div>`, p.note);
+  } else if (p.type === "localization") {
+    html = splitPage(p, `<div class="lang-row">${p.imgs.map((x, n) => `<div>${img(x, "")}<p class="small" style="margin-top:10px">${p.labels[n]}</p></div>`).join("")}</div>`, "同一视觉框架下适配不同语言版本，处理文本长度、阅读方向和版面重心。");
+  } else if (p.type === "scenarios") {
+    html = splitPage(p, `<div class="grid-6" style="margin-top:0">${p.items.map(x => `<div><div class="scene-box" style="min-height:155px"></div><h3 style="margin-top:12px;font-size:20px">${x}</h3></div>`).join("")}</div>`, "用真实工程场景增强产品可信度，让工业设备从参数展示进入应用叙事。");
+  } else if (p.type === "workflow") {
+    html = splitPage(p, `<div class="workflow" style="margin-top:0">${p.steps.map((s, n) => `<div class="step"><div class="big-number">0${n+1}</div><h3 style="margin-top:28px">${s}</h3></div>`).join("")}</div>`, p.note);
+  } else if (p.type === "beforeAfter") {
+    html = splitPage(p, `<div class="compare" style="margin-top:0"><div><div class="fake-before"></div><h3 style="margin-top:16px">Before</h3><p>普通产品图 / 信息层级弱 / 场景情绪不足</p></div><div>${img(p.img, "poster short")}<h3 style="margin-top:16px">After</h3><p>${p.note}</p></div></div>`, "前后对比直接体现设计价值：从普通产品信息，转化为高可信、高识别的营销视觉。");
+  } else if (p.type === "section") {
+    html = `<div class="content"><div class="kicker">${p.kicker}</div><h1>${p.title}</h1><p class="lead">${p.lead}</p></div><div class="band"></div>`;
+  } else if (p.type === "sceneDetail") {
+    html = splitPage(p, `<div class="compact-grid three">${p.items.map(x => `<div><div class="scene-box" style="min-height:360px"></div><h3 style="margin-top:16px">${x}</h3></div>`).join("")}</div>`, p.note);
+  } else if (p.type === "style") {
+    html = splitPage(p, `<div class="compact-grid four">${p.palettes.map(c => `<div class="card" style="height:430px;background:${c};border:0"></div>`).join("")}</div>`, p.note);
+  } else if (p.type === "matrixPage") {
+    html = splitPage(p, `<div class="work-matrix">${p.imgs.map(x => img(x, "")).join("")}</div>`, "精选作品矩阵集中展示工业产品海报、节日营销、多语言本地化与 AI 创意视觉。");
+  } else if (p.type === "contact" || p.type === "end") {
+    html = `<div class="content"><div class="kicker">${p.kicker}</div><h1>${p.title}</h1><p class="lead">${p.lead}</p><div class="tag-row"><span class="tag">Industrial Visual Design</span><span class="tag">Marketing Design</span><span class="tag">AI Creative Design</span></div></div>`;
+  }
+  return `<section class="${cls}">${html}${footer(p, i)}</section>`;
+}
+
+document.getElementById("deck").innerHTML = pages.map(render).join("");
+</script>
+</body>
+</html>
