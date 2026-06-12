@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Industrial Product Visual Designer Portfolio 2026</title>
+  <style>
+    @page { size: 13.333in 7.5in; margin: 0; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #d8d8d8;
+      color: #0b0b0b;
+      font-family: "Inter", "Helvetica Neue", Arial, "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.45;
+    }
+    h1, h2, h3, p { margin: 0; }
+    .page {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      page-break-after: always;
+      background: #f7f5f1;
+      color: #0b0b0b;
+      padding: 54px 64px;
+    }
+    .page:last-child { page-break-after: auto; }
+    .page::after {
+      content: attr(data-page);
+      position: absolute;
+      right: 44px;
+      bottom: 34px;
+      font-size: 12px;
+      letter-spacing: .14em;
+      color: #777;
+    }
+    .dark {
+      background: #0b0c0d;
+      color: #f7f5f1;
+    }
+    .dark::after { color: #a7a7a7; }
+    .kicker {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .rule {
+      width: 18px;
+      height: 2px;
+      margin: 22px 0;
+      background: currentColor;
+    }
+    .muted { color: #686868; }
+    .dark .muted { color: #bebebe; }
+    .title-xl {
+      font-size: 78px;
+      line-height: .95;
+      letter-spacing: .09em;
+      font-weight: 900;
+    }
+    .title-lg {
+      font-size: 48px;
+      line-height: 1.02;
+      letter-spacing: .02em;
+      font-weight: 850;
+    }
+    .title-md {
+      font-size: 34px;
+      line-height: 1.1;
+      font-weight: 820;
+    }
+    .body {
+      font-size: 17px;
+      color: #4b4b4b;
+      max-width: 650px;
+    }
+    .dark .body { color: #d2d2d2; }
+    .caption {
+      font-size: 12px;
+      line-height: 1.6;
+      letter-spacing: .06em;
+      color: #5f5f5f;
+    }
+    .dark .caption { color: #c7c7c7; }
+    .footer {
+      position: absolute;
+      left: 64px;
+      right: 64px;
+      bottom: 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #727272;
+    }
+    .dark .footer { color: #b7b7b7; }
+    .vtext {
+      position: absolute;
+      right: 40px;
+      top: 70px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .vline {
+      position: absolute;
+      right: 45px;
+      top: 300px;
+      width: 1px;
+      height: 150px;
+      background: currentColor;
+      opacity: .7;
+    }
+    .hero {
+      padding: 74px 74px 56px;
+    }
+    .hero-art {
+      position: absolute;
+      right: 178px;
+      top: 86px;
+      width: 390px;
+      height: 500px;
+      border-radius: 390px 390px 0 0;
+      overflow: hidden;
+      background: #ddd;
+      filter: grayscale(1);
+    }
+    .hero-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transform: scale(1.08);
+    }
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: -1px;
+      height: 122px;
+      background: #030303;
+      border-radius: 0 0 50% 50%;
+    }
+    .hero-title {
+      position: relative;
+      z-index: 2;
+      margin-top: 138px;
+      max-width: 730px;
+      font-size: 72px;
+      line-height: 1.02;
+      letter-spacing: .13em;
+      font-weight: 900;
+    }
+    .hero-sub {
+      position: relative;
+      z-index: 2;
+      margin-top: 28px;
+      font-size: 18px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+    }
+    .hello {
+      position: absolute;
+      left: 74px;
+      bottom: 58px;
+      width: 260px;
+      font-size: 13px;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      gap: 34px;
+      height: 100%;
+    }
+    .side {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 34px;
+    }
+    .side-block {
+      min-height: 100%;
+      padding: 38px 34px;
+      background: #0b0c0d;
+      color: #f7f5f1;
+    }
+    .side-block .caption { color: #d7d7d7; }
+    .stage {
+      min-width: 0;
+      display: grid;
+      align-content: center;
+    }
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+    .three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    .four {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .six {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .card {
+      border: 1px solid #d8d3cc;
+      background: rgba(255,255,255,.72);
+      padding: 24px;
+      min-height: 148px;
+    }
+    .dark .card {
+      border-color: #333;
+      background: #151617;
+    }
+    .card h3 {
+      margin-bottom: 13px;
+      font-size: 19px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #555;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .dark .card ul { color: #d0d0d0; }
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #e6e3dd;
+      display: block;
+      filter: saturate(.92) contrast(1.02);
+    }
+    .image.contain {
+      object-fit: contain;
+      padding: 12px;
+      background: #eeeae4;
+    }
+    .shadow {
+      box-shadow: 0 18px 38px rgba(0,0,0,.18);
+    }
+    .poster-row img {
+      height: 430px;
+      object-fit: contain;
+      background: #eeeae4;
+      padding: 10px;
+    }
+    .grid-img {
+      height: 260px;
+      object-fit: cover;
+    }
+    .tall-img {
+      height: 500px;
+      object-fit: contain;
+      background: #eeeae4;
+      padding: 12px;
+    }
+    .case-cover {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 40% 60%;
+    }
+    .case-copy {
+      padding: 62px 58px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #0b0c0d;
+      color: #f7f5f1;
+    }
+    .case-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: #e9e5df;
+    }
+    .case-visual img {
+      width: 100%;
+      height: 720px;
+      object-fit: cover;
+      filter: grayscale(.12) contrast(1.03);
+    }
+    .label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border: 1px solid currentColor;
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .tag {
+      padding: 9px 12px;
+      border: 1px solid #0b0c0d;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      background: #fff;
+    }
+    .dark .tag {
+      border-color: #f7f5f1;
+      background: transparent;
+      color: #f7f5f1;
+    }
+    .scene-card {
+      position: relative;
+      min-height: 168px;
+      padding: 24px;
+      overflow: hidden;
+      color: #f7f5f1;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .scene-card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .34;
+      filter: grayscale(.18) contrast(1.08);
+    }
+    .scene-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.74));
+      z-index: 1;
+    }
+    .scene-card h3,
+    .scene-card p {
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 1px 10px rgba(0,0,0,.35);
+    }
+    .scene-card h3 {
+      font-size: 22px;
+      letter-spacing: .04em;
+    }
+    .scene-card p {
+      margin-top: 10px;
+      color: #efefef;
+      font-size: 13px;
+    }
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      margin-top: 52px;
+      border: 1px solid #111;
+    }
+    .step {
+      min-height: 230px;
+      padding: 26px 22px;
+      border-right: 1px solid #111;
+      background: #fff;
+    }
+    .step:last-child { border-right: 0; }
+    .step b {
+      display: block;
+      margin-bottom: 58px;
+      font-size: 42px;
+      line-height: .9;
+    }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 30px;
+      align-items: stretch;
+      margin-top: 30px;
+    }
+    .before-box {
+      min-height: 430px;
+      padding: 30px;
+      background: repeating-linear-gradient(45deg, #e5e1da 0 1px, #f4f1ec 1px 14px);
+      border: 1px solid #d7d0c8;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .mono-title {
+      font-size: 86px;
+      line-height: .85;
+      letter-spacing: .06em;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .palette {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .swatch {
+      width: 44px;
+      height: 16px;
+      border: 1px solid rgba(0,0,0,.18);
+    }
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .matrix img {
+      width: 100%;
+      height: 214px;
+      object-fit: cover;
+      background: #eeeae4;
+    }
+    .contact {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 24px;
+      padding-left: 88px;
+    }
+  </style>
+</head>
+<body>
+<main id="deck"></main>
+<script>
+const A = "portfolio_assets/";
+const img = (name, cls = "image") => `<img class="${cls}" src="${A}${name}" alt="">`;
+const pageNo = n => String(n).padStart(2, "0");
+const list = items => `<ul>${items.map(item => `<li>${item}</li>`).join("")}</ul>`;
+
+const pages = [
+  { type: "hero" },
+  { type: "about" },
+  { type: "map" },
+  { type: "case", part: "PART 02 / CORE PROJECT 01", title: "TOKNAV RTK Marketing Visual System", subtitle: "海外营销视觉升级", imgs: ["rtk_10.jpg", "rtk_02.jpg"] },
+  { type: "challenge" },
+  { type: "strategy" },
+  { type: "posters", kicker: "P7 / Product Poster System", title: "产品海报系统", note: "主 KV、功能卖点、电池、激光、Camera、AR Stake 等信息模块保持统一排版，形成品牌化产品海报系统。", imgs: ["rtk_16.jpg", "rtk_17.jpg", "rtk_18.jpg", "rtk_19.jpg", "rtk_20.jpg"] },
+  { type: "localization" },
+  { type: "scenarioGrid", kicker: "P9 / Real Working Scenarios", title: "Real Working Scenarios", labels: ["隧道", "地下停车场", "桥梁检测", "电力巡检", "水下测深", "铁路工程"], imgs: ["rtk_05.jpg", "rtk_08.jpg", "rtk_11.jpg", "rtk_14.jpg", "rtk_01.jpg", "rtk_12.jpg"] },
+  { type: "workflow" },
+  { type: "beforeAfter" },
+  { type: "section", part: "PART 03 / CORE PROJECT 02", title: "Industrial Product Scene Visual System", subtitle: "工业产品场景视觉系统", footer: "Engineering Scenarios" },
+  { type: "scene", kicker: "P13 / Underground Space", title: "地下空间", items: ["矿洞", "隧道", "地下停车场"], img: "rtk_08.jpg", note: "低照度、高反差和空间纵深，让设备能力进入真实工程语境。" },
+  { type: "scene", kicker: "P14 / Earthwork & Mining", title: "土方工程 / 露天矿", items: ["矿区定位", "土方测量", "施工管理"], img: "rtk_05.jpg", note: "强调大尺度空间、机械环境与定位精度，让画面具备现场可信度。" },
+  { type: "scene", kicker: "P15 / Power & Forestry", title: "电力巡检 / 林业调查", items: ["高压塔架", "线路巡检", "树木扫描"], img: "rtk_11.jpg", note: "通过专业场景说明产品在复杂环境中的适用性，而不是单一产品展示。" },
+  { type: "scene", kicker: "P16 / Heritage & Point Cloud", title: "历史建筑建模 / 点云扫描", items: ["建筑保护", "数据采集", "点云建模"], img: "rtk_14.jpg", note: "把不可见的数据能力转化成可视化科技表达。" },
+  { type: "scene", kicker: "P17 / Bridge Monitoring", title: "桥梁检测 / 结构监测", items: ["桥梁测绘", "结构监测", "安全评估"], img: "rtk_12.jpg", note: "工程场景的重点是可信度：环境、产品、数据反馈和商业文案需要互相支撑。" },
+  { type: "case", part: "PART 04 / CORE PROJECT 03", title: "Brand Marketing Poster Design", subtitle: "品牌营销海报设计系统", imgs: ["festival_15.jpg", "rtk_19.jpg"] },
+  { type: "posters", kicker: "P19 / Product Launch", title: "Product Launch", note: "新品海报统一产品角度、标题比例、参数模块与底部信息，让系列产品在同一系统内表达。", imgs: ["rtk_16.jpg", "rtk_17.jpg", "rtk_18.jpg", "rtk_19.jpg", "rtk_20.jpg"] },
+  { type: "posters", kicker: "P20 / Feature Campaign", title: "Feature Campaign", note: "卖点海报围绕型号差异组织信息，同时保持品牌色、版面节奏与产品识别一致。", imgs: ["rtk_05.jpg", "rtk_08.jpg", "rtk_11.jpg", "rtk_14.jpg", "rtk_01.jpg"] },
+  { type: "posters", kicker: "P21 / Exhibition Promotion", title: "Exhibition Promotion", note: "展会与社媒 KV 同时承担品牌曝光和销售线索触达，需要让视觉识别、信息层级和产品价值稳定出现。", imgs: ["festival_01.jpg", "festival_02.jpg", "festival_05.jpg", "festival_07.jpg", "festival_13.jpg"] },
+  { type: "posters", kicker: "P22 / Festival Campaign", title: "Festival Campaign", note: "春节、元旦、圣诞等节日内容以品牌蓝为主线，结合节日符号、产品矩阵和社媒信息模块。", imgs: ["festival_10.jpg", "festival_12.jpg", "festival_14.jpg", "festival_15.jpg", "festival_16.jpg"] },
+  { type: "section", part: "PART 05 / STYLE EXPLORATION", title: "Style Exploration", subtitle: "风格探索", footer: "Creative Range" },
+  { type: "style", kicker: "P24 / City Pop & Vaporwave", title: "City Pop / Vaporwave", note: "通过高饱和色彩、霓虹空间和复古构图探索年轻化传播语气。", colors: ["#ff6f91", "#ffd166", "#20114a", "#00e5ff", "#ff3df2"], img: "festival_17.jpg" },
+  { type: "style", kicker: "P25 / Illustration & Color Study", title: "插画视觉 / 色彩分析", note: "风格不是随机换皮，而是根据目标人群、渠道和产品阶段选择表达方式。", colors: ["#f4efe3", "#111827", "#2f80ed", "#f2994a", "#27ae60"], img: "festival_06.jpg" },
+  { type: "posters", kicker: "P26 / AI Creative Experiment", title: "AI Creative Experiment", note: "AI 图像生成用于快速探索节日氛围、产品场景和海外 KV 方向，再进入人工筛选与精修。", imgs: ["festival_11.jpg", "festival_17.jpg", "festival_08.jpg", "festival_09.jpg", "festival_06.jpg"] },
+  { type: "posters", kicker: "P27 / Multilingual Localization", title: "多语言本地化视觉", note: "同一视觉框架下适配英语、法语、俄语、阿拉伯语等市场，处理文本长度、阅读方向和版面重心。", imgs: ["festival_18.jpg", "festival_19.jpg", "festival_20.jpg", "festival_23.jpg", "festival_24.jpg"] },
+  { type: "matrix", kicker: "P28 / Selected Works Matrix", title: "Selected Works Matrix", imgs: ["rtk_02.jpg", "rtk_10.jpg", "rtk_16.jpg", "rtk_19.jpg", "festival_10.jpg", "festival_15.jpg", "festival_18.jpg", "festival_20.jpg", "festival_14.jpg", "festival_17.jpg"] },
+  { type: "contact" },
+  { type: "end" }
+];
+
+function shell(content, n, cls = "") {
+  return `<section class="page ${cls}" data-page="${pageNo(n)}">${content}</section>`;
+}
+
+function render(page, i) {
+  const n = i + 1;
+  if (page.type === "hero") {
+    return shell(`
+      <div class="kicker">Graphic Design Portfolio</div>
+      <div class="rule"></div>
+      <div class="hero-art">${img("rtk_10.jpg")}</div>
+      <div class="vtext">Design With Purpose</div><div class="vline"></div>
+      <h1 class="hero-title">PORTFOLIO</h1>
+      <div class="hero-sub">Industrial Product Visual Designer</div>
+      <div class="hello"><b>HELLO</b><br><span class="muted">工业产品视觉 × 海外营销 × AI 创意设计<br>Portfolio 2026</span></div>
+      <div class="footer"><span>Visual Designer for Industrial Technology Products</span><span>2026</span></div>
+    `, n, "hero");
+  }
+  if (page.type === "about") {
+    return shell(`
+      <div class="split">
+        <aside class="side-block">
+          <div><div class="kicker">PART 01 / P2</div><div class="rule"></div><h2 class="title-md">ABOUT<br>ME</h2></div>
+          <p class="caption">Industrial Product Marketing Visual Designer</p>
+        </aside>
+        <div class="stage">
+          <div class="two">
+            <div>
+              <h2 class="title-lg">专注于工业科技产品视觉与商业传播设计</h2>
+              <p class="body" style="margin-top:26px">擅长将复杂技术产品转化为易理解、高可信、高转化的视觉表达。长期参与产品营销海报、海外视觉本地化、工程应用场景构建、AI 视觉创意与品牌视觉升级。</p>
+              <div class="tag-cloud">
+                ${["工业产品视觉", "海外营销设计", "品牌海报", "产品场景搭建", "AI视觉生成", "三维/合成表达", "多语言本地化视觉"].map(t => `<span class="tag">${t}</span>`).join("")}
+              </div>
+            </div>
+            <div class="three">
+              <div class="card"><h3>Design</h3>${list(["Visual Design", "Marketing Design", "Branding", "Product Rendering"])}</div>
+              <div class="card"><h3>Tools</h3>${list(["Photoshop", "Illustrator", "Figma", "Blender / C4D", "Midjourney", "ChatGPT"])}</div>
+              <div class="card"><h3>Output</h3>${list(["Poster", "Banner", "Social KV", "Exhibition", "Localization"])}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `, n);
+  }
+  if (page.type === "map") {
+    const items = [
+      ["品牌视觉", "海报 / Banner / 展会", "把品牌识别延展到不同商业触点。"],
+      ["产品表达", "精修 / 合成 / 场景", "把技术产品做成可理解、可信赖的视觉资产。"],
+      ["AI 创意", "AI场景生成 / 海外KV", "用 AI 提高工业视觉方案探索与生产效率。"],
+      ["多语言营销", "英语 / 法语 / 阿拉伯语", "适配不同市场的语言长度、阅读方向与版式重心。"]
+    ];
+    return shell(`
+      <div class="kicker">PART 01 / P3</div><div class="rule"></div>
+      <h2 class="title-lg">能力地图</h2>
+      <div class="four" style="margin-top:50px">${items.map((it, idx) => `
+        <div class="card" style="min-height:390px">
+          <div class="mono-title" style="font-size:54px">${pageNo(idx + 1)}</div>
+          <h3 style="margin-top:52px">${it[0]}</h3>
+          <p class="caption">${it[1]}</p>
+          <p class="body" style="margin-top:22px;font-size:15px">${it[2]}</p>
+        </div>`).join("")}</div>
+    `, n);
+  }
+  if (page.type === "case") {
+    return shell(`
+      <div class="case-copy">
+        <div><div class="kicker">${page.part}</div><div class="rule"></div><h2 class="title-lg">${page.title}</h2><p class="body" style="margin-top:22px">${page.subtitle}</p></div>
+        <p class="caption">Visual Design / Scene Rendering / Poster Design / AI Visual Production</p>
+      </div>
+      <div class="case-visual">${page.imgs.map(name => img(name)).join("")}</div>
+    `, n, "case-cover dark");
+  }
+  if (page.type === "challenge") {
+    return shell(`
+      <div class="kicker">P5 / Project Background</div><div class="rule"></div><h2 class="title-lg">Challenge & Goal</h2>
+      <div class="two" style="margin-top:48px">
+        <div class="card"><h3>Challenge</h3>${list(["产品科技感不足", "海外视觉不统一", "产品卖点难以理解"])}</div>
+        <div class="card"><h3>Goal</h3>${list(["建立统一科技视觉", "强化专业可信感", "提升营销效率"])}</div>
+      </div>
+      <div class="footer"><span>TOKNAV RTK Marketing Visual System</span><span>Project Background</span></div>
+    `, n);
+  }
+  if (page.type === "strategy") {
+    return shell(`
+      <div class="kicker">P6 / Design Strategy</div><div class="rule"></div><h2 class="title-lg">Design Strategy</h2>
+      <div class="tag-cloud">${["PRECISION", "RELIABILITY", "TECHNOLOGY", "PROFESSIONAL"].map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      <div class="three" style="margin-top:44px">
+        <div class="card"><h3>Design Direction</h3><p class="body" style="font-size:15px">工业科技风 / 海外硬件广告风 / 深色高端调性</p></div>
+        <div class="card"><h3>Color System</h3><p class="body" style="font-size:15px">科技蓝、深灰、荧光点缀。用冷色建立专业可信，用高对比强化硬件广告感。</p></div>
+        <div class="card"><h3>Visual Logic</h3><p class="body" style="font-size:15px">从参数页转向商业传播，让精度、稳定、可靠通过场景和产品细节被快速感知。</p></div>
+      </div>
+    `, n, "dark");
+  }
+  if (page.type === "posters") {
+    return shell(`
+      <div class="split">
+        <aside class="side">
+          <div><div class="kicker">${page.kicker}</div><div class="rule"></div><h2 class="title-md">${page.title}</h2></div>
+          <p class="caption">${page.note}</p>
+        </aside>
+        <div class="stage"><div class="poster-row five" style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px">${page.imgs.map(name => img(name, "image contain shadow")).join("")}</div></div>
+      </div>
+    `, n);
+  }
+  if (page.type === "localization") {
+    const labels = ["English", "French", "Arabic"];
+    return shell(`
+      <div class="kicker">P8 / Overseas Localization</div><div class="rule"></div><h2 class="title-lg">海外本地化视觉</h2>
+      <div class="three poster-row" style="margin-top:32px">${["rtk_02.jpg", "rtk_03.jpg", "rtk_04.jpg"].map((name, idx) => `<div>${img(name, "image contain shadow")}<p class="caption" style="margin-top:12px">${labels[idx]}</p></div>`).join("")}</div>
+      <div class="footer"><span>Multilingual Marketing Visual</span><span>English / French / Arabic</span></div>
+    `, n);
+  }
+  if (page.type === "scenarioGrid") {
+    return shell(`
+      <div class="kicker">${page.kicker}</div><div class="rule"></div><h2 class="title-lg">${page.title}</h2>
+      <div class="six" style="margin-top:32px">${page.labels.map((label, idx) => `
+        <div class="scene-card">${img(page.imgs[idx])}<h3>${label}</h3><p>Engineering application scenario</p></div>`).join("")}</div>
+    `, n, "dark");
+  }
+  if (page.type === "workflow") {
+    return shell(`
+      <div class="kicker">P10 / AI Visual Workflow</div><div class="rule"></div><h2 class="title-lg">AI视觉生成流程</h2>
+      <p class="body" style="margin-top:18px">AI 辅助提升工业视觉效率：先快速建立场景方向，再通过合成、精修与品牌规范控制，把探索效率转化为可交付素材。</p>
+      <div class="workflow">${["需求", "Prompt", "合成", "修图", "成品"].map((s, idx) => `<div class="step"><b>${pageNo(idx + 1)}</b><h3>${s}</h3><p class="caption">Industrial visual production</p></div>`).join("")}</div>
+    `, n);
+  }
+  if (page.type === "beforeAfter") {
+    return shell(`
+      <div class="kicker">P11 / Before & After</div><div class="rule"></div><h2 class="title-lg">Before / After</h2>
+      <div class="compare">
+        <div class="before-box"><span class="label">Before</span><p class="body">普通产品图：信息分散、场景弱、商业广告感不足。</p></div>
+        <div>${img("rtk_10.jpg", "image contain shadow tall-img")}<p class="caption" style="margin-top:12px">After: 高级营销图，强化场景氛围、产品体积感、信息层级和品牌识别。</p></div>
+      </div>
+    `, n);
+  }
+  if (page.type === "section") {
+    return shell(`
+      <div class="kicker">${page.part}</div><div class="rule"></div>
+      <h2 class="title-xl" style="margin-top:130px;max-width:980px">${page.title}</h2>
+      <p class="body" style="margin-top:28px">${page.subtitle}</p>
+      <div class="footer"><span>${page.footer}</span><span>Selected Works</span></div>
+    `, n, "dark");
+  }
+  if (page.type === "scene") {
+    return shell(`
+      <div class="split">
+        <aside class="side">
+          <div><div class="kicker">${page.kicker}</div><div class="rule"></div><h2 class="title-md">${page.title}</h2></div>
+          <div><p class="caption">${page.note}</p><div class="tag-cloud">${page.items.map(t => `<span class="tag">${t}</span>`).join("")}</div></div>
+        </aside>
+        <div class="stage">${img(page.img, "image contain shadow tall-img")}</div>
+      </div>
+    `, n);
+  }
+  if (page.type === "style") {
+    return shell(`
+      <div class="two" style="height:100%">
+        <div>
+          <div class="kicker">${page.kicker}</div><div class="rule"></div><h2 class="title-lg">${page.title}</h2>
+          <p class="body" style="margin-top:26px">${page.note}</p>
+          <div class="palette">${page.colors.map(c => `<span class="swatch" style="background:${c}"></span>`).join("")}</div>
+        </div>
+        <div>${img(page.img, "image contain shadow tall-img")}</div>
+      </div>
+    `, n);
+  }
+  if (page.type === "matrix") {
+    return shell(`
+      <div class="kicker">${page.kicker}</div><div class="rule"></div><h2 class="title-lg">${page.title}</h2>
+      <div class="matrix">${page.imgs.map(name => img(name)).join("")}</div>
+    `, n);
+  }
+  if (page.type === "contact") {
+    return shell(`
+      <div class="contact">
+        <div class="kicker">PART 06 / CONTACT</div><div class="rule"></div>
+        <h2 class="title-xl">THANK<br>YOU</h2>
+        <p class="body">Industrial Visual Design / Marketing Design / AI Creative Design</p>
+        <p class="caption">Email: name@example.com<br>Behance: your-behance-link</p>
+      </div>
+      <div class="vtext">Portfolio 2026</div><div class="vline"></div>
+    `, n);
+  }
+  return shell(`
+    <div class="kicker">Portfolio 2026</div><div class="rule"></div>
+    <h2 class="title-xl" style="margin-top:140px;max-width:1080px">Visual Designer for Industrial Technology Products</h2>
+    <p class="body" style="margin-top:28px">工业科技产品视觉设计师</p>
+    <div class="footer"><span>Industrial Product Visual</span><span>Overseas Marketing / AI Creative Design</span></div>
+  `, n, "dark");
+}
+
+document.getElementById("deck").innerHTML = pages.map(render).join("");
+</script>
+</body>
+</html>
