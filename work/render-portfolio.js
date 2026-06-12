@@ -1,5 +1,24 @@
 const path = require("path");
-const { chromium } = require("playwright");
+
+function loadPlaywright() {
+  const candidates = [
+    "playwright-core",
+    "playwright",
+    "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright-core@1.60.0/node_modules/playwright-core",
+  ];
+
+  for (const candidate of candidates) {
+    try {
+      return require(candidate);
+    } catch {
+      // Try the next known runtime location.
+    }
+  }
+
+  throw new Error("Unable to load Playwright. Install playwright-core or use the Codex bundled runtime.");
+}
+
+const { chromium } = loadPlaywright();
 
 async function main() {
   const root = path.resolve(__dirname, "..");
