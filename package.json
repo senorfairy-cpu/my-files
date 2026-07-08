@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build:assets": "python scripts/build_assets.py",
+    "start": "node server.js",
+    "pdf": "python scripts/generate_pdf.py"
+  },
+  "dependencies": {}
+}

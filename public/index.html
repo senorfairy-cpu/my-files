@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Graphic Designer Portfolio</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">Brand × Product</a>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#chapters">Chapters</a>
+        <a href="#thinking">Blog</a>
+        <a href="#archive">Archive</a>
+        <a href="/admin.html">后台</a>
+        <a class="nav-cta" href="/Designer-Portfolio.pdf">PDF</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="cover">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-copy">
+          <p class="eyebrow">Graphic Designer Portfolio</p>
+          <h1 id="profileName">Brand & Product Visual Designer</h1>
+          <p class="lead" id="profileIntro"></p>
+          <div class="hero-actions">
+            <a class="button primary" href="#chapters">View Chapters</a>
+            <a class="button ghost" href="#thinking">Design Thinking</a>
+          </div>
+        </div>
+        <div class="hero-mark">
+          <span>Gallery</span>
+          <strong id="heroCount">0</strong>
+          <span>Images</span>
+        </div>
+      </section>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="about-panel" id="about">
+        <div>
+          <p class="eyebrow">About Me</p>
+          <h2>科技产品商业视觉设计师</h2>
+          <p>定位于品牌系统、产品营销视觉、海报 KV、3D 场景、画册、展会视觉与 AI 辅助创意工作流。</p>
+        </div>
+        <div class="skill-grid">
+          <span>品牌系统</span>
+          <span>产品营销视觉</span>
+          <span>海报 KV</span>
+          <span>3D 场景</span>
+          <span>画册 / 展会</span>
+          <span>AI 辅助创意</span>
+          <span>PS / AI / C4D</span>
+          <span>AE / ChatGPT</span>
+        </div>
+      </section>
+
+      <section class="section-head" id="chapters">
+        <p class="eyebrow">Portfolio Structure</p>
+        <h2>按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。</h2>
+      </section>
+      <section class="chapter-nav" id="chapterNav"></section>
+      <section class="chapter-list" id="chapterList"></section>
+
+      <section class="section-head" id="thinking">
+        <p class="eyebrow">Design Thinking</p>
+        <h2>设计心得、项目复盘与方法沉淀。</h2>
+      </section>
+      <section class="article-grid" id="articleGrid"></section>
+
+      <section class="section-head" id="archive">
+        <p class="eyebrow">Image Archive</p>
+        <h2>素材库图片按章节分类形成可浏览图库。</h2>
+      </section>
+      <section class="filterbar" id="filters"></section>
+      <section class="masonry dense" id="masonry"></section>
+
+      <section class="ending">
+        <p class="eyebrow">Ending</p>
+        <h2>Brand × Product × Marketing Visual</h2>
+        <p id="endingContact"></p>
+      </section>
+    </main>
+
+    <div class="article-modal" id="articleModal" hidden>
+      <article>
+        <button type="button" class="modal-close" id="closeArticle">Close</button>
+        <p class="eyebrow" id="modalMeta"></p>
+        <h2 id="modalTitle"></h2>
+        <img id="modalCover" alt="">
+        <div id="modalContent"></div>
+      </article>
+    </div>
+
+    <footer>
+      <span id="footerName"></span>
+      <span>Looking forward to working with you.</span>
+      <span>Chengdu, China</span>
+    </footer>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

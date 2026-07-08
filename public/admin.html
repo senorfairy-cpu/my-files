@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portfolio Admin</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="admin-page locked">
+    <section class="login-screen" id="loginScreen">
+      <form class="login-card" id="loginForm">
+        <p class="eyebrow">Admin Login</p>
+        <h1>管理员登录</h1>
+        <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button primary wide" type="submit">进入后台</button>
+        <p class="login-error" id="loginError"></p>
+      </form>
+    </section>
+
+    <div class="admin-app" id="adminApp" hidden>
+      <header class="topbar">
+        <a class="brand" href="/">Portfolio Admin</a>
+        <nav>
+          <a href="/">前台</a>
+          <button class="nav-button" id="saveBtn">保存</button>
+          <button class="nav-button" id="exportBtn">导出 JSON</button>
+          <button class="nav-button" id="logoutBtn">退出</button>
+        </nav>
+      </header>
+
+      <main class="admin-shell">
+        <aside class="admin-list">
+          <div class="admin-tabs">
+            <button class="active" type="button" data-mode="projects">作品</button>
+            <button type="button" data-mode="articles">文章</button>
+            <button type="button" data-mode="gallery">图库</button>
+          </div>
+
+          <section id="contentSidebar">
+            <button class="button primary wide" id="addItemBtn" type="button">新增</button>
+            <div id="itemList"></div>
+          </section>
+
+          <section id="gallerySidebar" hidden>
+            <p class="sidebar-label">图库章节</p>
+            <div id="galleryFilter"></div>
+            <div class="asset-tools gallery-upload-tools">
+              <label class="button primary wide file-pick">上传图库图片<input id="galleryInput" type="file" accept="image/*" multiple></label>
+              <button class="button ghost danger wide" id="deleteSelectedGalleryBtn" type="button">删除选中图片</button>
+            </div>
+            <p class="selection-note" id="gallerySelectionNote">已选择 0 张图片</p>
+          </section>
+        </aside>
+
+        <section class="editor">
+          <div class="editor-head">
+            <p class="eyebrow" id="editorMode">Content Editor</p>
+            <h1 id="editorTitle">选择内容</h1>
+          </div>
+
+          <form id="projectForm" class="form-grid">
+            <label>作品标题<input name="title"></label>
+            <label>类别<input name="category"></label>
+            <label>文件分类<input name="group"></label>
+            <label>年份<input name="year"></label>
+            <label>角色<input name="role"></label>
+            <label class="full">简介<textarea name="summary" rows="4"></textarea></label>
+            <label class="full">标签，以逗号分隔<input name="tags"></label>
+            <label>排序<input name="order" type="number" min="0"></label>
+            <label class="check"><input name="hidden" type="checkbox"> 隐藏这个项目</label>
+          </form>
+
+          <form id="articleForm" class="form-grid" hidden>
+            <label>文章标题<input name="title"></label>
+            <label>发布日期<input name="date" type="date"></label>
+            <label>分类<input name="category"></label>
+            <label class="check"><input name="published" type="checkbox"> 前台发布</label>
+            <label class="full">摘要<textarea name="excerpt" rows="3"></textarea></label>
+            <label class="full">正文<textarea name="content" rows="12"></textarea></label>
+            <label class="full">封面图片路径<input name="cover" placeholder="/assets/uploads/example.jpg"></label>
+          </form>
+
+          <section id="galleryPanel" hidden>
+            <div class="gallery-workspace" id="galleryWorkspace">
+              <div class="gallery-admin-grid" id="galleryAdminGrid"></div>
+            </div>
+            <section class="gallery-info-panel">
+              <div>
+                <p class="eyebrow">Media Details</p>
+                <h2>图库图片</h2>
+              </div>
+              <form id="galleryForm" class="form-grid media-form">
+                <label>所属章节<select name="chapter"></select></label>
+                <label>图片路径<input name="src" readonly></label>
+                <label>图片尺寸<input name="size" readonly></label>
+                <label>排序<input name="order" type="number" min="0"></label>
+              </form>
+              <div class="asset-tools">
+                <button class="button ghost" id="copyGalleryPathBtn" type="button">复制图片路径</button>
+                <button class="button ghost danger" id="deleteGalleryBtn" type="button">删除当前图片</button>
+              </div>
+            </section>
+          </section>
+
+          <div class="asset-tools" id="projectTools">
+            <label class="button ghost file-pick">上传素材<input id="assetInput" type="file" accept="image/*" multiple></label>
+            <button class="button ghost" id="removeAssetBtn" type="button">删除选中素材</button>
+          </div>
+          <div class="asset-tools" id="articleTools" hidden>
+            <label class="button ghost file-pick">上传文章封面<input id="articleCoverInput" type="file" accept="image/*"></label>
+            <button class="button ghost danger" id="deleteArticleBtn" type="button">删除文章</button>
+          </div>
+          <div class="asset-grid" id="assetGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/admin.js"></script>
+  </body>
+</html>
