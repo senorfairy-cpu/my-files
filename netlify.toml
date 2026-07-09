@@ -12,3 +12,13 @@
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200
+
+[[redirects]]
+  from = "/article"
+  to = "/article.html"
+  status = 200

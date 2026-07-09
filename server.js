@@ -41,7 +41,12 @@ function readBody(req) {
 
 function staticFile(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const cleanPath = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
+  const pagePath = url.pathname === "/blog"
+    ? "/blog.html"
+    : url.pathname === "/article"
+      ? "/article.html"
+      : url.pathname;
+  const cleanPath = decodeURIComponent(pagePath === "/" ? "/index.html" : pagePath);
   const filePath = path.normalize(path.join(publicDir, cleanPath));
   if (!filePath.startsWith(publicDir)) return send(res, 403, "Forbidden", "text/plain");
   fs.readFile(filePath, (err, data) => {

@@ -10,6 +10,7 @@ let selectedGalleryIds = new Set();
 const projectForm = document.getElementById("projectForm");
 const articleForm = document.getElementById("articleForm");
 const galleryForm = document.getElementById("galleryForm");
+const settingsForm = document.getElementById("settingsForm");
 const publishBtn = document.createElement("button");
 publishBtn.className = "nav-button";
 publishBtn.id = "publishBtn";
@@ -90,6 +91,17 @@ async function loadData() {
   data.articles = data.articles || [];
   data.gallery = data.gallery || [];
   data.chapters = data.chapters || [];
+  data.profile = data.profile || {};
+  data.contact = {
+    title: "有海报、电商、展会、目录或视频项目，可以先加微信沟通。",
+    body: "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。",
+    email: data.profile.email || "",
+    phone: data.profile.phone || "",
+    wechat: "",
+    qrImage: "",
+    note: "也可以通过邮箱先发送项目说明。",
+    ...(data.contact || {}),
+  };
   data.projects.forEach((project, index) => project.order = project.order ?? index);
   data.gallery.forEach((asset, index) => {
     asset.id = asset.id || `gallery-${index}-${Date.now()}`;
@@ -139,13 +151,15 @@ function render() {
     button.classList.toggle("active", button.dataset.mode === mode);
   });
 
-  setHidden(document.getElementById("contentSidebar"), mode === "gallery");
+  setHidden(document.getElementById("contentSidebar"), mode === "gallery" || mode === "settings");
   setHidden(document.getElementById("gallerySidebar"), mode !== "gallery");
   setHidden(projectForm, mode !== "projects");
   setHidden(articleForm, mode !== "articles");
+  setHidden(settingsForm, mode !== "settings");
   setHidden(document.getElementById("galleryPanel"), mode !== "gallery");
   setHidden(document.getElementById("projectTools"), mode !== "projects");
   setHidden(document.getElementById("articleTools"), mode !== "articles");
+  setHidden(document.getElementById("settingsTools"), mode !== "settings");
   setHidden(document.getElementById("assetGrid"), mode === "gallery");
 
   if (mode === "projects") {
@@ -165,6 +179,12 @@ function render() {
     renderGalleryFilter();
     renderGalleryGrid();
     renderGalleryForm();
+  }
+  if (mode === "settings") {
+    document.getElementById("editorMode").textContent = "Site Settings";
+    document.getElementById("editorTitle").textContent = "首页设置";
+    renderSettingsForm();
+    document.getElementById("assetGrid").innerHTML = renderSettingsPreview();
   }
 }
 
@@ -267,6 +287,7 @@ function renderGalleryGrid() {
       <button class="gallery-admin-thumb ${index === currentGallery ? "active" : ""} ${selected ? "selected" : ""}" type="button" data-index="${index}" data-id="${escapeHtml(id)}">
         <img src="${escapeHtml(asset.src)}" alt="${escapeHtml(filename)}">
         <b>${selected ? "已选" : "选择"}</b>
+        ${asset.showOnHome ? "<i>首页</i>" : ""}
         <span>${escapeHtml(chapterTitle(asset.chapter))}</span>
         <strong>${escapeHtml(filename)}</strong>
       </button>
@@ -301,12 +322,36 @@ function renderGalleryForm() {
   galleryForm.src.value = asset.src || "";
   galleryForm.size.value = `${asset.width || "-"} x ${asset.height || "-"}`;
   galleryForm.order.value = asset.order || 0;
+  galleryForm.showOnHome.checked = Boolean(asset.showOnHome);
+}
+
+function renderSettingsForm() {
+  const profile = data.profile || {};
+  const contact = data.contact || {};
+  settingsForm.heroImage.value = profile.heroImage || "";
+  settingsForm.email.value = contact.email || profile.email || "";
+  settingsForm.phone.value = contact.phone || profile.phone || "";
+  settingsForm.wechat.value = contact.wechat || "";
+  settingsForm.contactTitle.value = contact.title || "";
+  settingsForm.contactBody.value = contact.body || "";
+  settingsForm.qrImage.value = contact.qrImage || "";
+  settingsForm.contactNote.value = contact.note || "";
+}
+
+function renderSettingsPreview() {
+  const profile = data.profile || {};
+  const contact = data.contact || {};
+  return `
+    ${profile.heroImage ? `<figure class="admin-cover-preview"><img src="${escapeHtml(profile.heroImage)}" alt="Banner"><figcaption>当前 Banner 大图</figcaption></figure>` : ""}
+    ${contact.qrImage ? `<figure class="admin-cover-preview"><img src="${escapeHtml(contact.qrImage)}" alt="微信二维码"><figcaption>当前微信二维码</figcaption></figure>` : ""}
+  `;
 }
 
 function commitCurrentForm() {
   if (!data) return;
   if (mode === "articles") commitArticleForm();
   else if (mode === "gallery") commitGalleryForm();
+  else if (mode === "settings") commitSettingsForm();
   else commitProjectForm();
 }
 
@@ -342,6 +387,22 @@ function commitGalleryForm() {
   if (!asset) return;
   asset.chapter = galleryForm.chapter.value;
   asset.order = Number(galleryForm.order.value || 0);
+  asset.showOnHome = galleryForm.showOnHome.checked;
+}
+
+function commitSettingsForm() {
+  data.profile = data.profile || {};
+  data.contact = data.contact || {};
+  data.profile.heroImage = settingsForm.heroImage.value.trim();
+  data.profile.email = settingsForm.email.value.trim();
+  data.profile.phone = settingsForm.phone.value.trim();
+  data.contact.email = settingsForm.email.value.trim();
+  data.contact.phone = settingsForm.phone.value.trim();
+  data.contact.wechat = settingsForm.wechat.value.trim();
+  data.contact.title = settingsForm.contactTitle.value.trim();
+  data.contact.body = settingsForm.contactBody.value.trim();
+  data.contact.qrImage = settingsForm.qrImage.value.trim();
+  data.contact.note = settingsForm.contactNote.value.trim();
 }
 
 function renderProjectAssets() {
@@ -653,6 +714,31 @@ galleryForm.addEventListener("input", () => {
   commitGalleryForm();
   document.getElementById("editorTitle").textContent = chapterTitle(selectedGalleryAsset()?.chapter);
   renderGalleryGrid();
+});
+
+settingsForm.addEventListener("input", () => {
+  commitSettingsForm();
+  document.getElementById("assetGrid").innerHTML = renderSettingsPreview();
+});
+
+document.getElementById("heroImageInput").addEventListener("change", async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const uploaded = await uploadImage(file);
+  data.profile.heroImage = uploaded.src;
+  settingsForm.heroImage.value = uploaded.src;
+  document.getElementById("assetGrid").innerHTML = renderSettingsPreview();
+  event.target.value = "";
+});
+
+document.getElementById("qrImageInput").addEventListener("change", async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const uploaded = await uploadImage(file);
+  data.contact.qrImage = uploaded.src;
+  settingsForm.qrImage.value = uploaded.src;
+  document.getElementById("assetGrid").innerHTML = renderSettingsPreview();
+  event.target.value = "";
 });
 
 checkSession();

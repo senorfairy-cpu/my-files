@@ -100,7 +100,11 @@
     "thinking": {
       "eyebrow": "Design Thinking",
       "title": "设计心得、项目复盘与方法沉淀。",
-      "empty": "暂无文章。可在后台新增设计心得。"
+      "empty": "暂无文章。可在后台新增设计心得。",
+      "viewAll": "查看全部文章"
+    },
+    "blog": {
+      "back": "返回 Blog"
     },
     "articlesById": {
       "article-product-visual-system": {
@@ -128,6 +132,16 @@
     "archive": {
       "eyebrow": "Image Archive",
       "title": "素材库图片按章节分类形成可浏览图库。"
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "有海报、电商、展会、目录或视频项目，可以先加微信沟通。",
+      "body": "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。",
+      "emailLabel": "邮箱",
+      "phoneLabel": "电话",
+      "wechatLabel": "微信二维码",
+      "qrPlaceholder": "上传二维码",
+      "note": "也可以通过邮箱先发送项目说明。"
     },
     "ending": {
       "eyebrow": "Ending",
@@ -242,7 +256,11 @@
     "thinking": {
       "eyebrow": "Design Thinking",
       "title": "Notes, project reviews and design methods.",
-      "empty": "No articles yet. Design notes can be added in the admin."
+      "empty": "No articles yet. Design notes can be added in the admin.",
+      "viewAll": "View All Articles"
+    },
+    "blog": {
+      "back": "Back to Blog"
     },
     "articlesById": {
       "article-product-visual-system": {
@@ -270,6 +288,16 @@
     "archive": {
       "eyebrow": "Image Archive",
       "title": "A browsable image archive organized by portfolio chapters."
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "For posters, e-commerce visuals, exhibitions, catalogs or video projects, feel free to reach out first.",
+      "body": "Share the project goal, usage scenario and timeline, and I will suggest a suitable direction based on the scope.",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone",
+      "wechatLabel": "WeChat QR",
+      "qrPlaceholder": "Upload QR",
+      "note": "You can also send a project brief by email."
     },
     "ending": {
       "eyebrow": "Ending",

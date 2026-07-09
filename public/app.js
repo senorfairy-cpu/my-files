@@ -51,8 +51,18 @@ function visibleGallery() {
   return (portfolio.gallery || []).filter(asset => asset.hidden !== true);
 }
 
+function homeGallery() {
+  const gallery = visibleGallery();
+  const selected = gallery.filter(asset => asset.showOnHome === true);
+  return selected.length ? selected : gallery;
+}
+
 function galleryFor(chapterId) {
   return visibleGallery().filter(asset => asset.chapter === chapterId);
+}
+
+function homeGalleryFor(chapterId) {
+  return homeGallery().filter(asset => asset.chapter === chapterId);
 }
 
 function coverFor(chapterId) {
@@ -84,9 +94,19 @@ function escapeHtml(value) {
 function render() {
   applyStaticText();
   const profile = { ...portfolio.profile, ...(langData().profile || {}) };
+  const contact = {
+    title: t("contact.title", "有海报、电商、展会、目录或视频项目，可以先加微信沟通。"),
+    body: t("contact.body", "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。"),
+    emailLabel: t("contact.emailLabel", "邮箱"),
+    phoneLabel: t("contact.phoneLabel", "电话"),
+    wechatLabel: t("contact.wechatLabel", "微信二维码"),
+    qrPlaceholder: t("contact.qrPlaceholder", "上传二维码"),
+    note: t("contact.note", "也可以通过邮箱先发送项目说明。"),
+    ...(portfolio.contact || {}),
+  };
   const chapters = (portfolio.chapters || []).map(localizedChapter);
   const gallery = visibleGallery();
-  const heroAsset = coverFor("product-marketing") || gallery[0];
+  const heroAsset = profile.heroImage ? { src: profile.heroImage } : coverFor("product-marketing") || gallery[0];
 
   document.title = `${profile.name} - Portfolio`;
   document.querySelector(".brand").textContent = profile.title;
@@ -100,9 +120,20 @@ function render() {
   document.getElementById("chaptersTitle").textContent = t("chapters.title", "按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。");
   document.getElementById("thinkingTitle").textContent = t("thinking.title", "设计心得、项目复盘与方法沉淀。");
   document.getElementById("archiveTitle").textContent = t("archive.title", "素材库图片按章节分类形成可浏览图库。");
-  document.getElementById("endingTitle").textContent = t("ending.title", "Brand × Product × Marketing Visual");
   document.getElementById("footerTagline").textContent = t("footer.tagline", "期待与你合作。");
   document.getElementById("footerLocation").textContent = profile.location || t("footer.location", "中国成都");
+  document.getElementById("contactTitle").textContent = contact.title;
+  document.getElementById("contactBody").textContent = contact.body;
+  document.getElementById("contactQrLabel").textContent = contact.wechatLabel;
+  document.getElementById("contactNote").textContent = contact.note || "";
+  document.getElementById("contactQrBox").innerHTML = contact.qrImage
+    ? `<img src="${escapeHtml(contact.qrImage)}" alt="${escapeHtml(contact.wechatLabel)}">`
+    : escapeHtml(contact.qrPlaceholder);
+  document.getElementById("contactActions").innerHTML = [
+    contact.email ? `<a class="button primary" href="mailto:${escapeHtml(contact.email)}">${escapeHtml(contact.emailLabel)} ${escapeHtml(contact.email)}</a>` : "",
+    contact.phone ? `<a class="button ghost" href="tel:${escapeHtml(contact.phone)}">${escapeHtml(contact.phoneLabel)} ${escapeHtml(contact.phone)}</a>` : "",
+    contact.wechat ? `<span class="contact-inline">${escapeHtml(contact.wechat)}</span>` : "",
+  ].filter(Boolean).join("");
   document.getElementById("skillGrid").innerHTML = (t("about.skills", []) || []).map(skill => `<span>${escapeHtml(skill)}</span>`).join("");
   if (heroAsset) {
     document.getElementById("heroBg").style.backgroundImage = `linear-gradient(90deg, rgba(9,9,8,.96) 0%, rgba(9,9,8,.70) 42%, rgba(9,9,8,.35) 100%), url("${heroAsset.src}")`;
@@ -140,7 +171,11 @@ function render() {
           ${cover ? `<img loading="lazy" src="${cover.src}" alt="${escapeHtml(chapter.title)}">` : ""}
         </div>
         <div class="chapter-strip">
-          ${preview.map(asset => `<img loading="lazy" src="${asset.src}" alt="${escapeHtml(asset.title)}">`).join("")}
+          ${preview.map(asset => `
+            <figure class="chapter-thumb">
+              <img loading="lazy" src="${asset.src}" alt="${escapeHtml(asset.title)}">
+            </figure>
+          `).join("")}
         </div>
       </article>
     `;
@@ -153,40 +188,16 @@ function render() {
 }
 
 function renderArticles() {
-  const articles = sortedArticles().map(localizedArticle);
+  const articles = sortedArticles().slice(0, 3).map(localizedArticle);
   document.getElementById("articleGrid").innerHTML = articles.length ? articles.map(article => `
-    <button class="article-card" type="button" data-id="${article.id}">
+    <a class="article-card" href="/article?id=${encodeURIComponent(article.id)}">
       ${article.cover ? `<img src="${article.cover}" alt="${escapeHtml(article.title)}">` : ""}
       <span>${escapeHtml(article.date)} · ${escapeHtml(article.category || t("common.design", "Design"))}</span>
       <strong>${escapeHtml(article.title)}</strong>
       <p>${escapeHtml(article.excerpt)}</p>
-    </button>
+    </a>
   `).join("") : `<p class="empty-note">${escapeHtml(t("thinking.empty", "暂无文章。可在后台新增设计心得。"))}</p>`;
-
-  document.querySelectorAll(".article-card").forEach(card => {
-    card.addEventListener("click", () => openArticle(card.dataset.id));
-  });
 }
-
-function openArticle(id) {
-  const original = (portfolio.articles || []).find(item => item.id === id);
-  const article = original ? localizedArticle(original) : null;
-  if (!article) return;
-  document.getElementById("modalMeta").textContent = `${article.date || ""} · ${article.category || t("common.design", "Design")}`;
-  document.getElementById("modalTitle").textContent = article.title || "";
-  const cover = document.getElementById("modalCover");
-  cover.hidden = !article.cover;
-  cover.src = article.cover || "";
-  document.getElementById("modalContent").innerHTML = String(article.content || "")
-    .split(/\n{2,}/)
-    .map(paragraph => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`)
-    .join("");
-  document.getElementById("articleModal").hidden = false;
-}
-
-document.getElementById("closeArticle").addEventListener("click", () => {
-  document.getElementById("articleModal").hidden = true;
-});
 
 function renderFilters() {
   const chapters = (portfolio.chapters || []).map(localizedChapter);
@@ -204,7 +215,7 @@ function renderFilters() {
 }
 
 function renderArchive() {
-  const assets = activeChapter === "all" ? visibleGallery() : galleryFor(activeChapter);
+  const assets = activeChapter === "all" ? homeGallery() : homeGalleryFor(activeChapter);
   document.querySelectorAll("#filters button").forEach(button => {
     button.classList.toggle("active", button.dataset.id === activeChapter);
   });
@@ -234,7 +245,7 @@ function setupRevealAnimations() {
     ".article-card",
     ".filterbar",
     ".archive-item",
-    ".ending",
+    ".contact-panel",
   ].join(","));
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

@@ -5,7 +5,14 @@
     "location": "Chengdu, China",
     "intro": "Brand × Product × Marketing Visual. A technology-product portfolio covering brand systems, product marketing visuals, campaign KV, 3D scenes, collateral and AI-assisted workflow.",
     "email": "hello@example.com",
-    "phone": ""
+    "phone": "",
+    "heroImage": ""
+  },
+  "contact": {
+    "email": "hello@example.com",
+    "phone": "",
+    "wechat": "",
+    "qrImage": ""
   },
   "stats": [
     {

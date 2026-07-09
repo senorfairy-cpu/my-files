@@ -34,6 +34,7 @@
             <button class="active" type="button" data-mode="projects">作品</button>
             <button type="button" data-mode="articles">文章</button>
             <button type="button" data-mode="gallery">图库</button>
+            <button type="button" data-mode="settings">设置</button>
           </div>
 
           <section id="contentSidebar">
@@ -80,6 +81,17 @@
             <label class="full">封面图片路径<input name="cover" placeholder="/assets/uploads/example.jpg"></label>
           </form>
 
+          <form id="settingsForm" class="form-grid" hidden>
+            <label>Banner 大图路径<input name="heroImage" placeholder="/assets/uploads/banner.jpg"></label>
+            <label>联系邮箱<input name="email"></label>
+            <label>电话<input name="phone"></label>
+            <label>微信号<input name="wechat"></label>
+            <label class="full">联系模块标题<textarea name="contactTitle" rows="3"></textarea></label>
+            <label class="full">联系模块说明<textarea name="contactBody" rows="3"></textarea></label>
+            <label>微信二维码路径<input name="qrImage" placeholder="/assets/uploads/wechat.jpg"></label>
+            <label class="full">联系模块备注<input name="contactNote"></label>
+          </form>
+
           <section id="galleryPanel" hidden>
             <div class="gallery-workspace" id="galleryWorkspace">
               <div class="gallery-admin-grid" id="galleryAdminGrid"></div>
@@ -94,6 +106,7 @@
                 <label>图片路径<input name="src" readonly></label>
                 <label>图片尺寸<input name="size" readonly></label>
                 <label>排序<input name="order" type="number" min="0"></label>
+                <label class="check"><input name="showOnHome" type="checkbox"> 在首页图库展示</label>
               </form>
               <div class="asset-tools">
                 <button class="button ghost" id="copyGalleryPathBtn" type="button">复制图片路径</button>
@@ -109,6 +122,10 @@
           <div class="asset-tools" id="articleTools" hidden>
             <label class="button ghost file-pick">上传文章封面<input id="articleCoverInput" type="file" accept="image/*"></label>
             <button class="button ghost danger" id="deleteArticleBtn" type="button">删除文章</button>
+          </div>
+          <div class="asset-tools" id="settingsTools" hidden>
+            <label class="button ghost file-pick">上传 Banner 大图<input id="heroImageInput" type="file" accept="image/*"></label>
+            <label class="button ghost file-pick">上传微信二维码<input id="qrImageInput" type="file" accept="image/*"></label>
           </div>
           <div class="asset-grid" id="assetGrid"></div>
         </section>

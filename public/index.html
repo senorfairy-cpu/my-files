@@ -12,7 +12,7 @@
       <nav>
         <a href="#about" data-i18n="nav.about">关于</a>
         <a href="#chapters" data-i18n="nav.chapters">章节</a>
-        <a href="#thinking" data-i18n="nav.blog">文章</a>
+        <a href="/blog" data-i18n="nav.blog">文章</a>
         <a href="#archive" data-i18n="nav.archive">图库</a>
         <a href="/admin.html">后台</a>
         <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">EN</button>
@@ -29,7 +29,7 @@
           <p class="lead" id="profileIntro"></p>
           <div class="hero-actions">
             <a class="button primary" href="#chapters" data-i18n="hero.primaryCta">查看作品章节</a>
-            <a class="button ghost" href="#thinking" data-i18n="hero.secondaryCta">设计思考</a>
+            <a class="button ghost" href="/blog" data-i18n="hero.secondaryCta">设计思考</a>
           </div>
         </div>
         <div class="hero-mark">
@@ -62,6 +62,9 @@
         <h2 id="thinkingTitle">设计心得、项目复盘与方法沉淀。</h2>
       </section>
       <section class="article-grid" id="articleGrid"></section>
+      <div class="section-action">
+        <a class="button ghost" href="/blog" data-i18n="thinking.viewAll">查看全部文章</a>
+      </div>
 
       <section class="section-head" id="archive">
         <p class="eyebrow" data-i18n="archive.eyebrow">Image Archive</p>
@@ -70,22 +73,20 @@
       <section class="filterbar" id="filters"></section>
       <section class="masonry dense" id="masonry"></section>
 
-      <section class="ending">
-        <p class="eyebrow" data-i18n="ending.eyebrow">Ending</p>
-        <h2 id="endingTitle">Brand × Product × Marketing Visual</h2>
-        <p id="endingContact"></p>
+      <section class="contact-panel" id="contact">
+        <div class="contact-copy">
+          <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
+          <h2 id="contactTitle">有海报、电商、展会、目录或视频项目，可以先加微信沟通。</h2>
+          <p id="contactBody"></p>
+          <div class="contact-actions" id="contactActions"></div>
+        </div>
+        <div class="contact-card">
+          <p id="contactQrLabel">微信二维码</p>
+          <div class="qr-box" id="contactQrBox">上传二维码</div>
+          <span id="contactNote"></span>
+        </div>
       </section>
     </main>
-
-    <div class="article-modal" id="articleModal" hidden>
-      <article>
-        <button type="button" class="modal-close" id="closeArticle" data-i18n="modal.close">关闭</button>
-        <p class="eyebrow" id="modalMeta"></p>
-        <h2 id="modalTitle"></h2>
-        <img id="modalCover" alt="">
-        <div id="modalContent"></div>
-      </article>
-    </div>
 
     <footer>
       <span id="footerName"></span>
