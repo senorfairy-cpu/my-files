@@ -16,6 +16,13 @@ publishBtn.id = "publishBtn";
 publishBtn.type = "button";
 publishBtn.textContent = "发布";
 document.getElementById("saveBtn").insertAdjacentElement("afterend", publishBtn);
+const statusToast = document.createElement("div");
+statusToast.className = "admin-toast";
+statusToast.hidden = true;
+statusToast.setAttribute("role", "status");
+statusToast.setAttribute("aria-live", "polite");
+document.body.appendChild(statusToast);
+let toastTimer = null;
 
 function setHidden(element, hidden) {
   element.toggleAttribute("hidden", hidden);
@@ -29,6 +36,23 @@ function escapeHtml(value = "") {
     '"': "&quot;",
     "'": "&#039;",
   })[char]);
+}
+
+function showStatus(message, type = "success") {
+  clearTimeout(toastTimer);
+  statusToast.textContent = message;
+  statusToast.dataset.type = type;
+  statusToast.hidden = false;
+  if (type !== "loading") {
+    toastTimer = setTimeout(() => {
+      statusToast.hidden = true;
+    }, 4200);
+  }
+}
+
+function setActionBusy(isBusy) {
+  document.getElementById("saveBtn").disabled = isBusy;
+  publishBtn.disabled = isBusy;
 }
 
 async function checkSession() {
@@ -327,6 +351,8 @@ function renderProjectAssets() {
 }
 
 async function save(options = {}) {
+  if (options.alertOnSuccess !== false) showStatus("正在保存草稿...", "loading");
+  setActionBusy(true);
   if (!options.skipCommit) commitCurrentForm();
   data.projects.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
   data.articles.sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
@@ -341,18 +367,77 @@ async function save(options = {}) {
     throw new Error("保存失败");
   }
   if (options.alertOnSuccess !== false) alert("草稿已保存。前台暂不更新，点击发布后才会更新。");
+  if (options.alertOnSuccess !== false) showStatus("草稿保存成功。前台暂不更新，点击发布后才会更新。");
+  setActionBusy(false);
   render();
 }
 
 async function publish() {
+  showStatus("正在发布...", "loading");
+  setActionBusy(true);
   await save({ alertOnSuccess: false });
   const res = await fetch("/api/publish", { method: "POST" });
   if (!res.ok) {
+    setActionBusy(false);
+    showStatus(res.status === 401 ? "登录已失效，请重新登录。" : "保存失败，请稍后重试。", "error");
     if (res.status === 401) alert("登录已失效，请重新登录。");
     throw new Error("发布失败");
   }
   alert("发布成功，前台已更新。");
 }
+
+async function saveWithStatus(options = {}) {
+  const shouldNotify = options.alertOnSuccess !== false;
+  try {
+    if (options.showLoading !== false && shouldNotify) showStatus("正在保存草稿...", "loading");
+    setActionBusy(true);
+    if (!options.skipCommit) commitCurrentForm();
+    data.projects.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+    data.articles.sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+    data.gallery.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+    const res = await fetch("/api/draft", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      if (res.status === 401) throw new Error("登录已失效，请重新登录。");
+      throw new Error("保存失败，请稍后重试。");
+    }
+    if (shouldNotify) showStatus("草稿保存成功。前台暂不更新，点击发布后才会更新。");
+    render();
+    return true;
+  } catch (error) {
+    showStatus(error.message || "保存失败，请稍后重试。", "error");
+    return false;
+  } finally {
+    if (!options.keepBusy) setActionBusy(false);
+  }
+}
+
+async function publishWithStatus() {
+  try {
+    showStatus("正在发布...", "loading");
+    setActionBusy(true);
+    const saved = await saveWithStatus({ alertOnSuccess: false, showLoading: false, keepBusy: true });
+    if (!saved) return false;
+    const res = await fetch("/api/publish", { method: "POST" });
+    if (!res.ok) {
+      if (res.status === 401) throw new Error("登录已失效，请重新登录。");
+      throw new Error("发布失败，请稍后重试。");
+    }
+    showStatus("发布成功，前台已更新。");
+    return true;
+  } catch (error) {
+    showStatus(error.message || "发布失败，请稍后重试。", "error");
+    return false;
+  } finally {
+    setActionBusy(false);
+  }
+}
+
+save = saveWithStatus;
+publish = publishWithStatus;
 
 async function uploadImage(file) {
   const dataUrl = await new Promise(resolve => {
