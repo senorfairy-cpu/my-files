@@ -114,9 +114,12 @@ function normalizePath(event) {
 }
 
 async function blobStore() {
-  if (!isNetlify) return null;
-  const { getStore } = require("@netlify/blobs");
-  return getStore("portfolio-site");
+  try {
+    const { getStore } = require("@netlify/blobs");
+    return getStore("portfolio-site");
+  } catch {
+    return null;
+  }
 }
 
 function readSeedPortfolio() {
