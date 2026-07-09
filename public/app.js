@@ -113,7 +113,6 @@ function render() {
   document.getElementById("profileName").textContent = profile.title;
   document.getElementById("profileIntro").textContent = profile.intro;
   document.getElementById("footerName").textContent = profile.email || profile.name;
-  document.getElementById("endingContact").textContent = `${profile.email || "hello@example.com"} · ${profile.location || "Chengdu, China"}`;
   document.getElementById("heroCount").textContent = gallery.length;
   document.getElementById("aboutTitle").textContent = t("about.title", "科技产品商业视觉设计师");
   document.getElementById("aboutBody").textContent = t("about.body", "定位于品牌系统、产品营销视觉、海报 KV、3D 场景、画册、展会视觉与 AI 辅助创意工作流。");
