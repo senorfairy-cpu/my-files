@@ -288,6 +288,8 @@ function renderGalleryGrid() {
         <img src="${escapeHtml(asset.src)}" alt="${escapeHtml(filename)}">
         <b>${selected ? "已选" : "选择"}</b>
         ${asset.showOnHome ? "<i>首页</i>" : ""}
+        ${asset.showInChapterCover ? "<i class=\"badge-cover\">封面</i>" : ""}
+        ${asset.showInChapterStrip ? "<i class=\"badge-strip\">章节</i>" : ""}
         <span>${escapeHtml(chapterTitle(asset.chapter))}</span>
         <strong>${escapeHtml(filename)}</strong>
       </button>
@@ -323,6 +325,8 @@ function renderGalleryForm() {
   galleryForm.size.value = `${asset.width || "-"} x ${asset.height || "-"}`;
   galleryForm.order.value = asset.order || 0;
   galleryForm.showOnHome.checked = Boolean(asset.showOnHome);
+  galleryForm.showInChapterCover.checked = Boolean(asset.showInChapterCover);
+  galleryForm.showInChapterStrip.checked = Boolean(asset.showInChapterStrip);
 }
 
 function renderSettingsForm() {
@@ -388,6 +392,8 @@ function commitGalleryForm() {
   asset.chapter = galleryForm.chapter.value;
   asset.order = Number(galleryForm.order.value || 0);
   asset.showOnHome = galleryForm.showOnHome.checked;
+  asset.showInChapterCover = galleryForm.showInChapterCover.checked;
+  asset.showInChapterStrip = galleryForm.showInChapterStrip.checked;
 }
 
 function commitSettingsForm() {

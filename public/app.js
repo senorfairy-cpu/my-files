@@ -65,9 +65,16 @@ function homeGalleryFor(chapterId) {
   return homeGallery().filter(asset => asset.chapter === chapterId);
 }
 
-function coverFor(chapterId) {
-  const assets = galleryFor(chapterId);
+function coverFor(chapterId, assets = galleryFor(chapterId)) {
+  const selected = assets.find(asset => asset.showInChapterCover === true);
+  if (selected) return selected;
   return assets.find(asset => asset.orientation === "landscape") || assets[0] || visibleGallery()[0];
+}
+
+function chapterPreviewAssets(chapterId) {
+  const assets = galleryFor(chapterId);
+  const selected = assets.filter(asset => asset.showInChapterStrip === true);
+  return (selected.length ? selected : assets).slice(0, 18);
 }
 
 function chapterById(id) {
@@ -153,8 +160,8 @@ function render() {
 
   document.getElementById("chapterList").innerHTML = chapters.map(chapter => {
     const assets = galleryFor(chapter.id);
-    const cover = coverFor(chapter.id);
-    const preview = assets.slice(0, 18);
+    const cover = coverFor(chapter.id, assets);
+    const preview = chapterPreviewAssets(chapter.id);
     return `
       <article class="chapter" id="${chapter.id}">
         <div class="chapter-copy">
