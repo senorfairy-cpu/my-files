@@ -1,10 +1,49 @@
 let portfolio = null;
-let activeChapter = "全部";
+let languageContent = null;
+let currentLang = localStorage.getItem("portfolioLanguage") || "zh";
+if (!["zh", "en"].includes(currentLang)) currentLang = "zh";
+let activeChapter = "all";
 
 async function loadPortfolio() {
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
   portfolio = await res.json();
+  const langRes = await fetch("/language-content.json").catch(() => null);
+  languageContent = langRes?.ok ? await langRes.json() : null;
   render();
+}
+
+function langData() {
+  return languageContent?.[currentLang] || {};
+}
+
+function t(path, fallback = "") {
+  return path.split(".").reduce((value, key) => value?.[key], langData()) ?? fallback;
+}
+
+function localizedCollection(name) {
+  return langData()[name] || {};
+}
+
+function localizedChapter(chapter) {
+  return {
+    ...chapter,
+    ...(localizedCollection("chaptersById")[chapter.id] || {}),
+  };
+}
+
+function localizedArticle(article) {
+  return {
+    ...article,
+    ...(localizedCollection("articlesById")[article.id] || {}),
+  };
+}
+
+function applyStaticText() {
+  document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(element => {
+    element.textContent = t(element.dataset.i18n, element.textContent);
+  });
+  document.getElementById("langToggle").textContent = t("language.toggle", currentLang === "zh" ? "EN" : "中文");
 }
 
 function visibleGallery() {
@@ -21,7 +60,8 @@ function coverFor(chapterId) {
 }
 
 function chapterById(id) {
-  return (portfolio.chapters || []).find(chapter => chapter.id === id);
+  const chapter = (portfolio.chapters || []).find(item => item.id === id);
+  return chapter ? localizedChapter(chapter) : null;
 }
 
 function sortedArticles() {
@@ -41,8 +81,9 @@ function escapeHtml(value) {
 }
 
 function render() {
-  const profile = portfolio.profile;
-  const chapters = portfolio.chapters || [];
+  applyStaticText();
+  const profile = { ...portfolio.profile, ...(langData().profile || {}) };
+  const chapters = (portfolio.chapters || []).map(localizedChapter);
   const gallery = visibleGallery();
   const heroAsset = coverFor("product-marketing") || gallery[0];
 
@@ -53,11 +94,21 @@ function render() {
   document.getElementById("footerName").textContent = profile.email || profile.name;
   document.getElementById("endingContact").textContent = `${profile.email || "hello@example.com"} · ${profile.location || "Chengdu, China"}`;
   document.getElementById("heroCount").textContent = gallery.length;
+  document.getElementById("aboutTitle").textContent = t("about.title", "科技产品商业视觉设计师");
+  document.getElementById("aboutBody").textContent = t("about.body", "定位于品牌系统、产品营销视觉、海报 KV、3D 场景、画册、展会视觉与 AI 辅助创意工作流。");
+  document.getElementById("chaptersTitle").textContent = t("chapters.title", "按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。");
+  document.getElementById("thinkingTitle").textContent = t("thinking.title", "设计心得、项目复盘与方法沉淀。");
+  document.getElementById("archiveTitle").textContent = t("archive.title", "素材库图片按章节分类形成可浏览图库。");
+  document.getElementById("endingTitle").textContent = t("ending.title", "Brand × Product × Marketing Visual");
+  document.getElementById("footerTagline").textContent = t("footer.tagline", "期待与你合作。");
+  document.getElementById("footerLocation").textContent = profile.location || t("footer.location", "中国成都");
+  document.getElementById("skillGrid").innerHTML = (t("about.skills", []) || []).map(skill => `<span>${escapeHtml(skill)}</span>`).join("");
   if (heroAsset) {
     document.getElementById("heroBg").style.backgroundImage = `linear-gradient(90deg, rgba(9,9,8,.96) 0%, rgba(9,9,8,.70) 42%, rgba(9,9,8,.35) 100%), url("${heroAsset.src}")`;
   }
 
-  document.getElementById("stats").innerHTML = (portfolio.stats || []).map(item => `
+  const localizedStats = langData().stats || portfolio.stats || [];
+  document.getElementById("stats").innerHTML = localizedStats.map(item => `
     <div class="stat"><strong>${escapeHtml(item.value)}</strong><span>${escapeHtml(item.label)}</span></div>
   `).join("");
 
@@ -81,7 +132,7 @@ function render() {
           <p>${escapeHtml(chapter.summary)}</p>
           <div class="chapter-meta">
             <span>${escapeHtml(chapter.ratio)}</span>
-            <span>${assets.length} images</span>
+            <span>${assets.length} ${escapeHtml(t("common.images", "张图片"))}</span>
           </div>
         </div>
         <div class="chapter-cover">
@@ -100,15 +151,15 @@ function render() {
 }
 
 function renderArticles() {
-  const articles = sortedArticles();
+  const articles = sortedArticles().map(localizedArticle);
   document.getElementById("articleGrid").innerHTML = articles.length ? articles.map(article => `
     <button class="article-card" type="button" data-id="${article.id}">
       ${article.cover ? `<img src="${article.cover}" alt="${escapeHtml(article.title)}">` : ""}
-      <span>${escapeHtml(article.date)} · ${escapeHtml(article.category || "Design")}</span>
+      <span>${escapeHtml(article.date)} · ${escapeHtml(article.category || t("common.design", "Design"))}</span>
       <strong>${escapeHtml(article.title)}</strong>
       <p>${escapeHtml(article.excerpt)}</p>
     </button>
-  `).join("") : `<p class="empty-note">暂无文章。可在后台新增设计心得。</p>`;
+  `).join("") : `<p class="empty-note">${escapeHtml(t("thinking.empty", "暂无文章。可在后台新增设计心得。"))}</p>`;
 
   document.querySelectorAll(".article-card").forEach(card => {
     card.addEventListener("click", () => openArticle(card.dataset.id));
@@ -116,9 +167,10 @@ function renderArticles() {
 }
 
 function openArticle(id) {
-  const article = (portfolio.articles || []).find(item => item.id === id);
+  const original = (portfolio.articles || []).find(item => item.id === id);
+  const article = original ? localizedArticle(original) : null;
   if (!article) return;
-  document.getElementById("modalMeta").textContent = `${article.date || ""} · ${article.category || "Design"}`;
+  document.getElementById("modalMeta").textContent = `${article.date || ""} · ${article.category || t("common.design", "Design")}`;
   document.getElementById("modalTitle").textContent = article.title || "";
   const cover = document.getElementById("modalCover");
   cover.hidden = !article.cover;
@@ -135,25 +187,23 @@ document.getElementById("closeArticle").addEventListener("click", () => {
 });
 
 function renderFilters() {
-  const chapters = portfolio.chapters || [];
-  const filters = ["全部", ...chapters.map(chapter => chapter.title)];
-  document.getElementById("filters").innerHTML = filters.map(label => `
-    <button class="${label === activeChapter ? "active" : ""}" data-label="${escapeHtml(label)}">${escapeHtml(label)}</button>
+  const chapters = (portfolio.chapters || []).map(localizedChapter);
+  const filters = [{ id: "all", title: t("filters.all", "全部") }, ...chapters.map(chapter => ({ id: chapter.id, title: chapter.title }))];
+  document.getElementById("filters").innerHTML = filters.map(filter => `
+    <button class="${filter.id === activeChapter ? "active" : ""}" data-id="${escapeHtml(filter.id)}">${escapeHtml(filter.title)}</button>
   `).join("");
   document.querySelectorAll("#filters button").forEach(button => {
     button.addEventListener("click", () => {
-      activeChapter = button.dataset.label;
+      activeChapter = button.dataset.id;
       renderArchive();
     });
   });
 }
 
 function renderArchive() {
-  const chapters = portfolio.chapters || [];
-  const selected = chapters.find(chapter => chapter.title === activeChapter);
-  const assets = activeChapter === "全部" ? visibleGallery() : galleryFor(selected?.id);
+  const assets = activeChapter === "all" ? visibleGallery() : galleryFor(activeChapter);
   document.querySelectorAll("#filters button").forEach(button => {
-    button.classList.toggle("active", button.dataset.label === activeChapter);
+    button.classList.toggle("active", button.dataset.id === activeChapter);
   });
   document.getElementById("masonry").innerHTML = assets.map(asset => {
     const chapter = chapterById(asset.chapter);
@@ -168,5 +218,11 @@ function renderArchive() {
     `;
   }).join("");
 }
+
+document.getElementById("langToggle").addEventListener("click", () => {
+  currentLang = currentLang === "zh" ? "en" : "zh";
+  localStorage.setItem("portfolioLanguage", currentLang);
+  render();
+});
 
 loadPortfolio();

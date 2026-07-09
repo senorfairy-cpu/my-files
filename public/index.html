@@ -10,11 +10,12 @@
     <header class="topbar">
       <a class="brand" href="/">Brand × Product</a>
       <nav>
-        <a href="#about">About</a>
-        <a href="#chapters">Chapters</a>
-        <a href="#thinking">Blog</a>
-        <a href="#archive">Archive</a>
+        <a href="#about" data-i18n="nav.about">关于</a>
+        <a href="#chapters" data-i18n="nav.chapters">章节</a>
+        <a href="#thinking" data-i18n="nav.blog">文章</a>
+        <a href="#archive" data-i18n="nav.archive">图库</a>
         <a href="/admin.html">后台</a>
+        <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">EN</button>
         <a class="nav-cta" href="/Designer-Portfolio.pdf">PDF</a>
       </nav>
     </header>
@@ -23,18 +24,18 @@
       <section class="hero" id="cover">
         <div class="hero-bg" id="heroBg"></div>
         <div class="hero-copy">
-          <p class="eyebrow">Graphic Designer Portfolio</p>
+          <p class="eyebrow" data-i18n="hero.eyebrow">Graphic Designer Portfolio</p>
           <h1 id="profileName">Brand & Product Visual Designer</h1>
           <p class="lead" id="profileIntro"></p>
           <div class="hero-actions">
-            <a class="button primary" href="#chapters">View Chapters</a>
-            <a class="button ghost" href="#thinking">Design Thinking</a>
+            <a class="button primary" href="#chapters" data-i18n="hero.primaryCta">查看作品章节</a>
+            <a class="button ghost" href="#thinking" data-i18n="hero.secondaryCta">设计思考</a>
           </div>
         </div>
         <div class="hero-mark">
-          <span>Gallery</span>
+          <span data-i18n="hero.galleryLabel">图库</span>
           <strong id="heroCount">0</strong>
-          <span>Images</span>
+          <span data-i18n="hero.imagesLabel">张图片</span>
         </div>
       </section>
 
@@ -42,52 +43,43 @@
 
       <section class="about-panel" id="about">
         <div>
-          <p class="eyebrow">About Me</p>
-          <h2>科技产品商业视觉设计师</h2>
-          <p>定位于品牌系统、产品营销视觉、海报 KV、3D 场景、画册、展会视觉与 AI 辅助创意工作流。</p>
+          <p class="eyebrow" data-i18n="about.eyebrow">About Me</p>
+          <h2 id="aboutTitle">科技产品商业视觉设计师</h2>
+          <p id="aboutBody">定位于品牌系统、产品营销视觉、海报 KV、3D 场景、画册、展会视觉与 AI 辅助创意工作流。</p>
         </div>
-        <div class="skill-grid">
-          <span>品牌系统</span>
-          <span>产品营销视觉</span>
-          <span>海报 KV</span>
-          <span>3D 场景</span>
-          <span>画册 / 展会</span>
-          <span>AI 辅助创意</span>
-          <span>PS / AI / C4D</span>
-          <span>AE / ChatGPT</span>
-        </div>
+        <div class="skill-grid" id="skillGrid"></div>
       </section>
 
       <section class="section-head" id="chapters">
-        <p class="eyebrow">Portfolio Structure</p>
-        <h2>按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。</h2>
+        <p class="eyebrow" data-i18n="chapters.eyebrow">Portfolio Structure</p>
+        <h2 id="chaptersTitle">按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。</h2>
       </section>
       <section class="chapter-nav" id="chapterNav"></section>
       <section class="chapter-list" id="chapterList"></section>
 
       <section class="section-head" id="thinking">
-        <p class="eyebrow">Design Thinking</p>
-        <h2>设计心得、项目复盘与方法沉淀。</h2>
+        <p class="eyebrow" data-i18n="thinking.eyebrow">Design Thinking</p>
+        <h2 id="thinkingTitle">设计心得、项目复盘与方法沉淀。</h2>
       </section>
       <section class="article-grid" id="articleGrid"></section>
 
       <section class="section-head" id="archive">
-        <p class="eyebrow">Image Archive</p>
-        <h2>素材库图片按章节分类形成可浏览图库。</h2>
+        <p class="eyebrow" data-i18n="archive.eyebrow">Image Archive</p>
+        <h2 id="archiveTitle">素材库图片按章节分类形成可浏览图库。</h2>
       </section>
       <section class="filterbar" id="filters"></section>
       <section class="masonry dense" id="masonry"></section>
 
       <section class="ending">
-        <p class="eyebrow">Ending</p>
-        <h2>Brand × Product × Marketing Visual</h2>
+        <p class="eyebrow" data-i18n="ending.eyebrow">Ending</p>
+        <h2 id="endingTitle">Brand × Product × Marketing Visual</h2>
         <p id="endingContact"></p>
       </section>
     </main>
 
     <div class="article-modal" id="articleModal" hidden>
       <article>
-        <button type="button" class="modal-close" id="closeArticle">Close</button>
+        <button type="button" class="modal-close" id="closeArticle" data-i18n="modal.close">关闭</button>
         <p class="eyebrow" id="modalMeta"></p>
         <h2 id="modalTitle"></h2>
         <img id="modalCover" alt="">
@@ -97,8 +89,8 @@
 
     <footer>
       <span id="footerName"></span>
-      <span>Looking forward to working with you.</span>
-      <span>Chengdu, China</span>
+      <span id="footerTagline">期待与你合作。</span>
+      <span id="footerLocation">中国成都</span>
     </footer>
 
     <script src="/app.js"></script>

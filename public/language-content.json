@@ -1,0 +1,286 @@
+{
+  "zh": {
+    "language": {
+      "toggle": "EN"
+    },
+    "nav": {
+      "about": "关于",
+      "chapters": "章节",
+      "blog": "文章",
+      "archive": "图库"
+    },
+    "common": {
+      "design": "设计",
+      "images": "张图片"
+    },
+    "hero": {
+      "eyebrow": "Graphic Designer Portfolio",
+      "primaryCta": "查看作品章节",
+      "secondaryCta": "设计思考",
+      "galleryLabel": "图库",
+      "imagesLabel": "张图片"
+    },
+    "profile": {
+      "name": "Graphic Designer Portfolio",
+      "title": "科技产品商业视觉设计师",
+      "location": "中国成都",
+      "intro": "围绕品牌系统、产品营销视觉、商业海报 KV、3D 场景、画册展会与 AI 辅助创意工作流，构建面向科技产品的商业视觉作品集。",
+      "email": "hello@example.com"
+    },
+    "stats": [
+      {
+        "label": "作品章节",
+        "value": "7"
+      },
+      {
+        "label": "图库图片",
+        "value": "672"
+      },
+      {
+        "label": "核心方向",
+        "value": "品牌 × 产品 × 营销"
+      }
+    ],
+    "about": {
+      "eyebrow": "About Me",
+      "title": "科技产品商业视觉设计师",
+      "body": "定位于品牌系统、产品营销视觉、海报 KV、3D 场景、画册、展会视觉与 AI 辅助创意工作流。",
+      "skills": [
+        "品牌系统",
+        "产品营销视觉",
+        "海报 KV",
+        "3D 场景",
+        "画册 / 展会",
+        "AI 辅助创意",
+        "PS / AI / C4D",
+        "AE / ChatGPT"
+      ]
+    },
+    "chapters": {
+      "eyebrow": "Portfolio Structure",
+      "title": "按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。"
+    },
+    "chaptersById": {
+      "brand-system": {
+        "title": "品牌系统设计",
+        "subtitle": "Brand System Design",
+        "summary": "围绕 Logo、视觉语言、产品识别、包装、铭牌与品牌应用系统，呈现科技产品品牌从识别到落地的完整表达。"
+      },
+      "product-marketing": {
+        "title": "产品营销视觉",
+        "subtitle": "Product Marketing Visual",
+        "summary": "面向 GNSS / RTK 等科技产品，整理产品主视觉、功能图标、卖点拆解页面与商业应用场景。"
+      },
+      "campaign-kv": {
+        "title": "商业海报 & KV",
+        "subtitle": "Campaign KV",
+        "summary": "包含国际市场活动海报、新品发布视觉、产品主题画面与多语言营销适配。"
+      },
+      "scene-3d": {
+        "title": "产品场景与 3D 视觉",
+        "subtitle": "3D & Scenario Visual",
+        "summary": "包含 C4D 产品渲染、工程场景搭建、材质研究与偏动态方向的视觉探索。"
+      },
+      "touchpoints": {
+        "title": "展会 / 画册 / 落地物料",
+        "subtitle": "Exhibition & Collateral",
+        "summary": "整理画册、展台、易拉宝、印刷物料、包装、卡片、保修卡与品牌周边等实际触点。"
+      },
+      "ai-workflow": {
+        "title": "AI + 工作流",
+        "subtitle": "AI Assisted Workflow",
+        "summary": "把创意概念、AI 草图、场景搭建、后期修图与最终营销视觉交付整理成可复用流程。"
+      },
+      "practice": {
+        "title": "个人练习",
+        "subtitle": "Practice Collection",
+        "summary": "收录版式、渲染、动态图形等个人练习，用于补充展示视觉探索和软件综合能力。"
+      }
+    },
+    "thinking": {
+      "eyebrow": "Design Thinking",
+      "title": "设计心得、项目复盘与方法沉淀。",
+      "empty": "暂无文章。可在后台新增设计心得。"
+    },
+    "articlesById": {
+      "article-product-visual-system": {
+        "title": "从产品卖点到商业视觉：科技产品 KV 的组织方式",
+        "category": "产品视觉",
+        "excerpt": "记录如何把硬件功能、应用场景和营销语言整理成可传播的产品主视觉。",
+        "content": "科技产品视觉不能只停留在“好看”。更重要的是把用户能理解的卖点组织出来：核心功能是什么，使用场景在哪里，为什么值得相信。\n\n我的做法通常是先拆产品功能，再找最有商业价值的场景，最后把图像、标题、功能 icon 和局部说明压缩成一个清晰的信息层级。"
+      },
+      "article-brand-to-touchpoints": {
+        "title": "品牌系统如何落到产品、展会和物料",
+        "category": "品牌系统",
+        "excerpt": "品牌不是一张 logo 图，而是一套能在产品、包装、展台和画册里连续出现的识别系统。",
+        "content": "品牌系统的难点在于落地一致性。Logo、颜色、字体和图形语言需要进入产品铭牌、包装、展会画面、宣传册和网页界面。\n\n当这些触点都能被同一套视觉规则连接起来时，品牌才会形成稳定的专业感。"
+      },
+      "article-ai-workflow": {
+        "title": "AI 辅助创意在设计流程中的位置",
+        "category": "工作流",
+        "excerpt": "AI 更适合放在概念探索和场景草图阶段，最终质量仍取决于设计判断和后期整合。",
+        "content": "AI 可以快速生成方向，但不能替代设计判断。更有效的流程是 Idea → AI Sketch → Scene Building → PS Retouch → Marketing Final。\n\n在这个流程里，AI 负责拓宽可能性，设计师负责筛选、重构、统一风格并把画面做成可交付的商业视觉。"
+      }
+    },
+    "filters": {
+      "all": "全部"
+    },
+    "archive": {
+      "eyebrow": "Image Archive",
+      "title": "素材库图片按章节分类形成可浏览图库。"
+    },
+    "ending": {
+      "eyebrow": "Ending",
+      "title": "品牌 × 产品 × 营销视觉"
+    },
+    "modal": {
+      "close": "关闭"
+    },
+    "footer": {
+      "tagline": "期待与你合作。",
+      "location": "中国成都"
+    }
+  },
+  "en": {
+    "language": {
+      "toggle": "中文"
+    },
+    "nav": {
+      "about": "About",
+      "chapters": "Chapters",
+      "blog": "Blog",
+      "archive": "Archive"
+    },
+    "common": {
+      "design": "Design",
+      "images": "images"
+    },
+    "hero": {
+      "eyebrow": "Graphic Designer Portfolio",
+      "primaryCta": "View Chapters",
+      "secondaryCta": "Design Thinking",
+      "galleryLabel": "Gallery",
+      "imagesLabel": "Images"
+    },
+    "profile": {
+      "name": "Graphic Designer Portfolio",
+      "title": "Brand & Product Visual Designer",
+      "location": "Chengdu, China",
+      "intro": "Brand × Product × Marketing Visual. A technology-product portfolio covering brand systems, product marketing visuals, campaign key visuals, 3D scenes, collateral, exhibitions and AI-assisted creative workflows.",
+      "email": "hello@example.com"
+    },
+    "stats": [
+      {
+        "label": "Portfolio Chapters",
+        "value": "7"
+      },
+      {
+        "label": "Gallery Images",
+        "value": "672"
+      },
+      {
+        "label": "Core Focus",
+        "value": "Brand × Product × Marketing"
+      }
+    ],
+    "about": {
+      "eyebrow": "About Me",
+      "title": "Commercial visual designer for technology products",
+      "body": "Focused on brand systems, product marketing visuals, campaign KV, 3D scenes, brochures, exhibition visuals and AI-assisted creative workflows.",
+      "skills": [
+        "Brand Systems",
+        "Product Marketing Visuals",
+        "Campaign KV",
+        "3D Scenes",
+        "Brochures / Exhibitions",
+        "AI-assisted Creativity",
+        "PS / AI / C4D",
+        "AE / ChatGPT"
+      ]
+    },
+    "chapters": {
+      "eyebrow": "Portfolio Structure",
+      "title": "A portfolio reorganized around the story of brand, product and marketing visuals."
+    },
+    "chaptersById": {
+      "brand-system": {
+        "title": "Brand System Design",
+        "subtitle": "Brand System Design",
+        "summary": "Logo systems, visual language, product identification, packaging, nameplates and brand applications for technology products."
+      },
+      "product-marketing": {
+        "title": "Product Marketing Visual",
+        "subtitle": "Product Marketing Visual",
+        "summary": "Core product KV, feature icons, functional breakdown pages and commercial scenes for GNSS / RTK products."
+      },
+      "campaign-kv": {
+        "title": "Campaign Posters & KV",
+        "subtitle": "Campaign KV",
+        "summary": "International campaign posters, launch visuals, product themes and multilingual marketing adaptations."
+      },
+      "scene-3d": {
+        "title": "Product Scenes & 3D Visuals",
+        "subtitle": "3D & Scenario Visual",
+        "summary": "C4D rendering, product scene building, engineering scenarios, material studies and motion-oriented visual exploration."
+      },
+      "touchpoints": {
+        "title": "Exhibitions / Brochures / Collateral",
+        "subtitle": "Exhibition & Collateral",
+        "summary": "Brochures, booth visuals, roll-up banners, print collateral, packaging, cards, warranty cards and peripheral brand materials."
+      },
+      "ai-workflow": {
+        "title": "AI + Workflow",
+        "subtitle": "AI Assisted Workflow",
+        "summary": "A repeatable workflow from idea, AI sketch and scene building to retouching and final marketing visual delivery."
+      },
+      "practice": {
+        "title": "Practice Collection",
+        "subtitle": "Practice Collection",
+        "summary": "Graphic studies and self-initiated visual practice across layout, rendering and motion folders."
+      }
+    },
+    "thinking": {
+      "eyebrow": "Design Thinking",
+      "title": "Notes, project reviews and design methods.",
+      "empty": "No articles yet. Design notes can be added in the admin."
+    },
+    "articlesById": {
+      "article-product-visual-system": {
+        "title": "From Product Benefits to Commercial Visuals: Structuring Technology Product KV",
+        "category": "Product Visual",
+        "excerpt": "How hardware functions, use scenarios and marketing language can be organized into a clear product key visual.",
+        "content": "Technology product visuals should go beyond looking attractive. The more important task is to organize benefits that users can understand: what the core function is, where it is used and why it is trustworthy.\n\nMy usual process is to break down product functions first, identify the most commercially valuable scenario, then compress imagery, headline, feature icons and detail notes into a clear information hierarchy."
+      },
+      "article-brand-to-touchpoints": {
+        "title": "How a Brand System Extends into Products, Exhibitions and Collateral",
+        "category": "Brand System",
+        "excerpt": "A brand is not a single logo image, but an identity system that appears consistently across products, packaging, booths and brochures.",
+        "content": "The challenge of a brand system is consistency in real applications. Logo, color, typography and graphic language need to enter product nameplates, packaging, exhibition visuals, brochures and interface screens.\n\nWhen these touchpoints are connected by the same visual rules, the brand begins to feel stable and professional."
+      },
+      "article-ai-workflow": {
+        "title": "Where AI-assisted Creativity Fits in the Design Workflow",
+        "category": "Workflow",
+        "excerpt": "AI works best in concept exploration and scene sketching, while final quality still depends on design judgment and integration.",
+        "content": "AI can generate directions quickly, but it cannot replace design judgment. A more effective workflow is Idea → AI Sketch → Scene Building → PS Retouch → Marketing Final.\n\nIn this process, AI expands the range of possibilities, while the designer selects, restructures, unifies the style and turns the image into a deliverable commercial visual."
+      }
+    },
+    "filters": {
+      "all": "All"
+    },
+    "archive": {
+      "eyebrow": "Image Archive",
+      "title": "A browsable image archive organized by portfolio chapters."
+    },
+    "ending": {
+      "eyebrow": "Ending",
+      "title": "Brand × Product × Marketing Visual"
+    },
+    "modal": {
+      "close": "Close"
+    },
+    "footer": {
+      "tagline": "Looking forward to working with you.",
+      "location": "Chengdu, China"
+    }
+  }
+}
