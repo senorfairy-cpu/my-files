@@ -25,13 +25,12 @@ const seedDataFiles = [
 ];
 const localDraftFile = path.join(root, "data", "portfolio.draft.json");
 let blobLoadError = "";
+let blobLastMode = "";
 
-function blobStoreConfig() {
+function manualBlobConfig() {
   const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID || process.env.BLOBS_SITE_ID;
   const token = process.env.NETLIFY_AUTH_TOKEN || process.env.NETLIFY_BLOBS_TOKEN || process.env.BLOBS_TOKEN;
-  return siteID && token
-    ? { name: "portfolio-site", siteID, token }
-    : "portfolio-site";
+  return siteID && token ? { siteID, token } : null;
 }
 
 function json(statusCode, body, headers = {}) {
@@ -122,18 +121,79 @@ function normalizePath(event) {
     .replace(/^\/+/, "/") || "/";
 }
 
-async function blobStore() {
+async function loadBlobGetStore() {
   try {
     const { getStore } = require("@netlify/blobs");
-    return getStore(blobStoreConfig());
+    return getStore;
   } catch (requireError) {
     try {
       const { getStore } = await import("@netlify/blobs");
-      return getStore(blobStoreConfig());
+      return getStore;
     } catch (importError) {
       blobLoadError = importError.message || requireError.message || "unknown module load error";
       return null;
     }
+  }
+}
+
+async function withBlobStore(operation) {
+  const getStore = await loadBlobGetStore();
+  if (!getStore) {
+    blobLastMode = "";
+    return null;
+  }
+
+  try {
+    const result = await operation(getStore("portfolio-site"));
+    blobLastMode = "auto";
+    blobLoadError = "";
+    return result;
+  } catch (autoError) {
+    const manualConfig = manualBlobConfig();
+    if (!manualConfig) {
+      blobLastMode = "";
+      blobLoadError = autoError.message || "automatic Netlify Blobs configuration unavailable";
+      return null;
+    }
+
+    const manualAttempts = [
+      () => getStore("portfolio-site", manualConfig),
+      () => getStore({ name: "portfolio-site", ...manualConfig }),
+    ];
+
+    for (const createManualStore of manualAttempts) {
+      try {
+        const result = await operation(createManualStore());
+        blobLastMode = "manual";
+        blobLoadError = "";
+        return result;
+      } catch (manualError) {
+        blobLoadError = `${autoError.message || "auto failed"}; manual fallback failed: ${manualError.message || "unknown error"}`;
+      }
+    }
+
+    blobLastMode = "";
+    return null;
+  }
+}
+
+async function blobStatus() {
+  const manualConfig = manualBlobConfig();
+  try {
+    await withBlobStore(store => store.get("portfolio.json", { type: "json" }));
+    return {
+      available: Boolean(blobLastMode),
+      mode: blobLastMode || null,
+      hasManualFallback: Boolean(manualConfig),
+      error: blobLoadError || null,
+    };
+  } catch (error) {
+    return {
+      available: false,
+      mode: null,
+      hasManualFallback: Boolean(manualConfig),
+      error: error.message,
+    };
   }
 }
 
@@ -144,11 +204,8 @@ function readSeedPortfolio() {
 }
 
 async function readPortfolio(key = "portfolio.json") {
-  const store = await blobStore();
-  if (store) {
-    const saved = await store.get(key, { type: "json" });
-    if (saved) return saved;
-  }
+  const saved = await withBlobStore(store => store.get(key, { type: "json" }));
+  if (saved) return saved;
   if (key === "portfolio-draft.json" && fs.existsSync(localDraftFile)) {
     return JSON.parse(fs.readFileSync(localDraftFile, "utf-8"));
   }
@@ -156,9 +213,8 @@ async function readPortfolio(key = "portfolio.json") {
 }
 
 async function writePortfolio(data, key = "portfolio.json") {
-  const store = await blobStore();
-  if (store) {
-    await store.set(key, JSON.stringify(data));
+  const saved = await withBlobStore(store => store.set(key, JSON.stringify(data)));
+  if (saved !== null) {
     return;
   }
   if (process.env.LAMBDA_TASK_ROOT || process.env.AWS_LAMBDA_FUNCTION_NAME || root.startsWith("/var/task")) {
@@ -170,12 +226,9 @@ async function writePortfolio(data, key = "portfolio.json") {
 }
 
 async function readDraftPortfolio() {
-  const store = await blobStore();
-  if (store) {
-    const draft = await store.get("portfolio-draft.json", { type: "json" });
-    if (draft) return draft;
-    return readPortfolio("portfolio.json");
-  }
+  const draft = await withBlobStore(store => store.get("portfolio-draft.json", { type: "json" }));
+  if (draft) return draft;
+  if (blobLastMode) return readPortfolio("portfolio.json");
   if (fs.existsSync(localDraftFile)) {
     return JSON.parse(fs.readFileSync(localDraftFile, "utf-8"));
   }
@@ -199,15 +252,15 @@ function safeUploadName(name = "upload") {
 }
 
 async function saveImage(name, buffer, type) {
-  const store = await blobStore();
   const fileName = safeUploadName(name);
-  if (store) {
+  const src = await withBlobStore(async store => {
     const key = `uploads/${fileName}`;
     await store.set(key, buffer, {
       metadata: { contentType: type },
     });
     return `/api/media/${encodeURIComponent(fileName)}`;
-  }
+  });
+  if (src) return src;
 
   fs.mkdirSync(localUploadDir, { recursive: true });
   fs.writeFileSync(path.join(localUploadDir, fileName), buffer);
@@ -217,11 +270,8 @@ async function saveImage(name, buffer, type) {
 async function readImage(fileName) {
   const cleanName = path.basename(decodeURIComponent(fileName || ""));
   const type = imageTypes[path.extname(cleanName).toLowerCase()] || "application/octet-stream";
-  const store = await blobStore();
-  if (store) {
-    const data = await store.get(`uploads/${cleanName}`, { type: "arrayBuffer" });
-    return data ? { data: Buffer.from(data), type } : null;
-  }
+  const data = await withBlobStore(store => store.get(`uploads/${cleanName}`, { type: "arrayBuffer" }));
+  if (data) return { data: Buffer.from(data), type };
   const filePath = path.join(localUploadDir, cleanName);
   if (!filePath.startsWith(localUploadDir) || !fs.existsSync(filePath)) return null;
   return { data: fs.readFileSync(filePath), type };
@@ -251,6 +301,11 @@ async function handleApi(event) {
 
   if (method === "GET" && apiPath === "/portfolio") {
     return json(200, await readPortfolio());
+  }
+
+  if (method === "GET" && apiPath === "/blob-status") {
+    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
+    return json(200, await blobStatus());
   }
 
   if (method === "POST" && apiPath === "/portfolio") {
