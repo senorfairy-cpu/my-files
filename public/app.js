@@ -3,6 +3,7 @@ let languageContent = null;
 let currentLang = localStorage.getItem("portfolioLanguage") || "zh";
 if (!["zh", "en"].includes(currentLang)) currentLang = "zh";
 let activeChapter = "all";
+let revealObserver = null;
 
 async function loadPortfolio() {
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
@@ -148,6 +149,7 @@ function render() {
   renderArticles();
   renderFilters();
   renderArchive();
+  setupRevealAnimations();
 }
 
 function renderArticles() {
@@ -196,6 +198,7 @@ function renderFilters() {
     button.addEventListener("click", () => {
       activeChapter = button.dataset.id;
       renderArchive();
+      setupRevealAnimations();
     });
   });
 }
@@ -217,6 +220,50 @@ function renderArchive() {
       </figure>
     `;
   }).join("");
+}
+
+function setupRevealAnimations() {
+  const elements = document.querySelectorAll([
+    ".hero-copy",
+    ".hero-mark",
+    ".stats",
+    ".about-panel",
+    ".section-head",
+    ".chapter-nav",
+    ".chapter",
+    ".article-card",
+    ".filterbar",
+    ".archive-item",
+    ".ending",
+  ].join(","));
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    elements.forEach(element => element.classList.add("is-visible"));
+    return;
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    elements.forEach(element => element.classList.add("is-visible"));
+    return;
+  }
+
+  revealObserver?.disconnect();
+  revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      revealObserver.unobserve(entry.target);
+    });
+  }, {
+    rootMargin: "0px 0px -8% 0px",
+    threshold: 0.08,
+  });
+
+  elements.forEach((element, index) => {
+    element.classList.add("reveal-item");
+    element.style.setProperty("--reveal-delay", `${Math.min(index % 8, 7) * 34}ms`);
+    revealObserver.observe(element);
+  });
 }
 
 document.getElementById("langToggle").addEventListener("click", () => {
