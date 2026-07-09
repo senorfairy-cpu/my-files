@@ -26,6 +26,14 @@ const seedDataFiles = [
 const localDraftFile = path.join(root, "data", "portfolio.draft.json");
 let blobLoadError = "";
 
+function blobStoreConfig() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID || process.env.BLOBS_SITE_ID;
+  const token = process.env.NETLIFY_AUTH_TOKEN || process.env.NETLIFY_BLOBS_TOKEN || process.env.BLOBS_TOKEN;
+  return siteID && token
+    ? { name: "portfolio-site", siteID, token }
+    : "portfolio-site";
+}
+
 function json(statusCode, body, headers = {}) {
   return {
     statusCode,
@@ -117,11 +125,11 @@ function normalizePath(event) {
 async function blobStore() {
   try {
     const { getStore } = require("@netlify/blobs");
-    return getStore("portfolio-site");
+    return getStore(blobStoreConfig());
   } catch (requireError) {
     try {
       const { getStore } = await import("@netlify/blobs");
-      return getStore("portfolio-site");
+      return getStore(blobStoreConfig());
     } catch (importError) {
       blobLoadError = importError.message || requireError.message || "unknown module load error";
       return null;

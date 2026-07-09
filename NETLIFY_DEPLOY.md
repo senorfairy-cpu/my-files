@@ -18,6 +18,8 @@ Set these in Netlify site settings:
 
 - `PORTFOLIO_ADMIN_PASSWORD`: admin password for `/admin.html`
 - `PORTFOLIO_SESSION_SECRET`: a long random string used to sign admin sessions
+- `NETLIFY_SITE_ID`: this Netlify site's project/site ID
+- `NETLIFY_AUTH_TOKEN`: a Netlify personal access token with access to this site, used by Netlify Blobs
 
 If `PORTFOLIO_ADMIN_PASSWORD` is not set, the password falls back to `admin123`. Change it before going public.
 
