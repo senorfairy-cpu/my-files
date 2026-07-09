@@ -140,7 +140,9 @@ async function readPortfolio(key = "portfolio.json") {
 async function writePortfolio(data, key = "portfolio.json") {
   const store = await blobStore();
   if (store) {
-    await store.setJSON(key, data);
+    await store.set(key, JSON.stringify(data), {
+      metadata: { contentType: "application/json; charset=utf-8" },
+    });
     return;
   }
   const dataFile = key === "portfolio-draft.json" ? localDraftFile : seedDataFiles[0];
