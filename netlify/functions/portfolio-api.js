@@ -24,6 +24,7 @@ const seedDataFiles = [
   path.join(__dirname, "portfolio.json"),
 ];
 const localDraftFile = path.join(root, "data", "portfolio.draft.json");
+let blobLoadError = "";
 
 function json(statusCode, body, headers = {}) {
   return {
@@ -117,11 +118,12 @@ async function blobStore() {
   try {
     const { getStore } = require("@netlify/blobs");
     return getStore("portfolio-site");
-  } catch {
+  } catch (requireError) {
     try {
       const { getStore } = await import("@netlify/blobs");
       return getStore("portfolio-site");
-    } catch {
+    } catch (importError) {
+      blobLoadError = importError.message || requireError.message || "unknown module load error";
       return null;
     }
   }
@@ -152,7 +154,7 @@ async function writePortfolio(data, key = "portfolio.json") {
     return;
   }
   if (process.env.LAMBDA_TASK_ROOT || process.env.AWS_LAMBDA_FUNCTION_NAME || root.startsWith("/var/task")) {
-    throw new Error("Netlify Blobs unavailable; refusing to write to read-only function filesystem.");
+    throw new Error(`Netlify Blobs unavailable (${blobLoadError || "no store"}); refusing to write to read-only function filesystem.`);
   }
   const dataFile = key === "portfolio-draft.json" ? localDraftFile : seedDataFiles[0];
   fs.mkdirSync(path.dirname(dataFile), { recursive: true });
