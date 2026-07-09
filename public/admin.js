@@ -55,6 +55,15 @@ function setActionBusy(isBusy) {
   publishBtn.disabled = isBusy;
 }
 
+async function responseErrorMessage(res, fallback) {
+  try {
+    const payload = await res.json();
+    return payload.error || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 async function checkSession() {
   const res = await fetch("/api/session");
   const session = res.ok ? await res.json() : { ok: false };
@@ -402,7 +411,7 @@ async function saveWithStatus(options = {}) {
     });
     if (!res.ok) {
       if (res.status === 401) throw new Error("登录已失效，请重新登录。");
-      throw new Error("保存失败，请稍后重试。");
+      throw new Error(await responseErrorMessage(res, "保存失败，请稍后重试。"));
     }
     if (shouldNotify) showStatus("草稿保存成功。前台暂不更新，点击发布后才会更新。");
     render();
@@ -424,7 +433,7 @@ async function publishWithStatus() {
     const res = await fetch("/api/publish", { method: "POST" });
     if (!res.ok) {
       if (res.status === 401) throw new Error("登录已失效，请重新登录。");
-      throw new Error("发布失败，请稍后重试。");
+      throw new Error(await responseErrorMessage(res, "发布失败，请稍后重试。"));
     }
     showStatus("发布成功，前台已更新。");
     return true;
