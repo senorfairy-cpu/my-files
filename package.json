@@ -2,7 +2,13 @@
   "scripts": {
     "build:assets": "python scripts/build_assets.py",
     "start": "node server.js",
+    "netlify:dev": "netlify dev",
     "pdf": "python scripts/generate_pdf.py"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@netlify/blobs": "^9.1.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.38.1"
+  }
 }
