@@ -23,10 +23,11 @@ If `PORTFOLIO_ADMIN_PASSWORD` is not set, the password falls back to `admin123`.
 
 ## How live editing works
 
-- Frontend reads `/api/portfolio`.
-- Admin saves JSON changes with `POST /api/portfolio`.
+- Frontend reads the published data from `/api/portfolio`.
+- Admin loads and saves draft data with `/api/draft`.
+- Admin publishes draft data to the frontend with `POST /api/publish`.
 - Uploaded images go through `POST /api/upload`.
 - On Netlify, portfolio data and uploaded images are stored in Netlify Blobs.
 - On local `npm start`, the same API writes to `data/portfolio.json` and `public/assets/uploads`.
 
-The first Netlify read uses `data/portfolio.json` as seed data. After the first admin save, Netlify Blobs becomes the live source of truth.
+The first Netlify read uses `data/portfolio.json` as seed data. After the first admin publish, Netlify Blobs becomes the live published source of truth. Saving in the admin only updates the draft; the frontend changes only after publishing.

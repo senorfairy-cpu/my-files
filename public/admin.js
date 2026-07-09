@@ -10,6 +10,12 @@ let selectedGalleryIds = new Set();
 const projectForm = document.getElementById("projectForm");
 const articleForm = document.getElementById("articleForm");
 const galleryForm = document.getElementById("galleryForm");
+const publishBtn = document.createElement("button");
+publishBtn.className = "nav-button";
+publishBtn.id = "publishBtn";
+publishBtn.type = "button";
+publishBtn.textContent = "发布";
+document.getElementById("saveBtn").insertAdjacentElement("afterend", publishBtn);
 
 function setHidden(element, hidden) {
   element.toggleAttribute("hidden", hidden);
@@ -45,7 +51,7 @@ function unlockAdmin() {
 }
 
 async function loadData() {
-  const res = await fetch("/api/portfolio");
+  const res = await fetch("/api/draft");
   data = await res.json();
   data.projects = data.projects || [];
   data.articles = data.articles || [];
@@ -325,7 +331,7 @@ async function save(options = {}) {
   data.projects.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
   data.articles.sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
   data.gallery.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
-  const res = await fetch("/api/portfolio", {
+  const res = await fetch("/api/draft", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -334,8 +340,18 @@ async function save(options = {}) {
     if (res.status === 401) alert("登录已失效，请重新登录。");
     throw new Error("保存失败");
   }
-  alert("已保存到 data/portfolio.json");
+  if (options.alertOnSuccess !== false) alert("草稿已保存。前台暂不更新，点击发布后才会更新。");
   render();
+}
+
+async function publish() {
+  await save({ alertOnSuccess: false });
+  const res = await fetch("/api/publish", { method: "POST" });
+  if (!res.ok) {
+    if (res.status === 401) alert("登录已失效，请重新登录。");
+    throw new Error("发布失败");
+  }
+  alert("发布成功，前台已更新。");
 }
 
 async function uploadImage(file) {
@@ -402,6 +418,7 @@ document.querySelectorAll(".admin-tabs button").forEach(button => {
 });
 
 document.getElementById("saveBtn").addEventListener("click", save);
+publishBtn.addEventListener("click", publish);
 document.getElementById("exportBtn").addEventListener("click", () => {
   commitCurrentForm();
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });

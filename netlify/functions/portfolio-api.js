@@ -23,6 +23,7 @@ const seedDataFiles = [
   path.join(__dirname, "data", "portfolio.json"),
   path.join(__dirname, "portfolio.json"),
 ];
+const localDraftFile = path.join(root, "data", "portfolio.draft.json");
 
 function json(statusCode, body, headers = {}) {
   return {
@@ -118,26 +119,56 @@ async function blobStore() {
   return getStore("portfolio-site");
 }
 
-async function readPortfolio() {
-  const store = await blobStore();
-  if (store) {
-    const saved = await store.get("portfolio.json", { type: "json" });
-    if (saved) return saved;
-  }
+function readSeedPortfolio() {
   const seedFile = seedDataFiles.find(file => fs.existsSync(file));
   if (!seedFile) throw new Error("Missing initial data/portfolio.json");
   return JSON.parse(fs.readFileSync(seedFile, "utf-8"));
 }
 
-async function writePortfolio(data) {
+async function readPortfolio(key = "portfolio.json") {
   const store = await blobStore();
   if (store) {
-    await store.setJSON("portfolio.json", data);
+    const saved = await store.get(key, { type: "json" });
+    if (saved) return saved;
+  }
+  if (key === "portfolio-draft.json" && fs.existsSync(localDraftFile)) {
+    return JSON.parse(fs.readFileSync(localDraftFile, "utf-8"));
+  }
+  return readSeedPortfolio();
+}
+
+async function writePortfolio(data, key = "portfolio.json") {
+  const store = await blobStore();
+  if (store) {
+    await store.setJSON(key, data);
     return;
   }
-  const dataFile = seedDataFiles[0];
+  const dataFile = key === "portfolio-draft.json" ? localDraftFile : seedDataFiles[0];
   fs.mkdirSync(path.dirname(dataFile), { recursive: true });
   fs.writeFileSync(dataFile, JSON.stringify(data, null, 2), "utf-8");
+}
+
+async function readDraftPortfolio() {
+  const store = await blobStore();
+  if (store) {
+    const draft = await store.get("portfolio-draft.json", { type: "json" });
+    if (draft) return draft;
+    return readPortfolio("portfolio.json");
+  }
+  if (fs.existsSync(localDraftFile)) {
+    return JSON.parse(fs.readFileSync(localDraftFile, "utf-8"));
+  }
+  return readPortfolio("portfolio.json");
+}
+
+async function writeDraftPortfolio(data) {
+  return writePortfolio(data, "portfolio-draft.json");
+}
+
+async function publishDraftPortfolio() {
+  const draft = await readDraftPortfolio();
+  await writePortfolio(draft, "portfolio.json");
+  return draft;
 }
 
 function safeUploadName(name = "upload") {
@@ -203,7 +234,24 @@ async function handleApi(event) {
 
   if (method === "POST" && apiPath === "/portfolio") {
     if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    await writePortfolio(bodyJson(event));
+    await writeDraftPortfolio(bodyJson(event));
+    return json(200, { ok: true, draft: true });
+  }
+
+  if (method === "GET" && apiPath === "/draft") {
+    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
+    return json(200, await readDraftPortfolio());
+  }
+
+  if (method === "POST" && apiPath === "/draft") {
+    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
+    await writeDraftPortfolio(bodyJson(event));
+    return json(200, { ok: true, draft: true });
+  }
+
+  if (method === "POST" && apiPath === "/publish") {
+    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
+    await publishDraftPortfolio();
     return json(200, { ok: true });
   }
 
