@@ -54,6 +54,7 @@ async function loadData() {
   data.projects.forEach((project, index) => project.order = project.order ?? index);
   data.gallery.forEach((asset, index) => {
     asset.id = asset.id || `gallery-${index}-${Date.now()}`;
+    asset.id = String(asset.id);
     asset.order = asset.order ?? index;
     asset.filename = asset.filename || asset.src?.split("/").pop() || "";
   });
@@ -73,6 +74,10 @@ function filteredGallery() {
     ? data.gallery
     : data.gallery.filter(asset => asset.chapter === galleryFilter);
   return [...list].sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+}
+
+function galleryAssetId(asset) {
+  return String(asset?.id || asset?.src || "");
 }
 
 function selectedGalleryAsset() {
@@ -216,10 +221,11 @@ function renderGalleryGrid() {
   const assets = filteredGallery();
   const grid = document.getElementById("galleryAdminGrid");
   grid.innerHTML = assets.length ? assets.map((asset, index) => {
-    const selected = selectedGalleryIds.has(asset.id);
+    const id = galleryAssetId(asset);
+    const selected = selectedGalleryIds.has(id);
     const filename = asset.filename || asset.src?.split("/").pop() || "Media";
     return `
-      <button class="gallery-admin-thumb ${index === currentGallery ? "active" : ""} ${selected ? "selected" : ""}" type="button" data-index="${index}" data-id="${escapeHtml(asset.id)}">
+      <button class="gallery-admin-thumb ${index === currentGallery ? "active" : ""} ${selected ? "selected" : ""}" type="button" data-index="${index}" data-id="${escapeHtml(id)}">
         <img src="${escapeHtml(asset.src)}" alt="${escapeHtml(filename)}">
         <b>${selected ? "已选" : "选择"}</b>
         <span>${escapeHtml(chapterTitle(asset.chapter))}</span>
@@ -314,8 +320,8 @@ function renderProjectAssets() {
   });
 }
 
-async function save() {
-  commitCurrentForm();
+async function save(options = {}) {
+  if (!options.skipCommit) commitCurrentForm();
   data.projects.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
   data.articles.sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
   data.gallery.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
@@ -461,7 +467,7 @@ document.getElementById("deleteGalleryBtn").addEventListener("click", () => {
   if (!confirm("确定删除当前图库图片？")) return;
   const realIndex = data.gallery.indexOf(asset);
   if (realIndex >= 0) data.gallery.splice(realIndex, 1);
-  selectedGalleryIds.delete(asset.id);
+  selectedGalleryIds.delete(galleryAssetId(asset));
   currentGallery = Math.max(0, currentGallery - 1);
   render();
 });
@@ -473,16 +479,17 @@ document.getElementById("copyGalleryPathBtn").addEventListener("click", async ()
   alert("图片路径已复制");
 });
 
-document.getElementById("deleteSelectedGalleryBtn").addEventListener("click", () => {
+document.getElementById("deleteSelectedGalleryBtn").addEventListener("click", async () => {
   if (!selectedGalleryIds.size) {
     alert("请先在图片网格中选择要删除的图片。");
     return;
   }
   if (!confirm(`确定删除选中的 ${selectedGalleryIds.size} 张图库图片？`)) return;
-  data.gallery = data.gallery.filter(asset => !selectedGalleryIds.has(asset.id));
+  data.gallery = data.gallery.filter(asset => !selectedGalleryIds.has(galleryAssetId(asset)));
   selectedGalleryIds.clear();
   currentGallery = 0;
   render();
+  await save({ skipCommit: true });
 });
 
 document.getElementById("assetInput").addEventListener("change", async event => {
