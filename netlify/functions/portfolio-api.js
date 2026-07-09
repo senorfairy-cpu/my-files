@@ -117,14 +117,11 @@ async function blobStore() {
   try {
     const { getStore } = require("@netlify/blobs");
     return getStore("portfolio-site");
-  } catch (requireError) {
+  } catch {
     try {
       const { getStore } = await import("@netlify/blobs");
       return getStore("portfolio-site");
-    } catch (importError) {
-      if (process.env.LAMBDA_TASK_ROOT || process.env.AWS_LAMBDA_FUNCTION_NAME || root.startsWith("/var/task")) {
-        throw new Error(`Netlify Blobs unavailable: ${importError.message || requireError.message}`);
-      }
+    } catch {
       return null;
     }
   }
