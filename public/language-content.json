@@ -4,10 +4,10 @@
       "toggle": "EN"
     },
     "nav": {
-      "about": "关于",
+      "about": "关于我",
       "chapters": "章节",
-      "blog": "文章",
-      "archive": "图库"
+      "blog": "关于品牌",
+      "archive": "作品专栏"
     },
     "common": {
       "design": "设计",
@@ -15,16 +15,16 @@
     },
     "hero": {
       "eyebrow": "Graphic Designer Portfolio",
-      "primaryCta": "查看作品章节",
-      "secondaryCta": "设计思考",
+      "primaryCta": "作品章节",
+      "secondaryCta": "关于品牌",
       "galleryLabel": "图库",
       "imagesLabel": "张图片"
     },
     "profile": {
       "name": "Graphic Designer Portfolio",
-      "title": "科技产品商业视觉设计师",
+      "title": "打造您的专属品牌",
       "location": "中国成都",
-      "intro": "围绕品牌系统、产品营销视觉、商业海报 KV、3D 场景、画册展会与 AI 辅助创意工作流，构建面向科技产品的商业视觉作品集。",
+      "intro": "聚焦硬科技产品商业视觉设计，涵盖品牌 VI 系统、产品营销视觉、商业海报、3D 视觉表达、画册物料、展会展位设计及 AI 辅助工作流，构建兼具品牌价值、营销思维与商业落地能力的完整视觉体系。",
       "email": "hello@example.com"
     },
     "stats": [
@@ -135,8 +135,8 @@
     },
     "contact": {
       "eyebrow": "Contact",
-      "title": "有海报、电商、展会、目录或视频项目，可以先加微信沟通。",
-      "body": "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。",
+      "title": "与我合作",
+      "body": "欢迎分享您的项目需求，包括目标、应用场景及交付要求。我将结合项目复杂度，为您提供专业的执行建议与实施方案。",
       "emailLabel": "邮箱",
       "phoneLabel": "电话",
       "wechatLabel": "微信二维码",
@@ -151,19 +151,19 @@
       "close": "关闭"
     },
     "footer": {
-      "tagline": "期待与你合作。",
-      "location": "中国成都"
+      "tagline": "期待与您合作。",
+      "location": "中国广东广州"
     }
   },
   "en": {
     "language": {
-      "toggle": "中文"
+      "toggle": "CN"
     },
     "nav": {
-      "about": "About",
+      "about": "About me",
       "chapters": "Chapters",
-      "blog": "Blog",
-      "archive": "Archive"
+      "blog": "About Brand Design",
+      "archive": "Portfolio Showcase"
     },
     "common": {
       "design": "Design",
@@ -171,8 +171,8 @@
     },
     "hero": {
       "eyebrow": "Graphic Designer Portfolio",
-      "primaryCta": "View Chapters",
-      "secondaryCta": "Design Thinking",
+      "primaryCta": "Portfolio Showcase",
+      "secondaryCta": "About Brand Design",
       "galleryLabel": "Gallery",
       "imagesLabel": "Images"
     },
@@ -180,7 +180,7 @@
       "name": "Graphic Designer Portfolio",
       "title": "Brand & Product Visual Designer",
       "location": "Chengdu, China",
-      "intro": "Brand × Product × Marketing Visual. A technology-product portfolio covering brand systems, product marketing visuals, campaign key visuals, 3D scenes, collateral, exhibitions and AI-assisted creative workflows.",
+      "intro": "Focused on commercial visual design for technology products, covering brand identity, product marketing, 3D visualization, exhibition design, and AI-powered creative workflows.",
       "email": "hello@example.com"
     },
     "stats": [
@@ -292,7 +292,7 @@
     "contact": {
       "eyebrow": "Contact",
       "title": "For posters, e-commerce visuals, exhibitions, catalogs or video projects, feel free to reach out first.",
-      "body": "Share the project goal, usage scenario and timeline, and I will suggest a suitable direction based on the scope.",
+      "body": "Share your project goals, application, and deliverables. I'll provide practical recommendations and tailored solutions based on your project's scope and complexity.",
       "emailLabel": "Email",
       "phoneLabel": "Phone",
       "wechatLabel": "WeChat QR",
@@ -308,7 +308,7 @@
     },
     "footer": {
       "tagline": "Looking forward to working with you.",
-      "location": "Chengdu, China"
+      "location": "GuangZhou, China"
     }
   }
 }
