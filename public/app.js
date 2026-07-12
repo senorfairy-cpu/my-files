@@ -4,6 +4,7 @@ let currentLang = localStorage.getItem("portfolioLanguage") || "zh";
 if (!["zh", "en"].includes(currentLang)) currentLang = "zh";
 let activeChapter = "all";
 let revealObserver = null;
+let mediaZoom = "fit";
 
 async function loadPortfolio() {
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
@@ -252,36 +253,16 @@ function findMediaAsset(id) {
   return visibleGallery().find(asset => mediaAssetId(asset) === id);
 }
 
-function mediaUsageLabels(asset) {
-  const labels = [];
-  if (asset.showInChapterCover) labels.push("章节预览图");
-  if (asset.showInChapterStrip) labels.push("章节右侧图");
-  if (asset.showOnHome) labels.push("首页图库");
-  return labels.length ? labels.join(" / ") : "图库素材";
-}
-
-function orientationLabel(value) {
-  if (value === "portrait") return "竖图";
-  if (value === "landscape") return "横图";
-  if (value === "square") return "方图";
-  return value || "-";
-}
-
 function openMediaModal(id) {
   const asset = findMediaAsset(id);
   if (!asset) return;
-  const chapter = chapterById(asset.chapter);
   const filename = asset.filename || asset.title || asset.src?.split("/").pop() || "Media";
   const modal = document.getElementById("mediaModal");
   const image = document.getElementById("mediaModalImage");
-  const pathInput = document.getElementById("mediaModalPath");
-  const originalLink = document.getElementById("mediaOpenOriginal");
+  const sizeText = asset.width && asset.height ? `${asset.width} × ${asset.height}px` : "-";
   const meta = [
     ["文件名", filename],
-    ["所属章节", chapter ? `${chapter.index} ${chapter.title}` : asset.chapter || "-"],
-    ["图片尺寸", asset.width && asset.height ? `${asset.width} × ${asset.height}px` : "-"],
-    ["图片方向", orientationLabel(asset.orientation)],
-    ["用途", mediaUsageLabels(asset)],
+    ["图片尺寸", sizeText],
   ];
 
   image.src = asset.src;
@@ -293,8 +274,8 @@ function openMediaModal(id) {
       <dd>${escapeHtml(value)}</dd>
     </div>
   `).join("");
-  pathInput.value = asset.src;
-  originalLink.href = asset.src;
+  mediaZoom = "fit";
+  applyMediaZoom();
   modal.hidden = false;
   document.body.classList.add("modal-open");
 }
@@ -304,6 +285,30 @@ function closeMediaModal() {
   modal.hidden = true;
   document.body.classList.remove("modal-open");
   document.getElementById("mediaModalImage").removeAttribute("src");
+}
+
+function applyMediaZoom() {
+  const image = document.getElementById("mediaModalImage");
+  const preview = image.closest(".media-modal-preview");
+  image.classList.toggle("is-fit", mediaZoom === "fit");
+  preview.classList.toggle("is-fit", mediaZoom === "fit");
+  if (mediaZoom === "fit") {
+    image.style.width = "";
+    return;
+  }
+  const naturalWidth = image.naturalWidth || 1200;
+  image.style.width = `${Math.round(naturalWidth * Number(mediaZoom) / 100)}px`;
+}
+
+function updateMediaZoom(action) {
+  if (action === "fit") mediaZoom = "fit";
+  else if (action === "actual") mediaZoom = 100;
+  else {
+    const current = mediaZoom === "fit" ? 100 : Number(mediaZoom);
+    const next = action === "in" ? current + 25 : current - 25;
+    mediaZoom = Math.max(50, Math.min(250, next));
+  }
+  applyMediaZoom();
 }
 
 function setupRevealAnimations() {
@@ -369,9 +374,9 @@ document.addEventListener("click", async event => {
     return;
   }
 
-  if (event.target.id === "mediaCopyPathBtn") {
-    const path = document.getElementById("mediaModalPath").value;
-    if (path) await navigator.clipboard.writeText(path);
+  const zoomButton = event.target.closest("[data-media-zoom]");
+  if (zoomButton) {
+    updateMediaZoom(zoomButton.dataset.mediaZoom);
   }
 });
 
