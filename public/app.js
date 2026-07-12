@@ -269,6 +269,7 @@ function openMediaModal(id) {
 
   image.src = asset.src;
   image.alt = filename;
+  image.draggable = false;
   document.getElementById("mediaModalTitle").textContent = filename;
   document.getElementById("mediaModalMeta").innerHTML = meta.map(([label, value]) => `
     <div>
@@ -327,7 +328,9 @@ function updateMediaZoom(action) {
 
 function startMediaDrag(event) {
   if (mediaZoom === "fit" || event.target.closest(".media-zoom-controls")) return;
+  if (event.button !== 0) return;
   const preview = event.currentTarget;
+  event.preventDefault();
   mediaDrag = {
     pointerId: event.pointerId,
     startX: event.clientX,
@@ -345,6 +348,10 @@ function startMediaDrag(event) {
 
 function moveMediaDrag(event) {
   if (!mediaDrag || mediaDrag.pointerId !== event.pointerId) return;
+  if ((event.buttons & 1) !== 1) {
+    stopMediaDrag(event);
+    return;
+  }
   event.preventDefault();
   mediaPan = {
     x: mediaDrag.panX + event.clientX - mediaDrag.startX,
