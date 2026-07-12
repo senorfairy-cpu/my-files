@@ -178,7 +178,7 @@ function render() {
         </div>
         <div class="chapter-strip">
           ${preview.map(asset => `
-            <figure class="chapter-thumb">
+            <figure class="chapter-thumb ${asset.orientation ? `is-${escapeHtml(asset.orientation)}` : ""}">
               <img loading="lazy" src="${asset.src}" alt="${escapeHtml(asset.title)}">
             </figure>
           `).join("")}
