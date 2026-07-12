@@ -88,6 +88,25 @@
       </section>
     </main>
 
+    <section class="media-modal" id="mediaModal" hidden>
+      <div class="media-modal-panel" role="dialog" aria-modal="true" aria-labelledby="mediaModalTitle">
+        <button class="media-modal-close" id="mediaModalClose" type="button" aria-label="关闭">×</button>
+        <div class="media-modal-preview">
+          <img id="mediaModalImage" alt="">
+        </div>
+        <aside class="media-modal-info">
+          <p class="eyebrow">Attachment Details</p>
+          <h2 id="mediaModalTitle">图片详情</h2>
+          <dl id="mediaModalMeta"></dl>
+          <label>图片路径<input id="mediaModalPath" readonly></label>
+          <div class="media-modal-actions">
+            <button class="button ghost" id="mediaCopyPathBtn" type="button">复制路径</button>
+            <a class="button primary" id="mediaOpenOriginal" href="#" target="_blank" rel="noreferrer">打开原图</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
     <footer>
       <span id="footerName"></span>
       <span id="footerTagline">期待与你合作。</span>

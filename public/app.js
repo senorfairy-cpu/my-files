@@ -61,6 +61,10 @@ function galleryFor(chapterId) {
   return visibleGallery().filter(asset => asset.chapter === chapterId);
 }
 
+function mediaAssetId(asset) {
+  return String(asset?.id || asset?.src || "");
+}
+
 function homeGalleryFor(chapterId) {
   return homeGallery().filter(asset => asset.chapter === chapterId);
 }
@@ -179,7 +183,9 @@ function render() {
         <div class="chapter-strip">
           ${preview.map(asset => `
             <figure class="chapter-thumb ${asset.orientation ? `is-${escapeHtml(asset.orientation)}` : ""}">
+              <button class="media-trigger" type="button" data-media-id="${escapeHtml(mediaAssetId(asset))}" aria-label="查看图片详情">
               <img loading="lazy" src="${asset.src}" alt="${escapeHtml(asset.title)}">
+              </button>
             </figure>
           `).join("")}
         </div>
@@ -227,16 +233,77 @@ function renderArchive() {
   });
   document.getElementById("masonry").innerHTML = assets.map(asset => {
     const chapter = chapterById(asset.chapter);
+    const filename = asset.filename || asset.title || asset.src?.split("/").pop() || "Media";
     return `
       <figure class="archive-item">
-        <img loading="lazy" src="${asset.src}" alt="${escapeHtml(asset.title)}">
+        <button class="media-trigger" type="button" data-media-id="${escapeHtml(mediaAssetId(asset))}" aria-label="查看图片详情">
+          <img loading="lazy" src="${asset.src}" alt="${escapeHtml(filename)}">
+        </button>
         <figcaption>
           <span>${escapeHtml(chapter ? chapter.title : asset.chapter)}</span>
-          <strong>${escapeHtml(asset.title)}</strong>
+          <strong>${escapeHtml(filename)}</strong>
         </figcaption>
       </figure>
     `;
   }).join("");
+}
+
+function findMediaAsset(id) {
+  return visibleGallery().find(asset => mediaAssetId(asset) === id);
+}
+
+function mediaUsageLabels(asset) {
+  const labels = [];
+  if (asset.showInChapterCover) labels.push("章节预览图");
+  if (asset.showInChapterStrip) labels.push("章节右侧图");
+  if (asset.showOnHome) labels.push("首页图库");
+  return labels.length ? labels.join(" / ") : "图库素材";
+}
+
+function orientationLabel(value) {
+  if (value === "portrait") return "竖图";
+  if (value === "landscape") return "横图";
+  if (value === "square") return "方图";
+  return value || "-";
+}
+
+function openMediaModal(id) {
+  const asset = findMediaAsset(id);
+  if (!asset) return;
+  const chapter = chapterById(asset.chapter);
+  const filename = asset.filename || asset.title || asset.src?.split("/").pop() || "Media";
+  const modal = document.getElementById("mediaModal");
+  const image = document.getElementById("mediaModalImage");
+  const pathInput = document.getElementById("mediaModalPath");
+  const originalLink = document.getElementById("mediaOpenOriginal");
+  const meta = [
+    ["文件名", filename],
+    ["所属章节", chapter ? `${chapter.index} ${chapter.title}` : asset.chapter || "-"],
+    ["图片尺寸", asset.width && asset.height ? `${asset.width} × ${asset.height}px` : "-"],
+    ["图片方向", orientationLabel(asset.orientation)],
+    ["用途", mediaUsageLabels(asset)],
+  ];
+
+  image.src = asset.src;
+  image.alt = filename;
+  document.getElementById("mediaModalTitle").textContent = filename;
+  document.getElementById("mediaModalMeta").innerHTML = meta.map(([label, value]) => `
+    <div>
+      <dt>${escapeHtml(label)}</dt>
+      <dd>${escapeHtml(value)}</dd>
+    </div>
+  `).join("");
+  pathInput.value = asset.src;
+  originalLink.href = asset.src;
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function closeMediaModal() {
+  const modal = document.getElementById("mediaModal");
+  modal.hidden = true;
+  document.body.classList.remove("modal-open");
+  document.getElementById("mediaModalImage").removeAttribute("src");
 }
 
 function setupRevealAnimations() {
@@ -287,6 +354,31 @@ document.getElementById("langToggle").addEventListener("click", () => {
   currentLang = currentLang === "zh" ? "en" : "zh";
   localStorage.setItem("portfolioLanguage", currentLang);
   render();
+});
+
+document.addEventListener("click", async event => {
+  const mediaTrigger = event.target.closest("[data-media-id]");
+  if (mediaTrigger) {
+    event.preventDefault();
+    openMediaModal(mediaTrigger.dataset.mediaId);
+    return;
+  }
+
+  if (event.target.id === "mediaModal" || event.target.id === "mediaModalClose") {
+    closeMediaModal();
+    return;
+  }
+
+  if (event.target.id === "mediaCopyPathBtn") {
+    const path = document.getElementById("mediaModalPath").value;
+    if (path) await navigator.clipboard.writeText(path);
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !document.getElementById("mediaModal").hidden) {
+    closeMediaModal();
+  }
 });
 
 loadPortfolio();
