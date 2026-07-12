@@ -308,7 +308,28 @@ function renderGalleryGrid() {
     });
   });
 
-  document.getElementById("gallerySelectionNote").textContent = `已选择 ${selectedGalleryIds.size} 张图片`;
+  renderGallerySelectionState();
+}
+
+function renderGallerySelectionState() {
+  const count = selectedGalleryIds.size;
+  const text = `已选择 ${count} 张图片`;
+  const sidebarNote = document.getElementById("gallerySelectionNote");
+  const selectionBar = document.getElementById("gallerySelectionBar");
+  const deleteButton = document.getElementById("deleteSelectedGalleryBtn");
+
+  if (sidebarNote) sidebarNote.textContent = text;
+  if (selectionBar) {
+    selectionBar.classList.toggle("has-selection", count > 0);
+    selectionBar.querySelector("strong").textContent = text;
+    selectionBar.querySelector("span").textContent = count > 0
+      ? "请确认选中数量后再执行批量删除。"
+      : "点击图片可选择或取消选择，批量删除前请确认数量。";
+  }
+  if (deleteButton) {
+    deleteButton.textContent = count > 0 ? `删除选中图片（${count}）` : "删除选中图片";
+    deleteButton.disabled = count === 0;
+  }
 }
 
 function renderGalleryForm() {

@@ -1037,6 +1037,35 @@ input, textarea {
 .gallery-workspace {
   margin: 0 0 18px;
 }
+.gallery-selection-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #10100f;
+}
+.gallery-selection-bar strong {
+  color: var(--soft);
+  font-size: 15px;
+}
+.gallery-selection-bar span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.gallery-selection-bar.has-selection {
+  border-color: var(--accent);
+  background: #1d1710;
+}
+.gallery-selection-bar.has-selection strong {
+  color: var(--accent);
+}
 .gallery-admin-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
@@ -1149,9 +1178,19 @@ input, textarea {
   color: var(--muted);
 }
 .selection-note {
-  margin: -8px 0 14px;
+  margin: -4px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0c0c0b;
   color: var(--accent);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+button:disabled,
+.button:disabled {
+  opacity: .42;
+  cursor: not-allowed;
 }
 
 @media (min-width: 1500px) {
