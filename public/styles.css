@@ -545,29 +545,40 @@ h1 {
 }
 .media-modal-preview {
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
   padding: clamp(18px, 3vw, 34px);
-  overflow: auto;
+  overflow: hidden;
   background: #080807;
+  cursor: grab;
+  touch-action: none;
 }
 .media-modal-preview.is-fit {
-  display: grid;
-  place-items: center;
+  cursor: default;
 }
 .media-modal-preview img {
-  width: 100%;
+  width: auto;
   height: auto;
   max-width: none;
   max-height: none;
   margin: 0;
   object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  will-change: transform;
+}
+.media-modal-preview.is-dragging {
+  cursor: grabbing;
 }
 .media-modal-preview img.is-fit {
+  position: static;
   width: auto;
   max-width: 100%;
   max-height: 100%;
   margin: auto;
+  transform: none;
 }
 .media-zoom-controls {
   position: absolute;

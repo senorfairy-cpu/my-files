@@ -5,6 +5,8 @@ if (!["zh", "en"].includes(currentLang)) currentLang = "zh";
 let activeChapter = "all";
 let revealObserver = null;
 let mediaZoom = "fit";
+let mediaPan = { x: 0, y: 0 };
+let mediaDrag = null;
 
 async function loadPortfolio() {
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
@@ -275,6 +277,7 @@ function openMediaModal(id) {
     </div>
   `).join("");
   mediaZoom = "fit";
+  mediaPan = { x: 0, y: 0 };
   applyMediaZoom();
   modal.hidden = false;
   document.body.classList.add("modal-open");
@@ -284,6 +287,8 @@ function closeMediaModal() {
   const modal = document.getElementById("mediaModal");
   modal.hidden = true;
   document.body.classList.remove("modal-open");
+  mediaPan = { x: 0, y: 0 };
+  mediaDrag = null;
   document.getElementById("mediaModalImage").removeAttribute("src");
 }
 
@@ -294,21 +299,70 @@ function applyMediaZoom() {
   preview.classList.toggle("is-fit", mediaZoom === "fit");
   if (mediaZoom === "fit") {
     image.style.width = "";
+    image.style.transform = "";
     return;
   }
   const naturalWidth = image.naturalWidth || 1200;
   image.style.width = `${Math.round(naturalWidth * Number(mediaZoom) / 100)}px`;
+  image.style.transform = `translate(${mediaPan.x}px, ${mediaPan.y}px)`;
 }
 
 function updateMediaZoom(action) {
-  if (action === "fit") mediaZoom = "fit";
-  else if (action === "actual") mediaZoom = 100;
+  const wasFit = mediaZoom === "fit";
+  if (action === "fit") {
+    mediaZoom = "fit";
+    mediaPan = { x: 0, y: 0 };
+  } else if (action === "actual") {
+    mediaZoom = 100;
+    mediaPan = { x: 0, y: 0 };
+  }
   else {
     const current = mediaZoom === "fit" ? 100 : Number(mediaZoom);
     const next = action === "in" ? current + 25 : current - 25;
     mediaZoom = Math.max(50, Math.min(250, next));
+    if (wasFit) mediaPan = { x: 0, y: 0 };
   }
   applyMediaZoom();
+}
+
+function startMediaDrag(event) {
+  if (mediaZoom === "fit" || event.target.closest(".media-zoom-controls")) return;
+  const preview = event.currentTarget;
+  mediaDrag = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    panX: mediaPan.x,
+    panY: mediaPan.y,
+  };
+  preview.classList.add("is-dragging");
+  try {
+    preview.setPointerCapture(event.pointerId);
+  } catch {
+    // Some synthetic pointer events cannot be captured.
+  }
+}
+
+function moveMediaDrag(event) {
+  if (!mediaDrag || mediaDrag.pointerId !== event.pointerId) return;
+  event.preventDefault();
+  mediaPan = {
+    x: mediaDrag.panX + event.clientX - mediaDrag.startX,
+    y: mediaDrag.panY + event.clientY - mediaDrag.startY,
+  };
+  applyMediaZoom();
+}
+
+function stopMediaDrag(event) {
+  if (!mediaDrag || mediaDrag.pointerId !== event.pointerId) return;
+  const preview = event.currentTarget;
+  mediaDrag = null;
+  preview.classList.remove("is-dragging");
+  try {
+    preview.releasePointerCapture(event.pointerId);
+  } catch {
+    // Ignore browsers that have already released the pointer.
+  }
 }
 
 function setupRevealAnimations() {
@@ -385,5 +439,13 @@ document.addEventListener("keydown", event => {
     closeMediaModal();
   }
 });
+
+const mediaPreview = document.querySelector(".media-modal-preview");
+if (mediaPreview) {
+  mediaPreview.addEventListener("pointerdown", startMediaDrag);
+  mediaPreview.addEventListener("pointermove", moveMediaDrag);
+  mediaPreview.addEventListener("pointerup", stopMediaDrag);
+  mediaPreview.addEventListener("pointercancel", stopMediaDrag);
+}
 
 loadPortfolio();
