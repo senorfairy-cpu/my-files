@@ -913,11 +913,62 @@ footer {
   margin-bottom: 14px;
 }
 .sidebar-label {
-  margin: 0 0 8px;
+  margin: 16px 0 8px;
   color: var(--muted);
   font-size: 12px;
   letter-spacing: .12em;
   text-transform: uppercase;
+}
+.gallery-search {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.gallery-search span {
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.gallery-search input {
+  min-height: 40px;
+}
+.gallery-usage-filter {
+  display: grid;
+  gap: 8px;
+}
+.gallery-usage-filter button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 9px 10px;
+  color: var(--muted);
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #0f0f0e;
+  cursor: pointer;
+}
+.gallery-usage-filter button strong {
+  min-width: 32px;
+  padding: 3px 7px;
+  color: var(--accent);
+  text-align: center;
+  border: 1px solid rgba(189, 140, 85, .35);
+  border-radius: 999px;
+  font-size: 11px;
+}
+.gallery-usage-filter button.active {
+  color: #080807;
+  border-color: var(--accent);
+  background: var(--accent);
+  font-weight: 800;
+}
+.gallery-usage-filter button.active strong {
+  color: #080807;
+  border-color: rgba(8, 8, 7, .35);
 }
 #galleryFilter {
   display: grid;

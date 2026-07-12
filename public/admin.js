@@ -4,6 +4,8 @@ let currentProject = 0;
 let currentArticle = 0;
 let currentGallery = 0;
 let galleryFilter = "all";
+let galleryUsageFilter = "all";
+let gallerySearchTerm = "";
 let selectedAsset = -1;
 let selectedGalleryIds = new Set();
 
@@ -121,10 +123,29 @@ function articleList() {
 }
 
 function filteredGallery() {
+  const search = gallerySearchTerm.trim().toLowerCase();
   const list = galleryFilter === "all"
     ? data.gallery
     : data.gallery.filter(asset => asset.chapter === galleryFilter);
-  return [...list].sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+  return [...list]
+    .filter(asset => {
+      if (galleryUsageFilter === "chapterCover") return asset.showInChapterCover === true;
+      if (galleryUsageFilter === "chapterStrip") return asset.showInChapterStrip === true;
+      if (galleryUsageFilter === "homeGallery") return asset.showOnHome === true;
+      return true;
+    })
+    .filter(asset => {
+      if (!search) return true;
+      const haystack = [
+        asset.filename,
+        asset.title,
+        asset.src,
+        asset.chapter,
+        chapterTitle(asset.chapter),
+      ].filter(Boolean).join(" ").toLowerCase();
+      return haystack.includes(search);
+    })
+    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
 }
 
 function galleryAssetId(asset) {
@@ -176,6 +197,8 @@ function render() {
   }
   if (mode === "gallery") {
     document.getElementById("editorMode").textContent = "Media Library";
+    document.getElementById("gallerySearchInput").value = gallerySearchTerm;
+    renderGalleryUsageFilter();
     renderGalleryFilter();
     renderGalleryGrid();
     renderGalleryForm();
@@ -276,6 +299,31 @@ function renderGalleryFilter() {
   });
 }
 
+function renderGalleryUsageFilter() {
+  const filters = [
+    { id: "all", label: "全部图片", count: data.gallery.length },
+    { id: "chapterCover", label: "章节预览图", count: data.gallery.filter(asset => asset.showInChapterCover === true).length },
+    { id: "chapterStrip", label: "章节右侧图", count: data.gallery.filter(asset => asset.showInChapterStrip === true).length },
+    { id: "homeGallery", label: "首页图库", count: data.gallery.filter(asset => asset.showOnHome === true).length },
+  ];
+  const wrap = document.getElementById("galleryUsageFilter");
+  wrap.innerHTML = filters.map(filter => `
+    <button class="${galleryUsageFilter === filter.id ? "active" : ""}" type="button" data-usage="${filter.id}">
+      <span>${escapeHtml(filter.label)}</span>
+      <strong>${filter.count}</strong>
+    </button>
+  `).join("");
+  wrap.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      commitGalleryForm();
+      galleryUsageFilter = button.dataset.usage;
+      currentGallery = 0;
+      selectedGalleryIds.clear();
+      render();
+    });
+  });
+}
+
 function renderGalleryGrid() {
   const assets = filteredGallery();
   const grid = document.getElementById("galleryAdminGrid");
@@ -294,7 +342,7 @@ function renderGalleryGrid() {
         <strong>${escapeHtml(filename)}</strong>
       </button>
     `;
-  }).join("") : `<p class="empty-note">当前章节暂无图库图片。</p>`;
+  }).join("") : `<p class="empty-note">当前筛选条件下暂无图库图片。</p>`;
 
   grid.querySelectorAll(".gallery-admin-thumb").forEach(button => {
     button.addEventListener("click", () => {
@@ -313,6 +361,7 @@ function renderGalleryGrid() {
 
 function renderGallerySelectionState() {
   const count = selectedGalleryIds.size;
+  const resultCount = filteredGallery().length;
   const text = `已选择 ${count} 张图片`;
   const sidebarNote = document.getElementById("gallerySelectionNote");
   const selectionBar = document.getElementById("gallerySelectionBar");
@@ -324,7 +373,7 @@ function renderGallerySelectionState() {
     selectionBar.querySelector("strong").textContent = text;
     selectionBar.querySelector("span").textContent = count > 0
       ? "请确认选中数量后再执行批量删除。"
-      : "点击图片可选择或取消选择，批量删除前请确认数量。";
+      : `当前筛选结果 ${resultCount} 张。点击图片可选择或取消选择。`;
   }
   if (deleteButton) {
     deleteButton.textContent = count > 0 ? `删除选中图片（${count}）` : "删除选中图片";
@@ -725,6 +774,15 @@ document.getElementById("galleryInput").addEventListener("change", async event =
   currentGallery = Math.max(0, filteredGallery().length - files.length);
   render();
   event.target.value = "";
+});
+
+document.getElementById("gallerySearchInput").addEventListener("input", event => {
+  commitGalleryForm();
+  gallerySearchTerm = event.target.value;
+  currentGallery = 0;
+  selectedGalleryIds.clear();
+  renderGalleryGrid();
+  renderGalleryForm();
 });
 
 projectForm.addEventListener("input", () => {
