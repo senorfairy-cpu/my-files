@@ -326,6 +326,32 @@ function updateMediaZoom(action) {
   applyMediaZoom();
 }
 
+function zoomMediaAtPoint(delta, clientX, clientY) {
+  const preview = document.querySelector(".media-modal-preview");
+  if (!preview || document.getElementById("mediaModal").hidden) return;
+  const rect = preview.getBoundingClientRect();
+  const oldZoom = mediaZoom === "fit" ? 100 : Number(mediaZoom);
+  const nextZoom = Math.max(40, Math.min(320, oldZoom + delta));
+  const pointer = {
+    x: clientX - rect.left - rect.width / 2,
+    y: clientY - rect.top - rect.height / 2,
+  };
+  const ratio = nextZoom / oldZoom;
+  mediaPan = {
+    x: pointer.x - (pointer.x - mediaPan.x) * ratio,
+    y: pointer.y - (pointer.y - mediaPan.y) * ratio,
+  };
+  mediaZoom = nextZoom;
+  applyMediaZoom();
+}
+
+function handleMediaWheel(event) {
+  if (document.getElementById("mediaModal").hidden) return;
+  event.preventDefault();
+  const delta = event.deltaY < 0 ? 14 : -14;
+  zoomMediaAtPoint(delta, event.clientX, event.clientY);
+}
+
 function startMediaDrag(event) {
   if (mediaZoom === "fit" || event.target.closest(".media-zoom-controls")) return;
   if (event.button !== 0) return;
@@ -453,6 +479,7 @@ if (mediaPreview) {
   mediaPreview.addEventListener("pointermove", moveMediaDrag);
   mediaPreview.addEventListener("pointerup", stopMediaDrag);
   mediaPreview.addEventListener("pointercancel", stopMediaDrag);
+  mediaPreview.addEventListener("wheel", handleMediaWheel, { passive: false });
 }
 
 loadPortfolio();

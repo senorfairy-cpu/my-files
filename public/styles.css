@@ -585,7 +585,7 @@ h1 {
   left: 16px;
   bottom: 16px;
   z-index: 2;
-  display: flex;
+  display: none;
   gap: 6px;
   padding: 6px;
   border: 1px solid var(--line);
