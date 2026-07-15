@@ -53,6 +53,8 @@
             <div id="galleryFilter"></div>
             <div class="asset-tools gallery-upload-tools">
               <label class="button primary wide file-pick">上传图库图片<input id="galleryInput" type="file" accept="image/*" multiple></label>
+              <button class="button ghost wide" id="selectChapterGalleryBtn" type="button">全选当前章节</button>
+              <button class="button ghost wide" id="clearGallerySelectionBtn" type="button">取消全部已选</button>
               <button class="button ghost danger wide" id="deleteSelectedGalleryBtn" type="button">删除选中图片</button>
             </div>
             <p class="selection-note" id="gallerySelectionNote">已选择 0 张图片</p>
@@ -100,9 +102,21 @@
 
           <section id="galleryPanel" hidden>
             <div class="gallery-workspace" id="galleryWorkspace">
+              <div class="chapter-admin-panel">
+                <div class="chapter-admin-fields">
+                  <label>章节编号<input id="chapterIndexInput" placeholder="01"></label>
+                  <label>章节名称<input id="chapterTitleInput" placeholder="品牌系统设计"></label>
+                  <label>英文副标题<input id="chapterSubtitleInput" placeholder="Brand System Design"></label>
+                </div>
+                <div class="chapter-admin-actions">
+                  <button class="button ghost" id="saveChapterBtn" type="button">保存章节</button>
+                  <button class="button ghost" id="addChapterBtn" type="button">新增章节</button>
+                  <button class="button ghost danger" id="deleteChapterBtn" type="button">删除章节</button>
+                </div>
+              </div>
               <div class="gallery-selection-bar" id="gallerySelectionBar">
                 <strong>已选择 0 张图片</strong>
-                <span>点击图片可选择或取消选择，批量删除前请确认数量。</span>
+                <span>点击图片可选择或取消选择，拖动图片可调整排序。</span>
               </div>
               <div class="gallery-admin-grid" id="galleryAdminGrid"></div>
             </div>

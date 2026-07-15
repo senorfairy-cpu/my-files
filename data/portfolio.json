@@ -961,18 +961,6 @@
       "showInChapterStrip": false
     },
     {
-      "src": "/assets/gallery/product-marketing/0016-asset.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0016",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/T20Pro+PCR500/沙地.png",
-      "title": "沙地",
-      "orientation": "portrait",
-      "order": 15,
-      "filename": "0016-asset.jpg"
-    },
-    {
       "src": "/assets/gallery/product-marketing/0017-1.jpg",
       "width": 1021,
       "height": 1280,
@@ -985,21 +973,6 @@
       "filename": "0017-1.jpg"
     },
     {
-      "src": "/assets/gallery/campaign-kv/0018-20240603.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0018",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/俄语/20240603.jpg",
-      "title": "20240603",
-      "orientation": "portrait",
-      "order": 17,
-      "filename": "0018-20240603.jpg",
-      "showOnHome": false,
-      "showInChapterCover": false,
-      "showInChapterStrip": false
-    },
-    {
       "src": "/assets/gallery/campaign-kv/0019-05.jpg",
       "width": 1021,
       "height": 1280,
@@ -1009,7 +982,10 @@
       "title": "西语--05",
       "orientation": "portrait",
       "order": 18,
-      "filename": "0019-05.jpg"
+      "filename": "0019-05.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/campaign-kv/0020-07.jpg",
@@ -1247,30 +1223,6 @@
       "orientation": "portrait",
       "order": 48,
       "filename": "0049-14-100.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0050-tbase.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0050",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/法语/tBase.jpg",
-      "title": "tBase",
-      "orientation": "portrait",
-      "order": 49,
-      "filename": "0050-tbase.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0054-20240429.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0054",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/俄语/20240429.jpg",
-      "title": "20240429",
-      "orientation": "portrait",
-      "order": 53,
-      "filename": "0054-20240429.jpg"
     },
     {
       "src": "/assets/gallery/brand-system/0057-19-100.jpg",
@@ -1585,7 +1537,10 @@
       "title": "T20MAX1",
       "orientation": "portrait",
       "order": 86,
-      "filename": "0087-t20max1.jpg"
+      "filename": "0087-t20max1.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/scene-3d/0088-1.jpg",
@@ -1738,21 +1693,6 @@
       "filename": "0101-p8.jpg"
     },
     {
-      "src": "/assets/gallery/product-marketing/0102-banner-100.jpg",
-      "width": 1280,
-      "height": 640,
-      "id": "asset-0102",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/RTK系列/首页banner-100.jpg",
-      "title": "首页banner-100",
-      "orientation": "landscape",
-      "order": 101,
-      "filename": "0102-banner-100.jpg",
-      "showOnHome": false,
-      "showInChapterCover": false,
-      "showInChapterStrip": false
-    },
-    {
       "src": "/assets/gallery/brand-system/0103-1.jpg",
       "width": 1280,
       "height": 768,
@@ -1786,7 +1726,10 @@
       "title": "social Posters-0523",
       "orientation": "portrait",
       "order": 104,
-      "filename": "0105-social-posters-0523.jpg"
+      "filename": "0105-social-posters-0523.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0106-t10pro.jpg",
@@ -1802,18 +1745,6 @@
       "showOnHome": false,
       "showInChapterCover": false,
       "showInChapterStrip": false
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0107-banner-100.jpg",
-      "width": 660,
-      "height": 1280,
-      "id": "asset-0107",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/RTK系列/banner 移动-100.jpg",
-      "title": "banner 移动-100",
-      "orientation": "portrait",
-      "order": 106,
-      "filename": "0107-banner-100.jpg"
     },
     {
       "src": "/assets/gallery/product-marketing/0108-social-posters-0523.jpg",
@@ -1939,18 +1870,6 @@
       "filename": "0117-t20pro-social-posters-0523.jpg"
     },
     {
-      "src": "/assets/gallery/campaign-kv/0118-tag88.jpg",
-      "width": 1026,
-      "height": 1280,
-      "id": "asset-0118",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/农机/农机海报TAG88 .jpg",
-      "title": "农机海报TAG88 ",
-      "orientation": "portrait",
-      "order": 117,
-      "filename": "0118-tag88.jpg"
-    },
-    {
       "src": "/assets/gallery/product-marketing/0120-6.jpg",
       "width": 1280,
       "height": 720,
@@ -1973,18 +1892,6 @@
       "orientation": "portrait",
       "order": 120,
       "filename": "0121-tag88.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0122-20241016-ru.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0122",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/俄语/20241016-Ru.jpg",
-      "title": "20241016-Ru",
-      "orientation": "portrait",
-      "order": 121,
-      "filename": "0122-20241016-ru.jpg"
     },
     {
       "src": "/assets/gallery/campaign-kv/0123-t5-t30-fr-07.jpg",
@@ -2021,18 +1928,6 @@
       "orientation": "portrait",
       "order": 124,
       "filename": "0125-2026.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0126-tag66.jpg",
-      "width": 1026,
-      "height": 1280,
-      "id": "asset-0126",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/农机/农机海报TAG66-俄语.jpg",
-      "title": "农机海报TAG66-俄语",
-      "orientation": "portrait",
-      "order": 125,
-      "filename": "0126-tag66.jpg"
     },
     {
       "src": "/assets/gallery/brand-system/0127-1.jpg",
@@ -2117,18 +2012,6 @@
       "orientation": "landscape",
       "order": 132,
       "filename": "0133-banner-2.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0134-53.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0134",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/2025春节/画板 53.png",
-      "title": "画板 53",
-      "orientation": "portrait",
-      "order": 133,
-      "filename": "0134-53.jpg"
     },
     {
       "src": "/assets/gallery/product-marketing/0135-8.jpg",
@@ -2236,7 +2119,10 @@
       "title": "T20_3-4_01",
       "orientation": "portrait",
       "order": 143,
-      "filename": "0144-t20-3-4-01.jpg"
+      "filename": "0144-t20-3-4-01.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/campaign-kv/0147-20240726-ru.jpg",
@@ -2284,7 +2170,10 @@
       "title": "展会效果图",
       "orientation": "landscape",
       "order": 149,
-      "filename": "0150-asset.jpg"
+      "filename": "0150-asset.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/brand-system/0151-groupe-1-1-4.jpg",
@@ -2321,18 +2210,6 @@
       "orientation": "portrait",
       "order": 154,
       "filename": "0155-1.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0156-150-100.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0156",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/阿语/画板 150 副本-100.jpg",
-      "title": "画板 150 副本-100",
-      "orientation": "portrait",
-      "order": 155,
-      "filename": "0156-150-100.jpg"
     },
     {
       "src": "/assets/gallery/ai-workflow/0157-2024.jpg",
@@ -2458,18 +2335,6 @@
       "filename": "0169-p8glo.jpg"
     },
     {
-      "src": "/assets/gallery/campaign-kv/0170-20240417-ru.jpg",
-      "width": 1204,
-      "height": 1180,
-      "id": "asset-0170",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/俄语/20240417-Ru.jpg",
-      "title": "20240417-Ru",
-      "orientation": "square",
-      "order": 169,
-      "filename": "0170-20240417-ru.jpg"
-    },
-    {
       "src": "/assets/gallery/product-marketing/0171-p8glo.jpg",
       "width": 1204,
       "height": 1180,
@@ -2506,18 +2371,6 @@
       "filename": "0173-20231110-ru.jpg"
     },
     {
-      "src": "/assets/gallery/brand-system/0174-85-100.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0174",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/喀麦隆/画板 85-100.jpg",
-      "title": "画板 85-100",
-      "orientation": "portrait",
-      "order": 173,
-      "filename": "0174-85-100.jpg"
-    },
-    {
       "src": "/assets/gallery/campaign-kv/0175-85-100.jpg",
       "width": 1021,
       "height": 1280,
@@ -2528,18 +2381,6 @@
       "orientation": "portrait",
       "order": 174,
       "filename": "0175-85-100.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0176-41-100.jpg",
-      "width": 1020,
-      "height": 1280,
-      "id": "asset-0176",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/西语/画板 41 副本-100.jpg",
-      "title": "画板 41 副本-100",
-      "orientation": "portrait",
-      "order": 175,
-      "filename": "0176-41-100.jpg"
     },
     {
       "src": "/assets/gallery/brand-system/0177-1-12-100.jpg",
@@ -2564,18 +2405,6 @@
       "orientation": "portrait",
       "order": 177,
       "filename": "0178-t10pro.jpg"
-    },
-    {
-      "src": "/assets/gallery/brand-system/0179-t5-t30-fr-1-12.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0179",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/GROUPE 塞内加尔/T5-T30Pro fr/T5-T30 fr-塞内加尔_画板 1 副本 12.jpg",
-      "title": "T5-T30 fr-塞内加尔_画板 1 副本 12",
-      "orientation": "portrait",
-      "order": 178,
-      "filename": "0179-t5-t30-fr-1-12.jpg"
     },
     {
       "src": "/assets/gallery/campaign-kv/0180-41-100.jpg",
@@ -2672,30 +2501,6 @@
       "orientation": "portrait",
       "order": 186,
       "filename": "0187-t5-t30-fr-1-12.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0188-t10pro-2.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0188",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/法语/T10pro  (2).jpg",
-      "title": "T10pro  (2)",
-      "orientation": "portrait",
-      "order": 187,
-      "filename": "0188-t10pro-2.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0189-1-12-100.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0189",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/西语/画板 1 副本 12-100.jpg",
-      "title": "画板 1 副本 12-100",
-      "orientation": "portrait",
-      "order": 188,
-      "filename": "0189-1-12-100.jpg"
     },
     {
       "src": "/assets/gallery/brand-system/0190-asset.jpg",
@@ -2812,18 +2617,6 @@
       "filename": "0199-2wu.jpg"
     },
     {
-      "src": "/assets/gallery/campaign-kv/0200-159-100.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0200",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/阿语/画板 159-100.jpg",
-      "title": "画板 159-100",
-      "orientation": "portrait",
-      "order": 199,
-      "filename": "0200-159-100.jpg"
-    },
-    {
       "src": "/assets/gallery/campaign-kv/0201-20231016-ru.jpg",
       "width": 1021,
       "height": 1280,
@@ -2888,12 +2681,30 @@
       "width": 1026,
       "height": 1280,
       "id": "asset-0207",
-      "chapter": "ai-workflow",
+      "chapter": "product-marketing",
       "source": "作品整理/Poster/画板 1110 副本-100.jpg",
       "title": "画板 1110 副本-100",
       "orientation": "portrait",
       "order": 206,
-      "filename": "0207-1110-100.jpg"
+      "filename": "0207-1110-100.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
+    },
+    {
+      "src": "/assets/gallery/ai-workflow/0214-social-posters-0524.jpg",
+      "width": 1021,
+      "height": 1280,
+      "id": "asset-0214",
+      "chapter": "product-marketing",
+      "source": "作品整理/OEM衍生/利比亚 شعار 4/法语海报/social Posters-0524.jpg",
+      "title": "social Posters-0524",
+      "orientation": "portrait",
+      "order": 206,
+      "filename": "0214-social-posters-0524.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/campaign-kv/0209-t20pro.jpg",
@@ -2956,18 +2767,6 @@
       "filename": "0213-20240603-ru.jpg"
     },
     {
-      "src": "/assets/gallery/ai-workflow/0214-social-posters-0524.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0214",
-      "chapter": "ai-workflow",
-      "source": "作品整理/OEM衍生/利比亚 شعار 4/法语海报/social Posters-0524.jpg",
-      "title": "social Posters-0524",
-      "orientation": "portrait",
-      "order": 213,
-      "filename": "0214-social-posters-0524.jpg"
-    },
-    {
       "src": "/assets/gallery/product-marketing/0215-p8.jpg",
       "width": 1021,
       "height": 1280,
@@ -3025,7 +2824,10 @@
       "title": "T20 social Posters-0524",
       "orientation": "portrait",
       "order": 218,
-      "filename": "0219-t20-social-posters-0524.jpg"
+      "filename": "0219-t20-social-posters-0524.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0220-20240628.jpg",
@@ -3080,12 +2882,30 @@
       "width": 1212,
       "height": 1213,
       "id": "asset-0224",
-      "chapter": "ai-workflow",
+      "chapter": "product-marketing",
       "source": "作品整理/Poster/画板 117副本 2-100.jpg",
       "title": "画板 117副本 2-100",
       "orientation": "square",
       "order": 223,
-      "filename": "0224-117-2-100.jpg"
+      "filename": "0224-117-2-100.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
+    },
+    {
+      "src": "/assets/gallery/ai-workflow/0226-social-posters-0524.jpg",
+      "width": 1021,
+      "height": 1280,
+      "id": "asset-0226",
+      "chapter": "product-marketing",
+      "source": "作品整理/OEM衍生/利比亚 شعار 4/法语海报/social Posters-0524 .jpg",
+      "title": "social Posters-0524 ",
+      "orientation": "portrait",
+      "order": 223,
+      "filename": "0226-social-posters-0524.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0225-toknav-products-poster-t20pro.jpg",
@@ -3100,18 +2920,6 @@
       "filename": "0225-toknav-products-poster-t20pro.jpg"
     },
     {
-      "src": "/assets/gallery/ai-workflow/0226-social-posters-0524.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0226",
-      "chapter": "ai-workflow",
-      "source": "作品整理/OEM衍生/利比亚 شعار 4/法语海报/social Posters-0524 .jpg",
-      "title": "social Posters-0524 ",
-      "orientation": "portrait",
-      "order": 225,
-      "filename": "0226-social-posters-0524.jpg"
-    },
-    {
       "src": "/assets/gallery/campaign-kv/0227-2025.jpg",
       "width": 1021,
       "height": 1280,
@@ -3121,7 +2929,10 @@
       "title": "2025春节",
       "orientation": "portrait",
       "order": 226,
-      "filename": "0227-2025.jpg"
+      "filename": "0227-2025.jpg",
+      "showOnHome": true,
+      "showInChapterCover": true,
+      "showInChapterStrip": true
     },
     {
       "src": "/assets/gallery/ai-workflow/0228-social-posters-0524-fr.jpg",
@@ -3145,7 +2956,10 @@
       "title": "画板 1110-100",
       "orientation": "portrait",
       "order": 228,
-      "filename": "0229-1110-100.jpg"
+      "filename": "0229-1110-100.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0230-t20pro-social-posters-0524-fr.jpg",
@@ -3301,7 +3115,10 @@
       "title": "T10pro social Posters-0524",
       "orientation": "portrait",
       "order": 241,
-      "filename": "0242-t10pro-social-posters-0524.jpg"
+      "filename": "0242-t10pro-social-posters-0524.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/campaign-kv/0243-137-100.jpg",
@@ -3373,19 +3190,10 @@
       "title": "toknav products poster—T10plus",
       "orientation": "portrait",
       "order": 247,
-      "filename": "0248-toknav-products-poster-t10plus.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0249-social-posters-0602.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0249",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/0519 4：5 RTK/social Posters-0602.jpg",
-      "title": "social Posters-0602",
-      "orientation": "portrait",
-      "order": 248,
-      "filename": "0249-social-posters-0602.jpg"
+      "filename": "0248-toknav-products-poster-t10plus.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/campaign-kv/0250-144-100.jpg",
@@ -3766,18 +3574,6 @@
       "filename": "0287-15-3-100.jpg"
     },
     {
-      "src": "/assets/gallery/product-marketing/0288-social-posters-0602.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0288",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/0519 4：5 RTK/social Posters-0602-没字.jpg",
-      "title": "social Posters-0602-没字",
-      "orientation": "portrait",
-      "order": 287,
-      "filename": "0288-social-posters-0602.jpg"
-    },
-    {
       "src": "/assets/gallery/campaign-kv/0290-50-100.jpg",
       "width": 1021,
       "height": 1280,
@@ -3886,18 +3682,6 @@
       "filename": "0300-asset.jpg"
     },
     {
-      "src": "/assets/gallery/brand-system/0301-t5-t30-fr-1-13.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0301",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/GROUPE 塞内加尔/T5-T30Pro fr/T5-T30 fr-塞内加尔_画板 1 副本 13.jpg",
-      "title": "T5-T30 fr-塞内加尔_画板 1 副本 13",
-      "orientation": "portrait",
-      "order": 300,
-      "filename": "0301-t5-t30-fr-1-13.jpg"
-    },
-    {
       "src": "/assets/gallery/product-marketing/0302-t20-social-posters-0529.jpg",
       "width": 1021,
       "height": 1280,
@@ -3958,18 +3742,6 @@
       "filename": "0309-2-28-1.jpg"
     },
     {
-      "src": "/assets/gallery/campaign-kv/0310-t30.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0310",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/法语/T30.jpg",
-      "title": "T30",
-      "orientation": "portrait",
-      "order": 309,
-      "filename": "0310-t30.jpg"
-    },
-    {
       "src": "/assets/gallery/brand-system/0312-t5-t30-fr-1-9.jpg",
       "width": 1021,
       "height": 1280,
@@ -3992,18 +3764,6 @@
       "orientation": "portrait",
       "order": 313,
       "filename": "0314-t20-social-posters-0526.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0315-t20pro-social-posters-0529.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0315",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/P8/T20pro social Posters-0529西语.jpg",
-      "title": "T20pro social Posters-0529西语",
-      "orientation": "portrait",
-      "order": 314,
-      "filename": "0315-t20pro-social-posters-0529.jpg"
     },
     {
       "src": "/assets/gallery/product-marketing/0316-t20pro-social-posters-0529.jpg",
@@ -4078,30 +3838,6 @@
       "filename": "0322-t5-t30-fr-1-9.jpg"
     },
     {
-      "src": "/assets/gallery/campaign-kv/0323-t20.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0323",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/法语/T20.jpg",
-      "title": "T20",
-      "orientation": "portrait",
-      "order": 322,
-      "filename": "0323-t20.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0324-t20pro-social-posters-0529.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0324",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/0519 4：5 RTK/T20pro social Posters-0529.jpg",
-      "title": "T20pro social Posters-0529",
-      "orientation": "portrait",
-      "order": 323,
-      "filename": "0324-t20pro-social-posters-0529.jpg"
-    },
-    {
       "src": "/assets/gallery/product-marketing/0325-2-28-2.jpg",
       "width": 1021,
       "height": 1280,
@@ -4135,7 +3871,10 @@
       "title": "38-2023",
       "orientation": "portrait",
       "order": 326,
-      "filename": "0327-38-2023.jpg"
+      "filename": "0327-38-2023.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/campaign-kv/0328-20230714-ru.jpg",
@@ -4148,18 +3887,6 @@
       "orientation": "portrait",
       "order": 327,
       "filename": "0328-20230714-ru.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0329-t20pro-social-posters-0529.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0329",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/0519 4：5 RTK/T20pro social Posters-0529阿拉伯语.jpg",
-      "title": "T20pro social Posters-0529阿拉伯语",
-      "orientation": "portrait",
-      "order": 328,
-      "filename": "0329-t20pro-social-posters-0529.jpg"
     },
     {
       "src": "/assets/gallery/product-marketing/0330-t5lite-social-posters-0530.jpg",
@@ -4220,18 +3947,6 @@
       "orientation": "portrait",
       "order": 334,
       "filename": "0335-t5lite-social-posters-0530.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0336-t5.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0336",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/法语/T5 .jpg",
-      "title": "T5 ",
-      "orientation": "portrait",
-      "order": 335,
-      "filename": "0336-t5.jpg"
     },
     {
       "src": "/assets/gallery/brand-system/0337-15-4-100.jpg",
@@ -4375,7 +4090,10 @@
       "title": "对比表格",
       "orientation": "square",
       "order": 348,
-      "filename": "0349-asset.jpg"
+      "filename": "0349-asset.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/scene-3d/0350-2.jpg",
@@ -4427,33 +4145,6 @@
       "orientation": "portrait",
       "order": 352,
       "filename": "0353-t20pro-social-posters-0526.jpg"
-    },
-    {
-      "src": "/assets/gallery/campaign-kv/0354-1-10-100.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0354",
-      "chapter": "campaign-kv",
-      "source": "作品整理/Poster/阿语/画板 1 副本 10-100.jpg",
-      "title": "画板 1 副本 10-100",
-      "orientation": "portrait",
-      "order": 353,
-      "filename": "0354-1-10-100.jpg",
-      "showOnHome": false,
-      "showInChapterCover": false,
-      "showInChapterStrip": false
-    },
-    {
-      "src": "/assets/gallery/brand-system/0355-t5-t30-fr-1-7.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0355",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/GROUPE 塞内加尔/T5-T30Pro fr/T5-T30 fr-塞内加尔_画板 1 副本 7.jpg",
-      "title": "T5-T30 fr-塞内加尔_画板 1 副本 7",
-      "orientation": "portrait",
-      "order": 354,
-      "filename": "0355-t5-t30-fr-1-7.jpg"
     },
     {
       "src": "/assets/gallery/ai-workflow/0356-net660i.jpg",
@@ -4696,7 +4387,10 @@
       "title": "2.21 1",
       "orientation": "portrait",
       "order": 376,
-      "filename": "0377-2-21-1.jpg"
+      "filename": "0377-2-21-1.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0378-2-21-2-1.jpg",
@@ -4721,18 +4415,6 @@
       "orientation": "portrait",
       "order": 378,
       "filename": "0379-2-21-5-1.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0380-2-21-1-1.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0380",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/2023.2.17 RTK/原文字logo的/2.21 1.1.jpg",
-      "title": "2.21 1.1",
-      "orientation": "portrait",
-      "order": 379,
-      "filename": "0380-2-21-1-1.jpg"
     },
     {
       "src": "/assets/gallery/product-marketing/0381-t10pro-01.jpg",
@@ -4792,19 +4474,10 @@
       "title": "2.17.3",
       "orientation": "portrait",
       "order": 384,
-      "filename": "0385-2-17-3.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0386-2-17-1.jpg",
-      "width": 919,
-      "height": 1280,
-      "id": "asset-0386",
-      "chapter": "product-marketing",
-      "source": "作品整理/Poster/RTK/2023.2.17 RTK/2.17.1.jpg",
-      "title": "2.17.1",
-      "orientation": "portrait",
-      "order": 385,
-      "filename": "0386-2-17-1.jpg"
+      "filename": "0385-2-17-3.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0387-111.jpg",
@@ -4816,7 +4489,10 @@
       "title": "111",
       "orientation": "landscape",
       "order": 386,
-      "filename": "0387-111.jpg"
+      "filename": "0387-111.jpg",
+      "showOnHome": false,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0388-2-16.jpg",
@@ -5722,30 +5398,6 @@
       "filename": "0493-0018.jpg"
     },
     {
-      "src": "/assets/gallery/brand-system/0494-t5-t30-fr-05.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0494",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/GROUPE 塞内加尔/T5-T30Pro fr/T5-T30 fr-塞内加尔-05.jpg",
-      "title": "T5-T30 fr-塞内加尔-05",
-      "orientation": "portrait",
-      "order": 493,
-      "filename": "0494-t5-t30-fr-05.jpg"
-    },
-    {
-      "src": "/assets/gallery/brand-system/0496-t5-t30-fr-05.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0496",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/GROUPE 塞内加尔/T5-T30Pro fr/T5-T30 fr-05.jpg",
-      "title": "T5-T30 fr-05",
-      "orientation": "portrait",
-      "order": 495,
-      "filename": "0496-t5-t30-fr-05.jpg"
-    },
-    {
       "src": "/assets/gallery/brand-system/0497-t5-t30-fr-01.jpg",
       "width": 1021,
       "height": 1280,
@@ -5768,18 +5420,6 @@
       "orientation": "portrait",
       "order": 497,
       "filename": "0498-asset.jpg"
-    },
-    {
-      "src": "/assets/gallery/brand-system/0499-t5-t30-fr-08.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0499",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/GROUPE 塞内加尔/T5-T30Pro fr/T5-T30 fr-塞内加尔-08.jpg",
-      "title": "T5-T30 fr-塞内加尔-08",
-      "orientation": "portrait",
-      "order": 498,
-      "filename": "0499-t5-t30-fr-08.jpg"
     },
     {
       "src": "/assets/gallery/touchpoints/0500-connie-01.jpg",
@@ -5830,6 +5470,19 @@
       "filename": "0504-111.jpg"
     },
     {
+      "id": "gallery-1784086018886-36459",
+      "chapter": "ai-workflow",
+      "src": "/assets/uploads/1784086018873-2026-2.jpg",
+      "filename": "2026春节2.jpg",
+      "width": 1194,
+      "height": 1499,
+      "orientation": "portrait",
+      "order": 503,
+      "showOnHome": true,
+      "showInChapterCover": true,
+      "showInChapterStrip": true
+    },
+    {
       "src": "/assets/gallery/brand-system/0505-t5-t30-fr-12.jpg",
       "width": 1021,
       "height": 1280,
@@ -5842,6 +5495,19 @@
       "filename": "0505-t5-t30-fr-12.jpg"
     },
     {
+      "id": "gallery-1784086022938-14688",
+      "chapter": "ai-workflow",
+      "src": "/assets/uploads/1784086022926-2026-3.jpg",
+      "filename": "2026春节3.jpg",
+      "width": 1194,
+      "height": 1499,
+      "orientation": "portrait",
+      "order": 504,
+      "showOnHome": true,
+      "showInChapterCover": false,
+      "showInChapterStrip": true
+    },
+    {
       "src": "/assets/gallery/product-marketing/0506-1.jpg",
       "width": 1021,
       "height": 1280,
@@ -5852,18 +5518,6 @@
       "orientation": "portrait",
       "order": 505,
       "filename": "0506-1.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0511-5.jpg",
-      "width": 1021,
-      "height": 1280,
-      "id": "asset-0511",
-      "chapter": "product-marketing",
-      "source": "作品整理/OEM衍生/GEONAV/5.jpg",
-      "title": "5",
-      "orientation": "portrait",
-      "order": 510,
-      "filename": "0511-5.jpg"
     },
     {
       "src": "/assets/gallery/brand-system/0512-t5-t30-fr-13.jpg",
@@ -6020,18 +5674,6 @@
       "orientation": "portrait",
       "order": 526,
       "filename": "0527-asset.jpg"
-    },
-    {
-      "src": "/assets/gallery/brand-system/0528-xfield.jpg",
-      "width": 720,
-      "height": 1280,
-      "id": "asset-0528",
-      "chapter": "brand-system",
-      "source": "作品整理/OEM衍生/XMAP/XFIELD图标/XFIELD图标修改_切图/xfield_开屏页.jpg",
-      "title": "xfield_开屏页",
-      "orientation": "portrait",
-      "order": 527,
-      "filename": "0528-xfield.jpg"
     },
     {
       "src": "/assets/gallery/practice/0530-03.jpg",
@@ -6236,18 +5878,6 @@
       "orientation": "landscape",
       "order": 548,
       "filename": "0549-20-1.jpg"
-    },
-    {
-      "src": "/assets/gallery/product-marketing/0551-202312211146551.jpg",
-      "width": 1200,
-      "height": 1200,
-      "id": "asset-0551",
-      "chapter": "product-marketing",
-      "source": "作品整理/OEM衍生/GEONAV/微信图片_202312211146551.png",
-      "title": "微信图片_202312211146551",
-      "orientation": "square",
-      "order": 550,
-      "filename": "0551-202312211146551.jpg"
     },
     {
       "src": "/assets/gallery/product-marketing/0552-4-2.jpg",

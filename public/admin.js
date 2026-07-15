@@ -8,6 +8,7 @@ let galleryUsageFilter = "all";
 let gallerySearchTerm = "";
 let selectedAsset = -1;
 let selectedGalleryIds = new Set();
+let draggedGalleryIndex = -1;
 
 const projectForm = document.getElementById("projectForm");
 const articleForm = document.getElementById("articleForm");
@@ -156,6 +157,18 @@ function selectedGalleryAsset() {
   return filteredGallery()[currentGallery];
 }
 
+function isProtectedGalleryAsset(asset) {
+  return Boolean(asset?.showOnHome || asset?.showInChapterCover || asset?.showInChapterStrip);
+}
+
+function pruneGallerySelection() {
+  const validIds = new Set(data.gallery.map(galleryAssetId));
+  [...selectedGalleryIds].forEach(id => {
+    const asset = data.gallery.find(item => galleryAssetId(item) === id);
+    if (!validIds.has(id) || isProtectedGalleryAsset(asset)) selectedGalleryIds.delete(id);
+  });
+}
+
 function chapterTitle(chapterId) {
   const chapter = data.chapters.find(item => item.id === chapterId);
   return chapter?.title || chapterId || "未分类";
@@ -297,6 +310,33 @@ function renderGalleryFilter() {
       render();
     });
   });
+  renderChapterAdminForm();
+}
+
+function selectedChapter() {
+  return galleryFilter === "all" ? null : data.chapters.find(chapter => chapter.id === galleryFilter);
+}
+
+function renderChapterAdminForm() {
+  const chapter = selectedChapter();
+  const indexInput = document.getElementById("chapterIndexInput");
+  const titleInput = document.getElementById("chapterTitleInput");
+  const subtitleInput = document.getElementById("chapterSubtitleInput");
+  const deleteButton = document.getElementById("deleteChapterBtn");
+  if (!indexInput || !titleInput || !subtitleInput) return;
+  indexInput.value = chapter?.index || "";
+  titleInput.value = chapter?.title || "";
+  subtitleInput.value = chapter?.subtitle || "";
+  if (deleteButton) deleteButton.disabled = !chapter;
+}
+
+function chapterIdFromTitle(title) {
+  const normalized = String(title || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return normalized || `chapter-${Date.now()}`;
 }
 
 function renderGalleryUsageFilter() {
@@ -325,16 +365,18 @@ function renderGalleryUsageFilter() {
 }
 
 function renderGalleryGrid() {
+  pruneGallerySelection();
   const assets = filteredGallery();
   const grid = document.getElementById("galleryAdminGrid");
   grid.innerHTML = assets.length ? assets.map((asset, index) => {
     const id = galleryAssetId(asset);
+    const protectedAsset = isProtectedGalleryAsset(asset);
     const selected = selectedGalleryIds.has(id);
     const filename = asset.filename || asset.src?.split("/").pop() || "Media";
     return `
-      <button class="gallery-admin-thumb ${index === currentGallery ? "active" : ""} ${selected ? "selected" : ""}" type="button" data-index="${index}" data-id="${escapeHtml(id)}">
+      <button class="gallery-admin-thumb ${index === currentGallery ? "active" : ""} ${selected ? "selected" : ""} ${protectedAsset ? "protected" : ""}" type="button" data-index="${index}" data-id="${escapeHtml(id)}" draggable="true">
         <img src="${escapeHtml(asset.src)}" alt="${escapeHtml(filename)}">
-        <b>${selected ? "已选" : "选择"}</b>
+        <b>${protectedAsset ? "锁定" : selected ? "已选" : "选择"}</b>
         ${asset.showOnHome ? "<i>首页</i>" : ""}
         ${asset.showInChapterCover ? "<i class=\"badge-cover\">封面</i>" : ""}
         ${asset.showInChapterStrip ? "<i class=\"badge-strip\">章节</i>" : ""}
@@ -349,10 +391,39 @@ function renderGalleryGrid() {
       commitGalleryForm();
       currentGallery = Number(button.dataset.index);
       const id = button.dataset.id;
-      if (selectedGalleryIds.has(id)) selectedGalleryIds.delete(id);
+      const asset = filteredGallery()[currentGallery];
+      if (isProtectedGalleryAsset(asset)) {
+        selectedGalleryIds.delete(id);
+        showStatus("这张图片已用于首页或章节展示，已自动取消选择，避免误删。", "error");
+      } else if (selectedGalleryIds.has(id)) selectedGalleryIds.delete(id);
       else selectedGalleryIds.add(id);
       renderGalleryGrid();
       renderGalleryForm();
+    });
+    button.addEventListener("dragstart", event => {
+      commitGalleryForm();
+      draggedGalleryIndex = Number(button.dataset.index);
+      button.classList.add("dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", String(draggedGalleryIndex));
+    });
+    button.addEventListener("dragend", () => {
+      draggedGalleryIndex = -1;
+      button.classList.remove("dragging");
+    });
+    button.addEventListener("dragover", event => {
+      event.preventDefault();
+      button.classList.add("drag-over");
+    });
+    button.addEventListener("dragleave", () => {
+      button.classList.remove("drag-over");
+    });
+    button.addEventListener("drop", event => {
+      event.preventDefault();
+      button.classList.remove("drag-over");
+      const fromIndex = Number(event.dataTransfer.getData("text/plain") || draggedGalleryIndex);
+      const toIndex = Number(button.dataset.index);
+      reorderVisibleGallery(fromIndex, toIndex);
     });
   });
 
@@ -360,6 +431,7 @@ function renderGalleryGrid() {
 }
 
 function renderGallerySelectionState() {
+  pruneGallerySelection();
   const count = selectedGalleryIds.size;
   const resultCount = filteredGallery().length;
   const text = `已选择 ${count} 张图片`;
@@ -372,13 +444,28 @@ function renderGallerySelectionState() {
     selectionBar.classList.toggle("has-selection", count > 0);
     selectionBar.querySelector("strong").textContent = text;
     selectionBar.querySelector("span").textContent = count > 0
-      ? "请确认选中数量后再执行批量删除。"
-      : `当前筛选结果 ${resultCount} 张。点击图片可选择或取消选择。`;
+      ? "请确认选中数量后再执行批量删除；锁定图片不会被删除。"
+      : `当前筛选结果 ${resultCount} 张。点击图片可选择，拖动图片可调整排序。`;
   }
   if (deleteButton) {
     deleteButton.textContent = count > 0 ? `删除选中图片（${count}）` : "删除选中图片";
     deleteButton.disabled = count === 0;
   }
+}
+
+function reorderVisibleGallery(fromIndex, toIndex) {
+  const assets = filteredGallery();
+  if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0 || !assets[fromIndex] || !assets[toIndex]) return;
+  const reordered = [...assets];
+  const [moved] = reordered.splice(fromIndex, 1);
+  reordered.splice(toIndex, 0, moved);
+  reordered.forEach((asset, index) => {
+    asset.order = index + 1;
+  });
+  currentGallery = toIndex;
+  renderGalleryGrid();
+  renderGalleryForm();
+  showStatus("排序已更新，请记得保存或发布。");
 }
 
 function renderGalleryForm() {
@@ -712,6 +799,12 @@ document.getElementById("removeAssetBtn").addEventListener("click", () => {
 document.getElementById("deleteGalleryBtn").addEventListener("click", () => {
   const asset = selectedGalleryAsset();
   if (!asset) return;
+  if (isProtectedGalleryAsset(asset)) {
+    selectedGalleryIds.delete(galleryAssetId(asset));
+    alert("这张图片已用于首页图库、章节预览图或章节右侧展示。请先取消这些勾选，再删除图片。");
+    render();
+    return;
+  }
   if (!confirm("确定删除当前图库图片？")) return;
   const realIndex = data.gallery.indexOf(asset);
   if (realIndex >= 0) data.gallery.splice(realIndex, 1);
@@ -728,16 +821,100 @@ document.getElementById("copyGalleryPathBtn").addEventListener("click", async ()
 });
 
 document.getElementById("deleteSelectedGalleryBtn").addEventListener("click", async () => {
+  pruneGallerySelection();
   if (!selectedGalleryIds.size) {
     alert("请先在图片网格中选择要删除的图片。");
     return;
   }
   if (!confirm(`确定删除选中的 ${selectedGalleryIds.size} 张图库图片？`)) return;
-  data.gallery = data.gallery.filter(asset => !selectedGalleryIds.has(galleryAssetId(asset)));
+  data.gallery = data.gallery.filter(asset => isProtectedGalleryAsset(asset) || !selectedGalleryIds.has(galleryAssetId(asset)));
   selectedGalleryIds.clear();
   currentGallery = 0;
   render();
   await save({ skipCommit: true });
+});
+
+document.getElementById("clearGallerySelectionBtn").addEventListener("click", () => {
+  selectedGalleryIds.clear();
+  renderGalleryGrid();
+  renderGalleryForm();
+  showStatus("已取消全部已选图片。");
+});
+
+document.getElementById("selectChapterGalleryBtn").addEventListener("click", () => {
+  if (galleryFilter === "all") {
+    alert("请先在左侧选择一个具体图库章节，再执行章节全选。");
+    return;
+  }
+  data.gallery.filter(asset => asset.chapter === galleryFilter).forEach(asset => {
+    const id = galleryAssetId(asset);
+    if (isProtectedGalleryAsset(asset)) selectedGalleryIds.delete(id);
+    else selectedGalleryIds.add(id);
+  });
+  renderGalleryGrid();
+  renderGalleryForm();
+});
+
+document.getElementById("saveChapterBtn").addEventListener("click", () => {
+  const chapter = selectedChapter();
+  if (!chapter) {
+    alert("请先选择一个具体章节，或点击新增章节。");
+    return;
+  }
+  chapter.index = document.getElementById("chapterIndexInput").value.trim();
+  chapter.title = document.getElementById("chapterTitleInput").value.trim() || "未命名章节";
+  chapter.subtitle = document.getElementById("chapterSubtitleInput").value.trim();
+  render();
+  showStatus("章节已更新，请记得保存或发布。");
+});
+
+document.getElementById("addChapterBtn").addEventListener("click", () => {
+  const title = document.getElementById("chapterTitleInput").value.trim() || "新的图库章节";
+  const baseId = chapterIdFromTitle(title);
+  let nextId = baseId;
+  let counter = 2;
+  while (data.chapters.some(chapter => chapter.id === nextId)) {
+    nextId = `${baseId}-${counter}`;
+    counter += 1;
+  }
+  data.chapters.push({
+    id: nextId,
+    index: document.getElementById("chapterIndexInput").value.trim() || String(data.chapters.length + 1).padStart(2, "0"),
+    title,
+    subtitle: document.getElementById("chapterSubtitleInput").value.trim(),
+    ratio: "",
+    summary: "",
+    keywords: [],
+  });
+  galleryFilter = nextId;
+  currentGallery = 0;
+  selectedGalleryIds.clear();
+  render();
+  showStatus("新章节已添加，请记得保存或发布。");
+});
+
+document.getElementById("deleteChapterBtn").addEventListener("click", () => {
+  const chapter = selectedChapter();
+  if (!chapter) return;
+  if (data.chapters.length <= 1) {
+    alert("至少需要保留一个图库章节。");
+    return;
+  }
+  const affectedCount = data.gallery.filter(asset => asset.chapter === chapter.id).length;
+  const fallback = data.chapters.find(item => item.id !== chapter.id);
+  if (!confirm(`确定删除章节「${chapter.title}」？该章节下 ${affectedCount} 张图片会移动到「${fallback.title}」，图片文件不会被删除。`)) return;
+  data.gallery.forEach(asset => {
+    if (asset.chapter === chapter.id) asset.chapter = fallback.id;
+  });
+  data.projects.forEach(project => {
+    if (project.chapter === chapter.id) project.chapter = fallback.id;
+  });
+  data.chapters = data.chapters.filter(item => item !== chapter);
+  galleryFilter = fallback.id;
+  currentGallery = 0;
+  selectedGalleryIds.clear();
+  render();
+  showStatus("章节已删除，图片已移动到其他章节，请记得保存或发布。");
 });
 
 document.getElementById("assetInput").addEventListener("change", async event => {
