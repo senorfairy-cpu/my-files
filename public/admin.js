@@ -133,6 +133,7 @@ function filteredGallery() {
       if (galleryUsageFilter === "chapterCover") return asset.showInChapterCover === true;
       if (galleryUsageFilter === "chapterStrip") return asset.showInChapterStrip === true;
       if (galleryUsageFilter === "homeGallery") return asset.showOnHome === true;
+      if (galleryUsageFilter === "heroWall") return asset.showInHeroWall === true;
       return true;
     })
     .filter(asset => {
@@ -158,7 +159,7 @@ function selectedGalleryAsset() {
 }
 
 function isProtectedGalleryAsset(asset) {
-  return Boolean(asset?.showOnHome || asset?.showInChapterCover || asset?.showInChapterStrip);
+  return Boolean(asset?.showInHeroWall || asset?.showOnHome || asset?.showInChapterCover || asset?.showInChapterStrip);
 }
 
 function pruneGallerySelection() {
@@ -345,6 +346,7 @@ function renderGalleryUsageFilter() {
     { id: "chapterCover", label: "章节预览图", count: data.gallery.filter(asset => asset.showInChapterCover === true).length },
     { id: "chapterStrip", label: "章节右侧图", count: data.gallery.filter(asset => asset.showInChapterStrip === true).length },
     { id: "homeGallery", label: "首页图库", count: data.gallery.filter(asset => asset.showOnHome === true).length },
+    { id: "heroWall", label: "首屏动态图", count: data.gallery.filter(asset => asset.showInHeroWall === true).length },
   ];
   const wrap = document.getElementById("galleryUsageFilter");
   wrap.innerHTML = filters.map(filter => `
@@ -377,6 +379,7 @@ function renderGalleryGrid() {
       <button class="gallery-admin-thumb ${index === currentGallery ? "active" : ""} ${selected ? "selected" : ""} ${protectedAsset ? "protected" : ""}" type="button" data-index="${index}" data-id="${escapeHtml(id)}" draggable="true">
         <img src="${escapeHtml(asset.src)}" alt="${escapeHtml(filename)}">
         <b>${protectedAsset ? "锁定" : selected ? "已选" : "选择"}</b>
+        ${asset.showInHeroWall ? "<i class=\"badge-hero\">首屏</i>" : ""}
         ${asset.showOnHome ? "<i>首页</i>" : ""}
         ${asset.showInChapterCover ? "<i class=\"badge-cover\">封面</i>" : ""}
         ${asset.showInChapterStrip ? "<i class=\"badge-strip\">章节</i>" : ""}
@@ -481,6 +484,7 @@ function renderGalleryForm() {
   galleryForm.src.value = asset.src || "";
   galleryForm.size.value = `${asset.width || "-"} x ${asset.height || "-"}`;
   galleryForm.order.value = asset.order || 0;
+  galleryForm.showInHeroWall.checked = Boolean(asset.showInHeroWall);
   galleryForm.showOnHome.checked = Boolean(asset.showOnHome);
   galleryForm.showInChapterCover.checked = Boolean(asset.showInChapterCover);
   galleryForm.showInChapterStrip.checked = Boolean(asset.showInChapterStrip);
@@ -548,6 +552,7 @@ function commitGalleryForm() {
   if (!asset) return;
   asset.chapter = galleryForm.chapter.value;
   asset.order = Number(galleryForm.order.value || 0);
+  asset.showInHeroWall = galleryForm.showInHeroWall.checked;
   asset.showOnHome = galleryForm.showOnHome.checked;
   asset.showInChapterCover = galleryForm.showInChapterCover.checked;
   asset.showInChapterStrip = galleryForm.showInChapterStrip.checked;

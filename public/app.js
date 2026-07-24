@@ -7,6 +7,7 @@ let revealObserver = null;
 let mediaZoom = "fit";
 let mediaPan = { x: 0, y: 0 };
 let mediaDrag = null;
+let parallaxFrame = null;
 
 async function loadPortfolio() {
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
@@ -81,7 +82,20 @@ function coverFor(chapterId, assets = galleryFor(chapterId)) {
 function chapterPreviewAssets(chapterId) {
   const assets = galleryFor(chapterId);
   const selected = assets.filter(asset => asset.showInChapterStrip === true);
-  return (selected.length ? selected : assets).slice(0, 18);
+  return (selected.length ? selected : assets).slice(0, 10);
+}
+
+function heroWallAssets() {
+  const selected = visibleGallery().filter(asset => asset.showInHeroWall === true);
+  const pool = [...selected, ...homeGallery(), ...visibleGallery()];
+  const unique = [];
+  const seen = new Set();
+  pool.forEach(asset => {
+    if (!asset.src || seen.has(asset.src)) return;
+    seen.add(asset.src);
+    unique.push(asset);
+  });
+  return unique.slice(0, 6);
 }
 
 function chapterById(id) {
@@ -151,6 +165,14 @@ function render() {
   if (heroAsset) {
     document.getElementById("heroBg").style.backgroundImage = `linear-gradient(90deg, rgba(9,9,8,.96) 0%, rgba(9,9,8,.70) 42%, rgba(9,9,8,.35) 100%), url("${heroAsset.src}")`;
   }
+  document.getElementById("heroWall").innerHTML = heroWallAssets().map((asset, index) => {
+    const filename = asset.filename || asset.title || "Portfolio image";
+    return `
+      <figure style="--wall-delay:${index * -1.4}s">
+        <img loading="${index < 4 ? "eager" : "lazy"}" src="${asset.src}" alt="${escapeHtml(filename)}">
+      </figure>
+    `;
+  }).join("");
 
   const localizedStats = langData().stats || portfolio.stats || [];
   document.getElementById("stats").innerHTML = localizedStats.map(item => `
@@ -196,10 +218,38 @@ function render() {
     `;
   }).join("");
 
+  document.getElementById("chapterList").innerHTML = chapters.slice(0, 6).map((chapter, index) => {
+    const assets = galleryFor(chapter.id);
+    const cover = coverFor(chapter.id, assets);
+    const preview = chapterPreviewAssets(chapter.id);
+    const thumbs = (preview.length ? preview : [cover]).filter(Boolean).slice(0, 4);
+    return `
+      <article class="home-work-card" id="${chapter.id}">
+        <div class="home-work-bg" style="background-image:linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.25), rgba(142,54,10,.35)), url('${escapeHtml(cover?.src || "")}')"></div>
+        <div class="home-work-copy">
+          <p>[ chapter ${escapeHtml(chapter.index || String(index + 1).padStart(2, "0"))} ]</p>
+          <h3>${escapeHtml(chapter.title)}</h3>
+          <span>${escapeHtml(chapter.summary)}</span>
+        </div>
+        <div class="home-work-matrix">
+          ${thumbs.map((asset, thumbIndex) => `
+            <figure>
+              <button class="media-trigger" type="button" data-media-id="${escapeHtml(mediaAssetId(asset))}" aria-label="Open media detail">
+                <img loading="lazy" src="${asset.src}" alt="${escapeHtml(asset.filename || asset.title || chapter.title)}">
+                <span>${String(thumbIndex + 1).padStart(2, "0")}</span>
+              </button>
+            </figure>
+          `).join("")}
+        </div>
+      </article>
+    `;
+  }).join("");
+
   renderArticles();
   renderFilters();
   renderArchive();
   setupRevealAnimations();
+  setupHeroMotion();
 }
 
 function renderArticles() {
@@ -230,7 +280,7 @@ function renderFilters() {
 }
 
 function renderArchive() {
-  const assets = activeChapter === "all" ? homeGallery() : homeGalleryFor(activeChapter);
+  const assets = (activeChapter === "all" ? homeGallery() : homeGalleryFor(activeChapter)).slice(0, 36);
   document.querySelectorAll("#filters button").forEach(button => {
     button.classList.toggle("active", button.dataset.id === activeChapter);
   });
@@ -440,6 +490,32 @@ function setupRevealAnimations() {
     element.style.setProperty("--reveal-delay", `${Math.min(index % 8, 7) * 34}ms`);
     revealObserver.observe(element);
   });
+}
+
+function setupHeroMotion() {
+  const hero = document.getElementById("cover");
+  if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (hero.dataset.motionReady === "true") return;
+  hero.dataset.motionReady = "true";
+
+  const update = (pointerX = 0, pointerY = 0) => {
+    if (parallaxFrame) cancelAnimationFrame(parallaxFrame);
+    parallaxFrame = requestAnimationFrame(() => {
+      const rect = hero.getBoundingClientRect();
+      const scrollProgress = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
+      hero.style.setProperty("--hero-scroll", scrollProgress.toFixed(3));
+      hero.style.setProperty("--hero-x", pointerX.toFixed(3));
+      hero.style.setProperty("--hero-y", pointerY.toFixed(3));
+    });
+  };
+
+  hero.addEventListener("pointermove", event => {
+    const rect = hero.getBoundingClientRect();
+    update((event.clientX - rect.left) / rect.width - 0.5, (event.clientY - rect.top) / rect.height - 0.5);
+  }, { passive: true });
+
+  window.addEventListener("scroll", () => update(), { passive: true });
+  update();
 }
 
 document.getElementById("langToggle").addEventListener("click", () => {
