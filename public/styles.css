@@ -1402,8 +1402,14 @@ footer {
 .hero-copy.reveal-item {
   transform: translateY(-56px);
 }
+.hero-wall.reveal-item {
+  transform: translateY(-52px);
+}
 .hero-mark.reveal-item {
   transform: translateY(52px);
+}
+.home-work-card.reveal-item {
+  transform: translateY(72px);
 }
 .reveal-item.is-visible {
   opacity: 1;
@@ -1413,6 +1419,7 @@ footer {
 .archive-item.reveal-item.is-visible,
 .article-card.reveal-item.is-visible,
 .hero-copy.reveal-item.is-visible,
+.hero-wall.reveal-item.is-visible,
 .hero-mark.reveal-item.is-visible {
   transform: translateY(0);
 }

@@ -451,12 +451,14 @@ function stopMediaDrag(event) {
 function setupRevealAnimations() {
   const elements = document.querySelectorAll([
     ".hero-copy",
+    ".hero-wall",
     ".hero-mark",
     ".stats",
     ".about-panel",
     ".section-head",
     ".chapter-nav",
     ".chapter",
+    ".home-work-card",
     ".article-card",
     ".filterbar",
     ".archive-item",
