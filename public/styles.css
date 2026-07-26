@@ -1387,8 +1387,8 @@ footer {
   opacity: 0;
   transform: translateY(64px);
   transition:
-    opacity 10000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms),
-    transform 10000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms);
+    opacity 5000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms),
+    transform 5000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
 .chapter.reveal-item,
@@ -1433,7 +1433,7 @@ footer {
     animation-duration: .01ms !important;
   }
   .reveal-item {
-    transition-duration: 10000ms, 10000ms !important;
+    transition-duration: 5000ms, 5000ms !important;
   }
 }
 
