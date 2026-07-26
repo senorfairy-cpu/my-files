@@ -1432,6 +1432,10 @@ footer {
 }
 
 .admin-page { background: #0b0b0a; }
+.admin-page .topbar {
+  width: calc(100% - 48px);
+  margin: 10px auto 0;
+}
 .admin-page.locked {
   min-height: 100vh;
   display: grid;
@@ -1464,6 +1468,7 @@ footer {
 .admin-shell {
   display: grid;
   grid-template-columns: 320px 1fr;
+  margin-top: 14px;
   min-height: calc(100vh - 72px);
 }
 .admin-list {
