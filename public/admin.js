@@ -28,6 +28,51 @@ statusToast.setAttribute("aria-live", "polite");
 document.body.appendChild(statusToast);
 let toastTimer = null;
 
+function setFieldLabel(control, text) {
+  const label = control?.closest("label");
+  if (!label) return;
+  [...label.childNodes].forEach(node => {
+    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+      node.textContent = text;
+    }
+  });
+}
+
+function setupAdminForHomepageLayout() {
+  const indexInput = document.getElementById("chapterIndexInput");
+  const titleInput = document.getElementById("chapterTitleInput");
+  const subtitleInput = document.getElementById("chapterSubtitleInput");
+  setFieldLabel(indexInput, "章节编号");
+  setFieldLabel(titleInput, "章节名称");
+  setFieldLabel(subtitleInput, "英文副标题");
+  titleInput.placeholder = "品牌系统设计";
+
+  if (!document.getElementById("chapterRatioInput")) {
+    subtitleInput.closest("label").insertAdjacentHTML("afterend", `
+      <label>首页占比<input id="chapterRatioInput" placeholder="20%"></label>
+      <label class="full">首页卡片简介<textarea id="chapterSummaryInput" rows="3" placeholder="用于前台章节卡片的简介"></textarea></label>
+    `);
+  }
+
+  document.getElementById("saveChapterBtn").textContent = "保存章节";
+  document.getElementById("addChapterBtn").textContent = "新增章节";
+  document.getElementById("deleteChapterBtn").textContent = "删除章节";
+  document.querySelector("#gallerySelectionBar strong").textContent = "已选择 0 张图片";
+  document.querySelector("#gallerySelectionBar span").textContent = "点击图片可选择或取消选择，拖动图片可调整排序。";
+
+  setFieldLabel(galleryForm.chapter, "所属章节");
+  setFieldLabel(galleryForm.src, "图片路径");
+  setFieldLabel(galleryForm.size, "图片尺寸");
+  setFieldLabel(galleryForm.order, "排序");
+  setFieldLabel(galleryForm.showInHeroWall, "首屏动态图");
+  setFieldLabel(galleryForm.showInChapterCover, "首页章节卡片背景图");
+  setFieldLabel(galleryForm.showInChapterStrip, "首页章节卡片矩阵图");
+  setFieldLabel(galleryForm.showOnHome, "底部图库展示");
+
+  document.getElementById("copyGalleryPathBtn").textContent = "复制图片路径";
+  document.getElementById("deleteGalleryBtn").textContent = "删除当前图片";
+}
+
 function setHidden(element, hidden) {
   element.toggleAttribute("hidden", hidden);
 }
@@ -323,11 +368,15 @@ function renderChapterAdminForm() {
   const indexInput = document.getElementById("chapterIndexInput");
   const titleInput = document.getElementById("chapterTitleInput");
   const subtitleInput = document.getElementById("chapterSubtitleInput");
+  const ratioInput = document.getElementById("chapterRatioInput");
+  const summaryInput = document.getElementById("chapterSummaryInput");
   const deleteButton = document.getElementById("deleteChapterBtn");
   if (!indexInput || !titleInput || !subtitleInput) return;
   indexInput.value = chapter?.index || "";
   titleInput.value = chapter?.title || "";
   subtitleInput.value = chapter?.subtitle || "";
+  if (ratioInput) ratioInput.value = chapter?.ratio || "";
+  if (summaryInput) summaryInput.value = chapter?.summary || "";
   if (deleteButton) deleteButton.disabled = !chapter;
 }
 
@@ -348,6 +397,16 @@ function renderGalleryUsageFilter() {
     { id: "homeGallery", label: "首页图库", count: data.gallery.filter(asset => asset.showOnHome === true).length },
     { id: "heroWall", label: "首屏动态图", count: data.gallery.filter(asset => asset.showInHeroWall === true).length },
   ];
+  const homepageUsageLabels = {
+    all: "全部图片",
+    heroWall: "首屏动态图",
+    chapterCover: "首页章节卡片背景图",
+    chapterStrip: "首页章节卡片矩阵图",
+    homeGallery: "底部图库展示",
+  };
+  filters.forEach(filter => {
+    filter.label = homepageUsageLabels[filter.id] || filter.label;
+  });
   const wrap = document.getElementById("galleryUsageFilter");
   wrap.innerHTML = filters.map(filter => `
     <button class="${galleryUsageFilter === filter.id ? "active" : ""}" type="button" data-usage="${filter.id}">
@@ -869,6 +928,8 @@ document.getElementById("saveChapterBtn").addEventListener("click", () => {
   chapter.index = document.getElementById("chapterIndexInput").value.trim();
   chapter.title = document.getElementById("chapterTitleInput").value.trim() || "未命名章节";
   chapter.subtitle = document.getElementById("chapterSubtitleInput").value.trim();
+  chapter.ratio = document.getElementById("chapterRatioInput")?.value.trim() || "";
+  chapter.summary = document.getElementById("chapterSummaryInput")?.value.trim() || "";
   render();
   showStatus("章节已更新，请记得保存或发布。");
 });
@@ -887,8 +948,8 @@ document.getElementById("addChapterBtn").addEventListener("click", () => {
     index: document.getElementById("chapterIndexInput").value.trim() || String(data.chapters.length + 1).padStart(2, "0"),
     title,
     subtitle: document.getElementById("chapterSubtitleInput").value.trim(),
-    ratio: "",
-    summary: "",
+    ratio: document.getElementById("chapterRatioInput")?.value.trim() || "",
+    summary: document.getElementById("chapterSummaryInput")?.value.trim() || "",
     keywords: [],
   });
   galleryFilter = nextId;
@@ -1008,4 +1069,5 @@ document.getElementById("qrImageInput").addEventListener("change", async event =
   event.target.value = "";
 });
 
+setupAdminForHomepageLayout();
 checkSession();

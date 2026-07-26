@@ -1677,9 +1677,12 @@ input, textarea {
 }
 .chapter-admin-fields {
   display: grid;
-  grid-template-columns: minmax(82px, 110px) minmax(180px, 1fr) minmax(180px, 1fr);
+  grid-template-columns: minmax(82px, 110px) minmax(150px, .8fr) minmax(150px, .8fr) minmax(90px, .45fr);
   gap: 10px;
   align-items: end;
+}
+.chapter-admin-fields .full {
+  grid-column: 1 / -1;
 }
 .chapter-admin-panel label {
   display: grid;
@@ -1687,7 +1690,8 @@ input, textarea {
   color: var(--muted);
   font-size: 12px;
 }
-.chapter-admin-panel input {
+.chapter-admin-panel input,
+.chapter-admin-panel textarea {
   width: 100%;
 }
 .chapter-admin-actions {
