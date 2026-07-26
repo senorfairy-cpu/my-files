@@ -933,7 +933,8 @@
       "filename": "0011-pbox5.jpg",
       "showOnHome": false,
       "showInChapterCover": false,
-      "showInChapterStrip": false
+      "showInChapterStrip": false,
+      "showInHeroWall": false
     },
     {
       "src": "/assets/gallery/product-marketing/0015-16-2x.jpg",
@@ -1018,7 +1019,7 @@
       "showOnHome": true,
       "showInChapterCover": false,
       "showInChapterStrip": true,
-      "showInHeroWall": false,
+      "showInHeroWall": true,
       "workSummary": "科技场景渲染"
     },
     {
@@ -3661,7 +3662,11 @@
       "title": "沙地",
       "orientation": "portrait",
       "order": 299,
-      "filename": "0300-asset.jpg"
+      "filename": "0300-asset.jpg",
+      "showInHeroWall": true,
+      "showOnHome": true,
+      "showInChapterCover": false,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/product-marketing/0302-t20-social-posters-0529.jpg",

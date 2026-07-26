@@ -4,7 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Graphic Designer Portfolio</title>
-    <link rel="stylesheet" href="/styles.css?v=nav-backend-sync">
+    <script>
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      if (!window.location.hash) {
+        window.scrollTo(0, 0);
+        window.addEventListener("pageshow", () => window.scrollTo(0, 0), { once: true });
+      }
+    </script>
+    <link rel="stylesheet" href="/styles.css?v=hero-intro-current">
   </head>
   <body>
     <header class="topbar">
@@ -21,19 +30,19 @@
     </header>
 
     <main>
-      <section class="hero" id="cover">
-        <div class="hero-bg" id="heroBg"></div>
-        <div class="hero-wall" id="heroWall" aria-hidden="true"></div>
+      <section class="hero hero-intro" id="cover">
+        <div class="hero-bg hero-reveal hero-reveal-bg" id="heroBg"></div>
+        <div class="hero-wall hero-reveal hero-reveal-wall" id="heroWall" aria-hidden="true"></div>
         <div class="hero-copy">
-          <p class="eyebrow" data-i18n="hero.eyebrow">Graphic Designer Portfolio</p>
-          <h1 id="profileName">Brand & Product Visual Designer</h1>
-          <p class="lead" id="profileIntro"></p>
-          <div class="hero-actions">
+          <p class="eyebrow hero-reveal" data-i18n="hero.eyebrow">Graphic Designer Portfolio</p>
+          <h1 class="hero-reveal" id="profileName">Brand & Product Visual Designer</h1>
+          <p class="lead hero-reveal" id="profileIntro"></p>
+          <div class="hero-actions hero-reveal">
             <a class="button primary" href="#chapters" data-i18n="hero.primaryCta">查看作品章节</a>
             <a class="button ghost" href="/blog" data-i18n="hero.secondaryCta">设计思考</a>
           </div>
         </div>
-        <div class="hero-mark">
+        <div class="hero-mark hero-reveal">
           <span data-i18n="hero.galleryLabel">图库</span>
           <strong id="heroCount">0</strong>
           <span data-i18n="hero.imagesLabel">张图片</span>
@@ -119,6 +128,6 @@
       <span id="footerLocation">中国成都</span>
     </footer>
 
-    <script src="/app.js?v=nav-backend-sync"></script>
+    <script src="/app.js?v=hero-intro-current"></script>
   </body>
 </html>

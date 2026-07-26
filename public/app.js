@@ -8,14 +8,33 @@ let mediaZoom = "fit";
 let mediaPan = { x: 0, y: 0 };
 let mediaDrag = null;
 let parallaxFrame = null;
+const HERO_BG_DELAY = 180;
+const HERO_COPY_DELAY = 760;
+const HERO_MARK_DELAY = 1040;
+const HERO_WALL_DELAY = 1320;
 const hiddenFrontendChapters = new Set(["touchpoints"]);
 
+if ("scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
+}
+
+function isHomePage() {
+  return ["/", "/index.html"].includes(window.location.pathname);
+}
+
+function resetHomeScroll() {
+  if (!isHomePage() || window.location.hash) return;
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+}
+
 async function loadPortfolio() {
+  resetHomeScroll();
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
   portfolio = await res.json();
   const langRes = await fetch("/language-content.json").catch(() => null);
   languageContent = langRes?.ok ? await langRes.json() : null;
   render();
+  requestAnimationFrame(resetHomeScroll);
 }
 
 function langData() {
@@ -93,16 +112,12 @@ function chapterPreviewAssets(chapterId) {
 }
 
 function heroWallAssets() {
-  const selected = visibleGallery().filter(asset => asset.showInHeroWall === true);
-  const pool = [...selected, ...homeGallery(), ...visibleGallery()];
-  const unique = [];
-  const seen = new Set();
-  pool.forEach(asset => {
-    if (!asset.src || seen.has(asset.src)) return;
-    seen.add(asset.src);
-    unique.push(asset);
-  });
-  return unique.slice(0, 6);
+  return visibleGallery().filter(asset => asset.showInHeroWall === true).slice(0, 6);
+}
+
+function heroAssetForIntro() {
+  const profile = { ...portfolio.profile, ...(langData().profile || {}) };
+  return profile.heroImage ? { src: profile.heroImage } : coverFor("product-marketing") || visibleGallery()[0];
 }
 
 function chapterById(id) {
@@ -141,7 +156,7 @@ function render() {
   };
   const chapters = frontendChapters();
   const gallery = visibleGallery();
-  const heroAsset = profile.heroImage ? { src: profile.heroImage } : coverFor("product-marketing") || gallery[0];
+  const heroAsset = heroAssetForIntro();
 
   document.title = `${profile.name} - Portfolio`;
   document.querySelector(".brand").textContent = profile.title;
@@ -172,10 +187,14 @@ function render() {
   if (heroAsset) {
     document.getElementById("heroBg").style.backgroundImage = `linear-gradient(90deg, rgba(9,9,8,.96) 0%, rgba(9,9,8,.70) 42%, rgba(9,9,8,.35) 100%), url("${heroAsset.src}")`;
   }
-  document.getElementById("heroWall").innerHTML = heroWallAssets().map((asset, index) => {
+  const heroWall = document.getElementById("heroWall");
+  const wallAssets = heroWallAssets();
+  heroWall.classList.remove("is-visible");
+  heroWall.hidden = wallAssets.length === 0;
+  heroWall.innerHTML = wallAssets.map((asset, index) => {
     const filename = asset.filename || asset.title || "Portfolio image";
     return `
-      <figure style="--wall-delay:${index * -1.4}s">
+      <figure class="wall-card-${index + 1}">
         <img loading="${index < 4 ? "eager" : "lazy"}" src="${asset.src}" alt="${escapeHtml(filename)}">
       </figure>
     `;
@@ -256,7 +275,47 @@ function render() {
   renderFilters();
   renderArchive();
   setupRevealAnimations();
+  setupHeroIntro(heroAsset, wallAssets);
   setupHeroMotion();
+}
+
+function preloadImage(src) {
+  return new Promise(resolve => {
+    if (!src) {
+      resolve();
+      return;
+    }
+    const image = new Image();
+    image.onload = () => {
+      if (image.decode) {
+        image.decode().catch(() => {}).finally(resolve);
+      } else {
+        resolve();
+      }
+    };
+    image.onerror = resolve;
+    image.src = src;
+  });
+}
+
+function animateHeroElement(element, keyframes, options, onFinish) {
+  if (!element || !element.animate) {
+    onFinish?.();
+    return;
+  }
+  element.getAnimations().forEach(animation => animation.cancel());
+  element.style.willChange = "opacity, transform";
+  const animation = element.animate(keyframes, {
+    easing: "cubic-bezier(.25, 1, .5, 1)",
+    fill: "both",
+    ...options,
+  });
+  animation.onfinish = () => {
+    onFinish?.();
+    element.style.opacity = "";
+    element.style.transform = "";
+    element.style.willChange = "";
+  };
 }
 
 function renderArticles() {
@@ -461,9 +520,6 @@ function stopMediaDrag(event) {
 
 function setupRevealAnimations() {
   const elements = document.querySelectorAll([
-    ".hero-copy",
-    ".hero-wall",
-    ".hero-mark",
     ".stats",
     ".about-panel",
     ".section-head",
@@ -504,6 +560,49 @@ function setupRevealAnimations() {
   requestAnimationFrame(() => requestAnimationFrame(observeWhenReady));
 }
 
+function setupHeroIntro(heroAsset, wallAssets = []) {
+  const hero = document.getElementById("cover");
+  if (!hero) return;
+  const introId = String(Date.now());
+  hero.dataset.introId = introId;
+  hero.classList.remove("hero-ready");
+  hero.classList.add("hero-intro");
+  const revealItems = [...hero.querySelectorAll(".hero-reveal")];
+  revealItems.forEach(item => item.classList.remove("is-visible"));
+
+  const heroImages = [
+    heroAsset?.src,
+    ...wallAssets.slice(0, 5).map(asset => asset.src),
+  ];
+
+  Promise.all(heroImages.map(preloadImage)).then(() => {
+    if (hero.dataset.introId !== introId) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        revealItems.forEach(item => item.classList.add("is-visible"));
+        window.setTimeout(() => hero.classList.add("hero-ready"), 7200);
+      });
+    });
+  });
+}
+
+function replayHeroIntro() {
+  if (!isHomePage() || !portfolio) return;
+  resetHomeScroll();
+  const hero = document.getElementById("cover");
+  if (!hero) return;
+
+  hero.classList.remove("hero-ready");
+  hero.getAnimations({ subtree: true }).forEach(animation => animation.cancel());
+  hero.classList.add("is-resetting");
+  hero.querySelectorAll(".hero-reveal").forEach(item => item.classList.remove("is-visible"));
+  void hero.offsetWidth;
+  requestAnimationFrame(() => {
+    hero.classList.remove("is-resetting");
+    setupHeroIntro(heroAssetForIntro(), heroWallAssets());
+  });
+}
+
 function setupHeroMotion() {
   const hero = document.getElementById("cover");
   if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -534,6 +633,12 @@ document.getElementById("langToggle").addEventListener("click", () => {
   currentLang = currentLang === "zh" ? "en" : "zh";
   localStorage.setItem("portfolioLanguage", currentLang);
   render();
+});
+
+document.querySelector(".brand")?.addEventListener("click", event => {
+  if (!isHomePage()) return;
+  event.preventDefault();
+  replayHeroIntro();
 });
 
 document.addEventListener("click", async event => {

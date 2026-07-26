@@ -170,29 +170,36 @@ function articleList() {
 
 function filteredGallery() {
   const search = gallerySearchTerm.trim().toLowerCase();
+  return galleryBaseAssets(search)
+    .filter(asset => matchesGalleryUsage(asset, galleryUsageFilter))
+    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+}
+
+function galleryBaseAssets(search = gallerySearchTerm.trim().toLowerCase()) {
   const list = galleryFilter === "all"
     ? data.gallery
     : data.gallery.filter(asset => asset.chapter === galleryFilter);
-  return [...list]
-    .filter(asset => {
-      if (galleryUsageFilter === "chapterCover") return asset.showInChapterCover === true;
-      if (galleryUsageFilter === "chapterStrip") return asset.showInChapterStrip === true;
-      if (galleryUsageFilter === "homeGallery") return asset.showOnHome === true;
-      if (galleryUsageFilter === "heroWall") return asset.showInHeroWall === true;
-      return true;
-    })
-    .filter(asset => {
-      if (!search) return true;
-      const haystack = [
-        asset.filename,
-        asset.title,
-        asset.src,
-        asset.chapter,
-        chapterTitle(asset.chapter),
-      ].filter(Boolean).join(" ").toLowerCase();
-      return haystack.includes(search);
-    })
-    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+  return list.filter(asset => matchesGallerySearch(asset, search));
+}
+
+function matchesGalleryUsage(asset, usage) {
+  if (usage === "chapterCover") return asset.showInChapterCover === true;
+  if (usage === "chapterStrip") return asset.showInChapterStrip === true;
+  if (usage === "homeGallery") return asset.showOnHome === true;
+  if (usage === "heroWall") return asset.showInHeroWall === true;
+  return true;
+}
+
+function matchesGallerySearch(asset, search) {
+  if (!search) return true;
+  const haystack = [
+    asset.filename,
+    asset.title,
+    asset.src,
+    asset.chapter,
+    chapterTitle(asset.chapter),
+  ].filter(Boolean).join(" ").toLowerCase();
+  return haystack.includes(search);
 }
 
 function galleryAssetId(asset) {
@@ -390,12 +397,13 @@ function chapterIdFromTitle(title) {
 }
 
 function renderGalleryUsageFilter() {
+  const countBase = galleryBaseAssets();
   const filters = [
-    { id: "all", label: "全部图片", count: data.gallery.length },
-    { id: "chapterCover", label: "章节预览图", count: data.gallery.filter(asset => asset.showInChapterCover === true).length },
-    { id: "chapterStrip", label: "章节右侧图", count: data.gallery.filter(asset => asset.showInChapterStrip === true).length },
-    { id: "homeGallery", label: "首页图库", count: data.gallery.filter(asset => asset.showOnHome === true).length },
-    { id: "heroWall", label: "首屏动态图", count: data.gallery.filter(asset => asset.showInHeroWall === true).length },
+    { id: "all", label: "全部图片", count: countBase.length },
+    { id: "chapterCover", label: "章节预览图", count: countBase.filter(asset => matchesGalleryUsage(asset, "chapterCover")).length },
+    { id: "chapterStrip", label: "章节右侧图", count: countBase.filter(asset => matchesGalleryUsage(asset, "chapterStrip")).length },
+    { id: "homeGallery", label: "首页图库", count: countBase.filter(asset => matchesGalleryUsage(asset, "homeGallery")).length },
+    { id: "heroWall", label: "首屏动态图", count: countBase.filter(asset => matchesGalleryUsage(asset, "heroWall")).length },
   ];
   const homepageUsageLabels = {
     all: "全部图片",
