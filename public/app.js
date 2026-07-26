@@ -463,11 +463,6 @@ function setupRevealAnimations() {
     ".contact-panel",
   ].join(","));
 
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    elements.forEach(element => element.classList.add("is-visible"));
-    return;
-  }
-
   if (!("IntersectionObserver" in window)) {
     elements.forEach(element => element.classList.add("is-visible"));
     return;
@@ -485,11 +480,15 @@ function setupRevealAnimations() {
     threshold: [0, 0.2, 0.42, 0.7],
   });
 
+  const observeWhenReady = () => {
+    elements.forEach(element => revealObserver.observe(element));
+  };
+
   elements.forEach((element, index) => {
     element.classList.add("reveal-item");
     element.style.setProperty("--reveal-delay", `${Math.min(index % 5, 4) * 220}ms`);
-    revealObserver.observe(element);
   });
+  requestAnimationFrame(() => requestAnimationFrame(observeWhenReady));
 }
 
 function setupHeroMotion() {
