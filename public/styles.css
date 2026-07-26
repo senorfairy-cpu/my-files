@@ -1387,8 +1387,8 @@ footer {
   opacity: 0;
   transform: translateY(64px);
   transition:
-    opacity 3000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms),
-    transform 3400ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms);
+    opacity 10000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms),
+    transform 10000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
 .chapter.reveal-item,
