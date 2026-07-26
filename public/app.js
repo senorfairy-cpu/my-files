@@ -487,7 +487,7 @@ function setupRevealAnimations() {
 
   elements.forEach((element, index) => {
     element.classList.add("reveal-item");
-    element.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 90}ms`);
+    element.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 170}ms`);
     revealObserver.observe(element);
   });
 }
