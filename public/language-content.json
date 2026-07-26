@@ -52,34 +52,34 @@
         "3D 场景",
         "画册 / 展会",
         "AI 辅助创意",
-        "PS / AI / C4D",
-        "AE / ChatGPT"
+        "PS / AI / C4D / AE",
+        "产品营销文案优化"
       ]
     },
     "chapters": {
       "eyebrow": "Portfolio Structure",
-      "title": "按照“品牌 × 产品 × 营销视觉”的求职叙事重组作品。"
+      "title": "我的作品类别"
     },
     "chaptersById": {
       "brand-system": {
         "title": "品牌系统设计",
         "subtitle": "Brand System Design",
-        "summary": "围绕 Logo、视觉语言、产品识别、包装、铭牌与品牌应用系统，呈现科技产品品牌从识别到落地的完整表达。"
+        "summary": "围绕 Logo、视觉语言、产品识别、包装、铭牌的品牌应用系统，整理画册、易拉宝、印刷物料、包装、卡片、保修卡与品牌周边等实际触点，对科技产品从识别到落地视觉的完整统一。"
       },
       "product-marketing": {
         "title": "产品营销视觉",
         "subtitle": "Product Marketing Visual",
-        "summary": "面向 GNSS / RTK 等科技产品，整理产品主视觉、功能图标、卖点拆解页面与商业应用场景。"
+        "summary": "面向科技产品，制作多角度渲染图、销售卖点分析拆解结合应用场景产出各种社媒海报。"
       },
       "campaign-kv": {
         "title": "商业海报 & KV",
         "subtitle": "Campaign KV",
-        "summary": "包含国际市场活动海报、新品发布视觉、产品主题画面与多语言营销适配。"
+        "summary": "包含多语言国际展会的活动海报、展位视觉，活动邀请函设计与各衍生品牌适配。"
       },
       "scene-3d": {
-        "title": "产品场景与 3D 视觉",
-        "subtitle": "3D & Scenario Visual",
-        "summary": "包含 C4D 产品渲染、工程场景搭建、材质研究与偏动态方向的视觉探索。"
+        "title": "场景与3D视觉",
+        "subtitle": "Scene & 3D Visuals",
+        "summary": "各种C4D产品渲染、产品营销的场景搭建、材质表现推演与偏动态方向的视觉探索。"
       },
       "touchpoints": {
         "title": "展会 / 画册 / 落地物料",
@@ -87,14 +87,14 @@
         "summary": "整理画册、展台、易拉宝、印刷物料、包装、卡片、保修卡与品牌周边等实际触点。"
       },
       "ai-workflow": {
-        "title": "AI + 工作流",
-        "subtitle": "AI Assisted Workflow",
-        "summary": "把创意概念、AI 草图、场景搭建、后期修图与最终营销视觉交付整理成可复用流程。"
+        "title": "AI工作流",
+        "subtitle": "AI Workflow",
+        "summary": "借助AI工具，结合概念、产品使用场景，生成各产品的营销主视觉，且进一步对供应商偏技术性的文字做营销文案优化，投入各营销物料使用，搭配后期修图，形成最终交付，整理成可复用流程。"
       },
       "practice": {
         "title": "个人练习",
         "subtitle": "Practice Collection",
-        "summary": "收录版式、渲染、动态图形等个人练习，用于补充展示视觉探索和软件综合能力。"
+        "summary": "文字设计、矢量插画绘制、UI动态图形等个人日常练习"
       }
     },
     "thinking": {
@@ -208,34 +208,34 @@
         "3D Scenes",
         "Brochures / Exhibitions",
         "AI-assisted Creativity",
-        "PS / AI / C4D",
-        "AE / ChatGPT"
+        "PS / AI / C4D / AE",
+        "Product Marketing Copy Optimization"
       ]
     },
     "chapters": {
       "eyebrow": "Portfolio Structure",
-      "title": "A portfolio reorganized around the story of brand, product and marketing visuals."
+      "title": "My Work Categories"
     },
     "chaptersById": {
       "brand-system": {
-        "title": "Brand System Design",
-        "subtitle": "Brand System Design",
-        "summary": "Logo systems, visual language, product identification, packaging, nameplates and brand applications for technology products."
+        "title": "Brand System & Touchpoint Design",
+        "subtitle": "Brand System & Touchpoints",
+        "summary": "Centered on logo, visual language, product identification, packaging, nameplates, and brand application systems, this chapter also organizes practical touchpoints such as brochures, roll-up banners, printed materials, packaging, cards, warranty cards, and brand peripherals, creating a unified visual expression from identity to implementation for technology products."
       },
       "product-marketing": {
         "title": "Product Marketing Visual",
         "subtitle": "Product Marketing Visual",
-        "summary": "Core product KV, feature icons, functional breakdown pages and commercial scenes for GNSS / RTK products."
+        "summary": "For technology products, this chapter presents multi-angle product renderings, selling-point analysis and breakdowns, and social media posters created around real application scenarios."
       },
       "campaign-kv": {
         "title": "Campaign Posters & KV",
         "subtitle": "Campaign KV",
-        "summary": "International campaign posters, launch visuals, product themes and multilingual marketing adaptations."
+        "summary": "Includes multilingual international exhibition posters, booth visuals, event invitation designs, and adaptations for related sub-brands."
       },
       "scene-3d": {
-        "title": "Product Scenes & 3D Visuals",
-        "subtitle": "3D & Scenario Visual",
-        "summary": "C4D rendering, product scene building, engineering scenarios, material studies and motion-oriented visual exploration."
+        "title": "Scenes & 3D Visuals",
+        "subtitle": "Scene & 3D Visuals",
+        "summary": "Covers C4D product renderings, scene building for product marketing, material expression studies, and visual exploration with a motion-oriented direction."
       },
       "touchpoints": {
         "title": "Exhibitions / Brochures / Collateral",
@@ -243,14 +243,14 @@
         "summary": "Brochures, booth visuals, roll-up banners, print collateral, packaging, cards, warranty cards and peripheral brand materials."
       },
       "ai-workflow": {
-        "title": "AI + Workflow",
-        "subtitle": "AI Assisted Workflow",
-        "summary": "A repeatable workflow from idea, AI sketch and scene building to retouching and final marketing visual delivery."
+        "title": "AI Workflow",
+        "subtitle": "AI Workflow",
+        "summary": "Using AI tools, this chapter combines concepts with product usage scenarios to generate marketing key visuals for different products. It also refines supplier-provided technical copy into more market-oriented messaging, applies it across marketing materials, and combines it with post-production retouching to form a reusable workflow for final delivery."
       },
       "practice": {
         "title": "Practice Collection",
         "subtitle": "Practice Collection",
-        "summary": "Graphic studies and self-initiated visual practice across layout, rendering and motion folders."
+        "summary": "Daily personal practice in typography, vector illustration, UI motion graphics, and related visual experiments."
       }
     },
     "thinking": {

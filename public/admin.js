@@ -543,6 +543,7 @@ function renderGalleryForm() {
   galleryForm.src.value = asset.src || "";
   galleryForm.size.value = `${asset.width || "-"} x ${asset.height || "-"}`;
   galleryForm.order.value = asset.order || 0;
+  galleryForm.workSummary.value = asset.workSummary || "";
   galleryForm.showInHeroWall.checked = Boolean(asset.showInHeroWall);
   galleryForm.showOnHome.checked = Boolean(asset.showOnHome);
   galleryForm.showInChapterCover.checked = Boolean(asset.showInChapterCover);
@@ -611,6 +612,9 @@ function commitGalleryForm() {
   if (!asset) return;
   asset.chapter = galleryForm.chapter.value;
   asset.order = Number(galleryForm.order.value || 0);
+  const workSummary = galleryForm.workSummary.value.trim();
+  if (workSummary) asset.workSummary = workSummary;
+  else delete asset.workSummary;
   asset.showInHeroWall = galleryForm.showInHeroWall.checked;
   asset.showOnHome = galleryForm.showOnHome.checked;
   asset.showInChapterCover = galleryForm.showInChapterCover.checked;

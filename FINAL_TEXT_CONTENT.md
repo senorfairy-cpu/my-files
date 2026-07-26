@@ -48,30 +48,33 @@
 | 技能 4 | 3D 场景 | 3D Scenes |
 | 技能 5 | 画册 / 展会 | Brochures / Exhibitions |
 | 技能 6 | AI 辅助创意 | AI-assisted Creativity |
-| 技能 7 | PS / AI / C4D | PS / AI / C4D |
-| 技能 8 | AE / ChatGPT | AE / ChatGPT |
+| 技能 7 | PS / AI / C4D / AE| PS / AI / C4D / AE |
+| 技能 8 | 产品营销文案优化 | Product Marketing Copy Optimization |
 
 ## 5. Portfolio Structure / 作品章节
 
+| 字段 | 中文 | English |
+| --- | --- | --- |
+| Eyebrow | Portfolio Structure | Portfolio Structure |
+| 标题 | 我的作品类别 | My Work Categories |
+
 | 章节 | 中文标题 | English Title | 中文副标题 | English Subtitle |
 | --- | --- | --- | --- | --- |
-| 01 | 品牌系统设计 | Brand System Design | Brand System Design | Brand System Design |
+| 01 | 品牌系统设计 | Brand System & Touchpoint Design | Brand System Design | Brand System & Touchpoints |
 | 02 | 产品营销视觉 | Product Marketing Visual | Product Marketing Visual | Product Marketing Visual |
 | 03 | 商业海报 & KV | Campaign Posters & KV | Campaign KV | Campaign KV |
-| 04 | 产品场景与 3D 视觉 | Product Scenes & 3D Visuals | 3D & Scenario Visual | 3D & Scenario Visual |
-| 05 | 展会 / 画册 / 落地物料 | Exhibitions / Brochures / Collateral | Exhibition & Collateral | Exhibition & Collateral |
-| 06 | AI + 工作流 | AI + Workflow | AI Assisted Workflow | AI Assisted Workflow |
-| 07 | 个人练习 | Practice Collection | Practice Collection | Practice Collection |
+| 04 | 场景与3D视觉 | Scenes & 3D Visuals | Scene & 3D Visuals | Scene & 3D Visuals |
+| 05 | AI工作流 | AI Workflow | AI Workflow | AI Workflow |
+| 06 | 个人练习 | Practice Collection | Practice Collection | Practice Collection |
 
 | 章节 | 中文说明 | English Summary |
 | --- | --- | --- |
-| 01 | 围绕 Logo、视觉语言、产品识别、包装、铭牌与品牌应用系统，呈现科技产品品牌从识别到落地的完整表达。 | Logo systems, visual language, product identification, packaging, nameplates and brand applications for technology products. |
-| 02 | 面向 GNSS / RTK 等科技产品，整理产品主视觉、功能图标、卖点拆解页面与商业应用场景。 | Core product KV, feature icons, functional breakdown pages and commercial scenes for GNSS / RTK products. |
-| 03 | 包含国际市场活动海报、新品发布视觉、产品主题画面与多语言营销适配。 | International campaign posters, launch visuals, product themes and multilingual marketing adaptations. |
-| 04 | 包含 C4D 产品渲染、工程场景搭建、材质研究与偏动态方向的视觉探索。 | C4D rendering, product scene building, engineering scenarios, material studies and motion-oriented visual exploration. |
-| 05 | 整理画册、展台、易拉宝、印刷物料、包装、卡片、保修卡与品牌周边等实际触点。 | Brochures, booth visuals, roll-up banners, print collateral, packaging, cards, warranty cards and peripheral brand materials. |
-| 06 | 把创意概念、AI 草图、场景搭建、后期修图与最终营销视觉交付整理成可复用流程。 | A repeatable workflow from idea, AI sketch and scene building to retouching and final marketing visual delivery. |
-| 07 | 收录版式、渲染、动态图形等个人练习，用于补充展示视觉探索和软件综合能力。 | Graphic studies and self-initiated visual practice across layout, rendering and motion folders. |
+| 01 | 围绕 Logo、视觉语言、产品识别、包装、铭牌的品牌应用系统，整理画册、易拉宝、印刷物料、包装、卡片、保修卡与品牌周边等实际触点，对科技产品从识别到落地视觉的完整统一。 | Centered on logo, visual language, product identification, packaging, nameplates, and brand application systems, this chapter also organizes practical touchpoints such as brochures, roll-up banners, printed materials, packaging, cards, warranty cards, and brand peripherals, creating a unified visual expression from identity to implementation for technology products. |
+| 02 | 面向科技产品，制作多角度渲染图、销售卖点分析拆解结合应用场景产出各种社媒海报。 | For technology products, this chapter presents multi-angle product renderings, selling-point analysis and breakdowns, and social media posters created around real application scenarios. |
+| 03 | 包含多语言国际展会的活动海报、展位视觉，活动邀请函设计与各衍生品牌适配。 | Includes multilingual international exhibition posters, booth visuals, event invitation designs, and adaptations for related sub-brands. |
+| 04 | 各种C4D产品渲染、产品营销的场景搭建、材质表现推演与偏动态方向的视觉探索。 | Covers C4D product renderings, scene building for product marketing, material expression studies, and visual exploration with a motion-oriented direction. |
+| 05 | 借助AI工具，结合概念、产品使用场景，生成各产品的营销主视觉，且进一步对供应商偏技术性的文字做营销文案优化，投入各营销物料使用，搭配后期修图，形成最终交付，整理成可复用流程。 | Using AI tools, this chapter combines concepts with product usage scenarios to generate marketing key visuals for different products. It also refines supplier-provided technical copy into more market-oriented messaging, applies it across marketing materials, and combines it with post-production retouching to form a reusable workflow for final delivery. |
+| 06 | 文字设计、矢量插画绘制、UI动态图形等个人日常练习 | Daily personal practice in typography, vector illustration, UI motion graphics, and related visual experiments. |
 
 后台可控但不在语言包内：
 

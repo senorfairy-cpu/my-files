@@ -8,6 +8,7 @@ let mediaZoom = "fit";
 let mediaPan = { x: 0, y: 0 };
 let mediaDrag = null;
 let parallaxFrame = null;
+const hiddenFrontendChapters = new Set(["touchpoints"]);
 
 async function loadPortfolio() {
   const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
@@ -34,6 +35,12 @@ function localizedChapter(chapter) {
     ...chapter,
     ...(localizedCollection("chaptersById")[chapter.id] || {}),
   };
+}
+
+function frontendChapters() {
+  return (portfolio.chapters || [])
+    .filter(chapter => !hiddenFrontendChapters.has(chapter.id))
+    .map(localizedChapter);
 }
 
 function localizedArticle(article) {
@@ -132,7 +139,7 @@ function render() {
     note: t("contact.note", "也可以通过邮箱先发送项目说明。"),
     ...(portfolio.contact || {}),
   };
-  const chapters = (portfolio.chapters || []).map(localizedChapter);
+  const chapters = frontendChapters();
   const gallery = visibleGallery();
   const heroAsset = profile.heroImage ? { src: profile.heroImage } : coverFor("product-marketing") || gallery[0];
 
@@ -265,7 +272,7 @@ function renderArticles() {
 }
 
 function renderFilters() {
-  const chapters = (portfolio.chapters || []).map(localizedChapter);
+  const chapters = frontendChapters();
   const filters = [{ id: "all", title: t("filters.all", "全部") }, ...chapters.map(chapter => ({ id: chapter.id, title: chapter.title }))];
   document.getElementById("filters").innerHTML = filters.map(filter => `
     <button class="${filter.id === activeChapter ? "active" : ""}" data-id="${escapeHtml(filter.id)}">${escapeHtml(filter.title)}</button>
@@ -293,8 +300,7 @@ function renderArchive() {
           <img loading="lazy" src="${asset.src}" alt="${escapeHtml(filename)}">
         </button>
         <figcaption>
-          <span>${escapeHtml(chapter ? chapter.title : asset.chapter)}</span>
-          <strong>${escapeHtml(filename)}</strong>
+          <strong>${escapeHtml(chapter ? chapter.title : asset.chapter)}</strong>
         </figcaption>
       </figure>
     `;
@@ -327,6 +333,11 @@ function openMediaModal(id) {
       <dd>${escapeHtml(value)}</dd>
     </div>
   `).join("");
+  const workSummary = String(asset.workSummary || "").trim();
+  const workSummaryPanel = document.getElementById("mediaWorkSummary");
+  const workSummaryText = document.getElementById("mediaWorkSummaryText");
+  workSummaryPanel.hidden = !workSummary;
+  workSummaryText.textContent = workSummary;
   mediaZoom = "fit";
   mediaPan = { x: 0, y: 0 };
   applyMediaZoom();
