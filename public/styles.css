@@ -63,9 +63,9 @@
   --paper: #050403;
   --panel: #120d09;
   --panel-2: #1b120b;
-  --accent: #d97932;
-  --accent-2: #9d4314;
-  --accent-soft: #f0a35d;
+  --accent: #df7b2f;
+  --accent-2: #a84a18;
+  --accent-soft: #f29a56;
   --glass: rgba(255, 244, 232, .055);
   --glass-strong: rgba(255, 244, 232, .092);
   --gold-line: rgba(217, 121, 50, .38);
@@ -199,10 +199,10 @@ nav a:hover {
 .admin-toast[data-type="error"] { border-color: rgba(255, 107, 107, .7); color: #ffd9d9; }
 .nav-cta {
   color: #fff2e5;
-  border: 1px solid rgba(255, 185, 112, .52);
+  border: 1px solid rgba(92, 40, 13, .5);
   padding: 0 12px;
   border-radius: 999px;
-  background: rgba(215, 105, 38, .34);
+  background: var(--accent);
 }
 
 .hero {
@@ -333,24 +333,20 @@ h1 {
   box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
 }
 .button.primary {
-  background:
-    radial-gradient(circle at 36% 12%, rgba(255, 207, 154, .42), transparent 38%),
-    linear-gradient(180deg, #f1883a 0%, #df6f25 100%);
-  border-color: rgba(255, 169, 95, .64);
-  color: #fff9f4;
+  background: var(--accent);
+  border-color: rgba(92, 40, 13, .46);
+  color: #080807;
   font-weight: 700;
-  text-shadow: 0 1px 1px rgba(90, 34, 5, .3);
+  text-shadow: none;
   box-shadow:
-    inset 0 1px 0 rgba(255, 229, 198, .36),
+    inset 0 1px 0 rgba(255, 222, 188, .2),
     0 8px 22px rgba(211, 88, 20, .18);
 }
 .button.primary:hover {
-  border-color: rgba(255, 190, 124, .76);
-  background:
-    radial-gradient(circle at 36% 12%, rgba(255, 220, 180, .48), transparent 40%),
-    linear-gradient(180deg, #fa9144 0%, #e8752a 100%);
+  border-color: rgba(92, 40, 13, .62);
+  background: #e88639;
   box-shadow:
-    inset 0 1px 0 rgba(255, 236, 214, .42),
+    inset 0 1px 0 rgba(255, 231, 205, .24),
     0 9px 24px rgba(211, 88, 20, .24);
 }
 .button.ghost {
@@ -820,9 +816,9 @@ h1 {
 }
 .filterbar button:hover { transform: translateY(-1px); border-color: rgba(217, 121, 50, .42); }
 .filterbar button.active {
-  color: #fff2e5;
-  background: linear-gradient(180deg, #db8640, #c56924);
-  border-color: rgba(255, 188, 118, .68);
+  color: #080807;
+  background: var(--accent);
+  border-color: rgba(92, 40, 13, .46);
   font-weight: 700;
 }
 
