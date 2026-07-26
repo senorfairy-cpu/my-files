@@ -1385,25 +1385,25 @@ footer {
 
 .reveal-item {
   opacity: 0;
-  transform: translateY(46px);
+  transform: translateY(64px);
   transition:
-    opacity 2200ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms),
-    transform 2400ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms);
+    opacity 3000ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms),
+    transform 3400ms cubic-bezier(.25, 1, .5, 1) var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
 .chapter.reveal-item,
 .archive-item.reveal-item {
-  transform: translateY(52px);
+  transform: translateY(72px);
 }
 .article-card.reveal-item:nth-child(even),
 .archive-item.reveal-item:nth-child(3n) {
-  transform: translateY(40px);
+  transform: translateY(58px);
 }
 .hero-copy.reveal-item {
-  transform: translateY(-40px);
+  transform: translateY(-56px);
 }
 .hero-mark.reveal-item {
-  transform: translateY(38px);
+  transform: translateY(52px);
 }
 .reveal-item.is-visible {
   opacity: 1;

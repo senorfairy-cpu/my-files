@@ -476,18 +476,18 @@ function setupRevealAnimations() {
   revealObserver?.disconnect();
   revealObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
+      if (!entry.isIntersecting || entry.intersectionRatio < 0.42) return;
       entry.target.classList.add("is-visible");
       revealObserver.unobserve(entry.target);
     });
   }, {
-    rootMargin: "0px 0px -8% 0px",
-    threshold: 0.08,
+    rootMargin: "0px 0px -18% 0px",
+    threshold: [0, 0.2, 0.42, 0.7],
   });
 
   elements.forEach((element, index) => {
     element.classList.add("reveal-item");
-    element.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 170}ms`);
+    element.style.setProperty("--reveal-delay", `${Math.min(index % 5, 4) * 220}ms`);
     revealObserver.observe(element);
   });
 }
