@@ -880,7 +880,8 @@
       "filename": "0002-6-3x-100.jpg",
       "showOnHome": false,
       "showInChapterCover": false,
-      "showInChapterStrip": false
+      "showInChapterStrip": false,
+      "showInHeroWall": false
     },
     {
       "src": "/assets/gallery/brand-system/0004-1-100.jpg",
@@ -5359,7 +5360,11 @@
       "title": "T5-T30 fr-06",
       "orientation": "portrait",
       "order": 488,
-      "filename": "0489-t5-t30-fr-06.jpg"
+      "filename": "0489-t5-t30-fr-06.jpg",
+      "showInHeroWall": false,
+      "showOnHome": false,
+      "showInChapterCover": true,
+      "showInChapterStrip": false
     },
     {
       "src": "/assets/gallery/touchpoints/0492-asset.jpg",
