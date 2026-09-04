@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Portfolio Admin</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css?v=20260810-10">
   </head>
   <body class="admin-page locked">
     <section class="login-screen" id="loginScreen">
@@ -91,13 +91,19 @@
 
           <form id="settingsForm" class="form-grid" hidden>
             <label>Banner 大图路径<input name="heroImage" placeholder="/assets/uploads/banner.jpg"></label>
-            <label>联系邮箱<input name="email"></label>
-            <label>电话<input name="phone"></label>
-            <label>微信号<input name="wechat"></label>
-            <label class="full">联系模块标题<textarea name="contactTitle" rows="3"></textarea></label>
-            <label class="full">联系模块说明<textarea name="contactBody" rows="3"></textarea></label>
-            <label>微信二维码路径<input name="qrImage" placeholder="/assets/uploads/wechat.jpg"></label>
-            <label class="full">联系模块备注<input name="contactNote"></label>
+            <h3 class="form-section-title full">中文联系方式</h3>
+            <label>中文联系邮箱<input name="email"></label>
+            <label>中文电话<input name="phone"></label>
+            <label>中文微信号<input name="wechat"></label>
+            <label class="full">中文联系模块标题<textarea name="contactTitle" rows="3"></textarea></label>
+            <label class="full">中文联系模块说明<textarea name="contactBody" rows="3"></textarea></label>
+            <label>中文微信二维码路径<input name="qrImage" placeholder="/assets/uploads/wechat.jpg"></label>
+            <label class="full">中文联系模块备注<input name="contactNote"></label>
+            <h3 class="form-section-title full">英文联系方式</h3>
+            <label>英文联系邮箱<input name="enEmail" placeholder="hello@example.com"></label>
+            <label class="full">英文联系模块标题<textarea name="enContactTitle" rows="3"></textarea></label>
+            <label class="full">英文联系模块说明<textarea name="enContactBody" rows="3"></textarea></label>
+            <label class="full">英文联系模块备注<input name="enContactNote"></label>
           </form>
 
           <section id="galleryPanel" hidden>
@@ -159,6 +165,6 @@
       </main>
     </div>
 
-    <script src="/admin.js"></script>
+    <script src="/admin.js?v=20260810-10"></script>
   </body>
 </html>

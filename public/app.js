@@ -119,19 +119,61 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function localizedContact(profile = {}) {
+  const contact = portfolio.contact || {};
+  const languageContact = contact[currentLang] || {};
+  const textContact = langData().contact || {};
+  if (currentLang === "en") {
+    return {
+      email: languageContact.email || contact.email || profile.email || "",
+      phone: "",
+      wechat: "",
+      qrImage: "",
+      title: languageContact.title || textContact.title || "Have a project in mind? Send me an email.",
+      body: languageContact.body || textContact.body || "Share your goals, usage scenario and timeline. I will reply with practical suggestions based on the project scope.",
+      emailLabel: textContact.emailLabel || "Email",
+      phoneLabel: textContact.phoneLabel || "Phone",
+      wechatLabel: "",
+      qrPlaceholder: "",
+      note: languageContact.note || textContact.note || "",
+      showQrCard: false,
+    };
+  }
+  const zhContact = contact.zh || contact;
+  return {
+    email: zhContact.email || contact.email || profile.email || "",
+    phone: zhContact.phone || contact.phone || profile.phone || "",
+    wechat: zhContact.wechat || contact.wechat || "",
+    qrImage: zhContact.qrImage || contact.qrImage || "",
+    title: zhContact.title || contact.title || textContact.title || "有海报、电商、展会、目录或视频项目，可以先加微信沟通。",
+    body: zhContact.body || contact.body || textContact.body || "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。",
+    emailLabel: textContact.emailLabel || "邮箱",
+    phoneLabel: textContact.phoneLabel || "电话",
+    wechatLabel: textContact.wechatLabel || "微信二维码",
+    qrPlaceholder: textContact.qrPlaceholder || "上传二维码",
+    note: zhContact.note || contact.note || textContact.note || "也可以通过邮箱先发送项目说明。",
+    showQrCard: true,
+  };
+}
+
 function render() {
   applyStaticText();
   const profile = { ...portfolio.profile, ...(langData().profile || {}) };
+  const contactData = portfolio.contact || {};
   const contact = {
-    title: t("contact.title", "有海报、电商、展会、目录或视频项目，可以先加微信沟通。"),
-    body: t("contact.body", "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。"),
+    email: contactData.email,
+    phone: contactData.phone,
+    wechat: contactData.wechat,
+    qrImage: contactData.qrImage,
+    title: currentLang === "zh" ? (contactData.title || t("contact.title", "有海报、电商、展会、目录或视频项目，可以先加微信沟通。")) : t("contact.title", "For posters, e-commerce visuals, exhibitions, catalogs or video projects, feel free to reach out first."),
+    body: currentLang === "zh" ? (contactData.body || t("contact.body", "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。")) : t("contact.body", "Share your project goals, application, and deliverables. I'll provide practical recommendations and tailored solutions based on your project's scope and complexity."),
     emailLabel: t("contact.emailLabel", "邮箱"),
     phoneLabel: t("contact.phoneLabel", "电话"),
     wechatLabel: t("contact.wechatLabel", "微信二维码"),
     qrPlaceholder: t("contact.qrPlaceholder", "上传二维码"),
-    note: t("contact.note", "也可以通过邮箱先发送项目说明。"),
-    ...(portfolio.contact || {}),
+    note: currentLang === "zh" ? (contactData.note || t("contact.note", "也可以通过邮箱先发送项目说明。")) : t("contact.note", "You can also send a project brief by email."),
   };
+  Object.assign(contact, localizedContact(profile));
   const chapters = (portfolio.chapters || []).map(localizedChapter);
   const gallery = visibleGallery();
   const heroAsset = profile.heroImage ? { src: profile.heroImage } : coverFor("product-marketing") || gallery[0];
@@ -151,6 +193,8 @@ function render() {
   document.getElementById("footerLocation").textContent = profile.location || t("footer.location", "中国成都");
   document.getElementById("contactTitle").textContent = contact.title;
   document.getElementById("contactBody").textContent = contact.body;
+  const contactCard = document.querySelector(".contact-card");
+  contactCard.hidden = !contact.showQrCard;
   document.getElementById("contactQrLabel").textContent = contact.wechatLabel;
   document.getElementById("contactNote").textContent = contact.note || "";
   document.getElementById("contactQrBox").innerHTML = contact.qrImage

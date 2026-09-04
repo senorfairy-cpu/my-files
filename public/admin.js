@@ -95,16 +95,7 @@ async function loadData() {
   data.gallery = data.gallery || [];
   data.chapters = data.chapters || [];
   data.profile = data.profile || {};
-  data.contact = {
-    title: "有海报、电商、展会、目录或视频项目，可以先加微信沟通。",
-    body: "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。",
-    email: data.profile.email || "",
-    phone: data.profile.phone || "",
-    wechat: "",
-    qrImage: "",
-    note: "也可以通过邮箱先发送项目说明。",
-    ...(data.contact || {}),
-  };
+  data.contact = normalizeContact(data.contact || {}, data.profile);
   data.projects.forEach((project, index) => project.order = project.order ?? index);
   data.gallery.forEach((asset, index) => {
     asset.id = asset.id || `gallery-${index}-${Date.now()}`;
@@ -113,6 +104,44 @@ async function loadData() {
     asset.filename = asset.filename || asset.src?.split("/").pop() || "";
   });
   render();
+}
+
+function normalizeContact(contact = {}, profile = {}) {
+  const zhDefaults = {
+    title: "有海报、电商、展会、目录或视频项目，可以先加微信沟通。",
+    body: "告诉我你的项目目标、使用场景和交付时间，我会根据内容复杂度给出建议。",
+    email: profile.email || "",
+    phone: profile.phone || "",
+    wechat: "",
+    qrImage: "",
+    note: "也可以通过邮箱先发送项目说明。",
+  };
+  const enDefaults = {
+    title: "Have a project in mind? Send me an email.",
+    body: "Share your goals, usage scenario and timeline. I will reply with practical suggestions based on the project scope.",
+    email: "",
+    note: "Email is the preferred contact method for English inquiries.",
+  };
+  const zh = {
+    ...zhDefaults,
+    title: contact.zh?.title || contact.title || zhDefaults.title,
+    body: contact.zh?.body || contact.body || zhDefaults.body,
+    email: contact.zh?.email || contact.email || zhDefaults.email,
+    phone: contact.zh?.phone || contact.phone || zhDefaults.phone,
+    wechat: contact.zh?.wechat || contact.wechat || "",
+    qrImage: contact.zh?.qrImage || contact.qrImage || "",
+    note: contact.zh?.note || contact.note || zhDefaults.note,
+  };
+  const en = {
+    ...enDefaults,
+    ...(contact.en || {}),
+  };
+  return {
+    ...contact,
+    ...zh,
+    zh,
+    en,
+  };
 }
 
 function projectList() {
@@ -492,23 +521,31 @@ function renderGalleryForm() {
 
 function renderSettingsForm() {
   const profile = data.profile || {};
-  const contact = data.contact || {};
+  const contact = normalizeContact(data.contact || {}, profile);
+  data.contact = contact;
+  const zh = contact.zh || contact;
+  const en = contact.en || {};
   settingsForm.heroImage.value = profile.heroImage || "";
-  settingsForm.email.value = contact.email || profile.email || "";
-  settingsForm.phone.value = contact.phone || profile.phone || "";
-  settingsForm.wechat.value = contact.wechat || "";
-  settingsForm.contactTitle.value = contact.title || "";
-  settingsForm.contactBody.value = contact.body || "";
-  settingsForm.qrImage.value = contact.qrImage || "";
-  settingsForm.contactNote.value = contact.note || "";
+  settingsForm.email.value = zh.email || profile.email || "";
+  settingsForm.phone.value = zh.phone || profile.phone || "";
+  settingsForm.wechat.value = zh.wechat || "";
+  settingsForm.contactTitle.value = zh.title || "";
+  settingsForm.contactBody.value = zh.body || "";
+  settingsForm.qrImage.value = zh.qrImage || "";
+  settingsForm.contactNote.value = zh.note || "";
+  settingsForm.enEmail.value = en.email || "";
+  settingsForm.enContactTitle.value = en.title || "";
+  settingsForm.enContactBody.value = en.body || "";
+  settingsForm.enContactNote.value = en.note || "";
 }
 
 function renderSettingsPreview() {
   const profile = data.profile || {};
-  const contact = data.contact || {};
+  const contact = normalizeContact(data.contact || {}, profile);
+  const zh = contact.zh || contact;
   return `
     ${profile.heroImage ? `<figure class="admin-cover-preview"><img src="${escapeHtml(profile.heroImage)}" alt="Banner"><figcaption>当前 Banner 大图</figcaption></figure>` : ""}
-    ${contact.qrImage ? `<figure class="admin-cover-preview"><img src="${escapeHtml(contact.qrImage)}" alt="微信二维码"><figcaption>当前微信二维码</figcaption></figure>` : ""}
+    ${zh.qrImage ? `<figure class="admin-cover-preview"><img src="${escapeHtml(zh.qrImage)}" alt="微信二维码"><figcaption>当前中文微信二维码</figcaption></figure>` : ""}
   `;
 }
 
@@ -560,17 +597,26 @@ function commitGalleryForm() {
 
 function commitSettingsForm() {
   data.profile = data.profile || {};
-  data.contact = data.contact || {};
+  data.contact = normalizeContact(data.contact || {}, data.profile);
   data.profile.heroImage = settingsForm.heroImage.value.trim();
   data.profile.email = settingsForm.email.value.trim();
   data.profile.phone = settingsForm.phone.value.trim();
-  data.contact.email = settingsForm.email.value.trim();
-  data.contact.phone = settingsForm.phone.value.trim();
-  data.contact.wechat = settingsForm.wechat.value.trim();
-  data.contact.title = settingsForm.contactTitle.value.trim();
-  data.contact.body = settingsForm.contactBody.value.trim();
-  data.contact.qrImage = settingsForm.qrImage.value.trim();
-  data.contact.note = settingsForm.contactNote.value.trim();
+  data.contact.zh = {
+    email: settingsForm.email.value.trim(),
+    phone: settingsForm.phone.value.trim(),
+    wechat: settingsForm.wechat.value.trim(),
+    title: settingsForm.contactTitle.value.trim(),
+    body: settingsForm.contactBody.value.trim(),
+    qrImage: settingsForm.qrImage.value.trim(),
+    note: settingsForm.contactNote.value.trim(),
+  };
+  data.contact.en = {
+    email: settingsForm.enEmail.value.trim(),
+    title: settingsForm.enContactTitle.value.trim(),
+    body: settingsForm.enContactBody.value.trim(),
+    note: settingsForm.enContactNote.value.trim(),
+  };
+  Object.assign(data.contact, data.contact.zh);
 }
 
 function renderProjectAssets() {
@@ -1002,7 +1048,9 @@ document.getElementById("qrImageInput").addEventListener("change", async event =
   const file = event.target.files[0];
   if (!file) return;
   const uploaded = await uploadImage(file);
+  data.contact = normalizeContact(data.contact || {}, data.profile || {});
   data.contact.qrImage = uploaded.src;
+  data.contact.zh.qrImage = uploaded.src;
   settingsForm.qrImage.value = uploaded.src;
   document.getElementById("assetGrid").innerHTML = renderSettingsPreview();
   event.target.value = "";
