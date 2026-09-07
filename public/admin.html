@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Portfolio Admin</title>
-    <link rel="stylesheet" href="/styles.css?v=20260810-10">
+    <link rel="stylesheet" href="/styles.css?v=20260904-1">
   </head>
   <body class="admin-page locked">
     <section class="login-screen" id="loginScreen">
@@ -136,6 +136,7 @@
                 <label>图片路径<input name="src" readonly></label>
                 <label>图片尺寸<input name="size" readonly></label>
                 <label>排序<input name="order" type="number" min="0"></label>
+                <label class="full">作品简述<textarea name="workSummary" rows="6" placeholder="用于前台图片弹窗的简短说明，可留空"></textarea></label>
                 <label class="check"><input name="showInHeroWall" type="checkbox"> 在首屏动态展示</label>
                 <label class="check"><input name="showOnHome" type="checkbox"> 在首页图库展示</label>
                 <label class="check"><input name="showInChapterCover" type="checkbox"> 作为章节预览图</label>
@@ -165,6 +166,6 @@
       </main>
     </div>
 
-    <script src="/admin.js?v=20260810-10"></script>
+    <script src="/admin.js?v=20260904-1"></script>
   </body>
 </html>
