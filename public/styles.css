@@ -2384,6 +2384,16 @@ button:disabled,
 }
 
 @media (max-width: 680px) {
+  #thinkingTitle {
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+  .topbar .brand {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   .topbar {
     position: relative;
     top: 0;
