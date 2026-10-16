@@ -1,4 +1,5 @@
 node_modules/
+.visual-lab/
 .DS_Store
 Thumbs.db
 *.log
@@ -6,3 +7,17 @@ tmp/
 .env
 .env.*
 !.env.example
+
+# Local Visual Lab artifacts and secrets: never upload.
+/work/
+/outputs/
+/screenshots/
+/test-results/
+/playwright-report/
+.cache/
+coverage/
+*.zip
+*.pem
+*.key
+*.p12
+*.pfx

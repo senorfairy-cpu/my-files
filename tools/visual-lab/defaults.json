@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "2e8d26d182174b99478307d3310fc9302637088f",
+  "defaultPresetVersion": "original-v1",
+  "assets": {},
+  "content": {
+    "zh": {},
+    "en": {}
+  },
+  "base": {},
+  "desktop": {},
+  "mobile": {},
+  "localeStyles": {
+    "zh": {},
+    "en": {}
+  }
+}

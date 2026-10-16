@@ -1,5 +1,7 @@
 {
   "scripts": {
+    "lab": "node tools/visual-lab/server.js",
+    "lab:check": "node tools/visual-lab/check-production.js && node --test tools/visual-lab/*.test.js",
     "build:assets": "python scripts/build_assets.py",
     "start": "node server.js",
     "netlify:dev": "netlify dev",

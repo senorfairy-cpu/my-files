@@ -1,72 +1,92 @@
 # FEIROO Visual Lab 跨设备交接
 
-更新日期：2026-10-16（Asia/Shanghai）。
+更新：2026-10-16（Asia/Shanghai）。今日停止新增功能；等待用户今晚真机导入验收，不自动进入第三阶段。
 
-## 项目来源与工作分支
+## 仓库、版本和安全边界
 
-- 正确 GitHub 仓库：https://github.com/senorfairy-cpu/my-files
-- 网站生产来源分支：`portfolio-site`（用户的 Netlify 部署记录；本地已核验同名远端 Git 分支）。
-- 仓库默认分支是 `main`，不能将默认分支与网站生产来源分支混同。
-- 生产基准完整提交：`1487507325d369107e16bf5e86ab1bfa6d529841`，2026-09-22，`Add Google Search Console verification`。
-- 当前独立开发分支：`dev/local-review-20261016`。
-- 正式站：https://senorfairy-portfolio.netlify.app/
-- 旧的 `senorfairy-cpu/portfolio-site` 仓库地址错误，勿继续使用。
+- 仓库：https://github.com/senorfairy-cpu/my-files ，远程 origin；本次只提交、推送 dev/local-review-20261016。
+- 起始完整 SHA：2e8d26d182174b99478307d3310fc9302637088f。当前设计参数 baseCommit 仍指该原站设计基准，不是本次工具代码提交的 HEAD。
+- 生产分支 portfolio-site 的交接前 SHA：1487507325d369107e16bf5e86ab1bfa6d529841。禁止修改或推送生产分支。
+- 今天未修改 public/、正式 server.js、netlify.toml；已认可的移动 CSS 修复包含在起始提交中，继续保留。
+- 用户此前亲自确认 Netlify 只部署生产分支 portfolio-site，开发分支普通推送不触发正式部署。本轮不改配置、不建 PR、不调用部署接口；没有新增 GitHub Actions 工作流。
+- 交接提交 SHA 由推送后的 git rev-parse HEAD 和 git ls-remote 核对，不在提交内自引用尚未生成的 SHA。
 
-## 已完成及需保留的成果
+## 今日完成
 
-1. 已取得正确源代码并从生产基准建立独立开发分支，原历史目录未覆盖。
-2. 已核验线上 CSS、JS、语言文件、robots 和 sitemap 与基准匹配（排除 CRLF/LF 差异）；首页只发现后台链接由 `/admin.html` 美化为 `/admin`。
-3. 已修复移动端横向溢出，用户已认可，请保留 `public/styles.css` 中的修改：
-   - 680px 以下 `#thinkingTitle` 允许换行，必要时断开长内容。
-   - 同一响应式区间 `.topbar .brand` 限定容器宽度并允许换行，修复 320px 英文下约 1px 的额外溢出。
-   - 未用隐藏溢出的方式裁切文字；桌面端标题仍保留原有不换行设计。
-4. 中英文均验证 320/375/390/430px，无页面横向滚动；1440px 桌面回归通过。页面内容宽度与可用宽度分别为 305/305、360/360、375/375、415/415、1425/1425；差值来自纵向滚动条。`git diff --check` 通过。
-5. 用户已审核通过 V1.1 方案，作为后续开发依据。完整方案见 [docs/FEIROO_VISUAL_LAB_PROPOSAL.md](docs/FEIROO_VISUAL_LAB_PROPOSAL.md)。方案修订号 V1.1 不表示编辑器已开发。
+### 独立工具、背景与主题
 
-## Visual Lab 开发边界
+- tools/visual-lab/ 独立入口，专用只读服务绑定 127.0.0.1:4185；真实首页 iframe，保留动画、中英文及七档预览宽度。
+- 图片替换、缩放、X/Y、亮度、透明度、模糊；深色/亮色/自定义主题；纯色、渐变、图片、光源、遮罩独立开关。亮色真实白底，不被原黑色遮罩压暗。
+- 推荐文字/按钮配色必须主动应用；照片墙/浮卡仅作可关闭的亮底预览适配，未重构组件。
+- 桌面为移动默认继承来源，移动可独立稀疏覆盖；原始空覆盖保持默认视觉。
 
-- 当前尚未开发 Visual Lab，也未安装相关依赖。
-- 第一版优先背景、光影、文字、按钮、圆角、整体布局；照片墙和图库浮卡仅基础整体调节。
-- 真实网页元素点选为主要编辑入口，分类导航保留；常用参数优先，高级参数折叠。
-- 保存草稿、导出完整设计包、固化网站代码为不同操作；完整包包含必要背景、图片、字体及参数，以支持跨设备恢复。
-- 编辑器及本地草稿不进入 Netlify `public` 发布目录，不写线上数据。
-- 不进行复杂单元素自由排布，不提供一键固化或发布。
-- 2026-10-16 今晚明确不开发；下次需用户明确开始，再按批准方案执行。
+### 多光源与列表交互
 
-## 本地预览与跨设备准备
+- 最多五个稳定 ID 柔光；名称、顺序、增删共用；defaults/base/desktop/mobile 逐层覆盖。
+- 每源颜色/HEX、X/Y、宽高、旋转、强度、柔化、模糊、normal/screen/lighten/multiply/soft-light。底层环境光独立，不占五个名额。
+- 画布中心点拖动、方向键微调、Shift 加速、Esc 退出；pointer capture、唯一手势 ID 和最终落点回执避免旧回传覆盖。尺寸/旋转仍用面板。
+- 新增入口置顶，紧随列表；单击行或名称选中并同步画布，双击名称行内编辑；Enter 确认、Esc 取消、失焦确认，空名保留旧名。
+- 新增/复制名称避重，显隐/上下排序保留；复制、删除在属性标题旁；属性独立滚动，切换其他光源回顶部。交互优化只改面板，不改模型、渲染或存储格式。
+- 切换设备/语言/主题不清源、不重写已有混合模式；亮底新源默认 multiply，深底 screen；保留原始橙色主光源和动画。
 
-现有项目无前端框架构建步骤，`npm start` 运行 `node server.js`，默认端口 4173。另一台电脑需要 Git、Node.js，并获取此开发分支；按仓库依赖需要安装后再启动。不要启动 Netlify 部署命令，不导入生产存储凭据。
+### 本机草稿与 ZIP 设计包
 
-可在 PowerShell 的项目目录中设置 `$env:PORT='4184'` 后运行 `npm start`，访问 http://127.0.0.1:4184/ 。该 URL 只在当前电脑有服务运行时有效，不是可跨设备访问的公网地址。数据为本地仓库种子，不保证等同线上可编辑内容。后台只读查看，不测试写入或发布。
+- IndexedDB 手动保存参数与图片 Blob，最多十份，支持名称、保存时间、打开/删除、未保存状态；刷新后主动打开，不自动保存滑块操作。
+- .feiroo.zip 含格式版本、名称/创建时间、完整 Banner 参数、双端继承和覆盖、中英配置、预览语言/宽度、被任一图层引用的替换图片字节及 SHA-256 关系。
+- 导入先校验、展示摘要，再确认替换；失败不改当前设计和已有草稿。导入后可另存本机草稿；不会将草稿写入 public。
+- 标准 ZIP STORE，无新增依赖；单文件 20 MiB、ZIP/解压总量各 100 MiB、100 条目，清单另限 2 MiB。拒绝路径穿越、重复、软链接/特殊属性、加密、压缩/ZIP64、多磁盘、CRC/哈希错误、缺失素材、未知字段/版本；图片须签名匹配且实际可解码。
+- 包只在内存读取，不执行脚本、不解压写源码、不依赖云端；不保存绝对路径或临时 blob URL，恢复时重建当前 origin 的 URL。
+- 原站内置素材、字体、内容种子由同基准仓库提供，设计包不是独立网站安装包。未来文字/按钮/布局通过版本扩展；当前不静默丢弃未知字段。
+- IndexedDB 按浏览器及 origin（协议/主机/端口）隔离，不能靠 Git 搬走草稿；跨设备需携带 ZIP。
 
-## Netlify 配置核验与推送状态
+## 待修复与限制（本轮不修）
 
-**用户已在 Netlify 后台核实配置，并明确授权此次开发分支提交与推送。**
+1. **用户指定：已有本机草稿保存后，无法直接修改草稿名称。** 下次确认重命名流程与更新语义，今天只记录。
+2. 文件名需以 .feiroo.zip 结尾；同名下载若变成 xxx.feiroo (1).zip，先手动改为 xxx-副本.feiroo.zip 再导入。今天不调整文件名识别。
+3. 英文 768px 原站导航横向溢出，scrollWidth 约 828/clientWidth 753；未注入工具也复现。候选最小方案为 681–980px 导航换行，正式 CSS 未改。
+4. MutationObserver.observe 异常在无网站脚本的最小 iframe 也复现，指向内置浏览器 iframe 检测/注入路径，未定位宿主内部行号；保留 diagnostic.html，不为此改原站 JS。
+5. 没有撤销重做、拖拽缩放/旋转、复杂光源动画、3D、代码固化、云同步或账户系统；第三阶段完整文字/按钮/布局编辑未授权。
+6. 已做同机 4186 独立 origin 空存储迁移模拟，**尚未完成两台实体 Windows 验收**。用户已自行导出设计包，今晚携带测试。
+7. 旧标签不会热更新。更新工具代码前先保存/导出，再刷新并打开草稿或导入，不丢弃未保存设计。
 
-2026-10-16 用户直接提供的配置确认：
+当前约定开发范围已完成，没有失败自动测试或未完成的关键实现项；上述待修复/限制保留，不擅自扩展开发。
 
-- Production branch：`portfolio-site`。
-- Branch deploys：`Deploy only the production branch`。
-- Deploy Previews：针对生产分支或部署分支的 Pull Request。
-- 用户确认普通推送 `dev/local-review-20261016` 不会触发正式网站部署，并授权仅推送该开发分支。
+## 今日代码与验证
 
-上述配置来自用户亲自核验；此前代理看到登录界面而暂停的阻塞已由此次确认解除，不冒称代理通过管理 API 独立核验。本轮不修改部署配置、不创建 Pull Request、不调用部署或后台写入操作。开发分支当前树没有 `.github` 工作流；仓库 `netlify.toml` 的 `public` 发布目录及其余配置保持原样。
+- 新增 tools/visual-lab/：独立服务、编辑器、schema/默认值、背景适配、光源模型/面板/渲染、桥接、图片检查、IndexedDB、ZIP 编解码、诊断入口及测试。
+- package.json 仅增加 lab、lab:check，无新依赖；.gitignore 排除本地数据、work/outputs、ZIP、截图目录、缓存和密钥。
+- 文档：本文件、方案当前状态、tools/visual-lab/README.md 与 STORAGE.md。
+- 最终全量 node --test tools/visual-lab/*.test.js：25 项通过、0 失败；生产隔离检查通过，工具语法检查通过。提交前检查 git diff --check 与暂存名单。
+- 原版默认样式对照一致；黑橙、白橙蓝、黑底多色、独立图层、中英文/设备切换实测通过。
+- 390/768px 拖动坐标通过；列表回归从 X=32/Y=40 拖动约 5%/4% 得到 X=36.98/Y=44.02，像素舍入误差约 0.02%；移动独立 X=68 保留。
+- 单击、双击、Enter/Esc、失焦、排序、复制删除、隐藏、属性滚动复位实测通过；名称和参数经草稿/ZIP 恢复保留。
+- 含 JPEG 草稿刷新恢复，十份上限/第十一份拒绝，清空草稿后只凭 ZIP 恢复图片，4186 空存储重建自身 blob URL，通过。
+- 浏览器实测未来版本/CRC 错误/取消导入不替换设计；自动化覆盖缺失/伪装素材、超限、非法路径、重复/特殊条目、未知字段/版本。
+- 仅显式暂存 .gitignore、HANDOFF.md、方案、package.json、tools/visual-lab/；不提交本机 IndexedDB、设计包、测试截图、work、outputs、日志、缓存、node_modules、.env 或密钥。
 
-此交接提交仅包含下列三个文件。提交号及远程一致性由推送后的 Git 检查确认；下一台电脑可用 `git log -1`、`git status` 和 `git ls-remote origin refs/heads/dev/local-review-20261016` 复核，避免在本文件内自引用尚未生成的提交号。
+## 今晚另一台 Windows 恢复
 
-## 明天的下一步（2026-10-17）
+准备 Git 和 Node.js 24 LTS，在新的父目录运行。若目标目录已存在请换一个新名字，不覆盖旧目录：
 
-1. 在另一台电脑克隆正确仓库并检出 `dev/local-review-20261016`；已有克隆则先检查未提交修改，再获取并切换该分支，不覆盖本地工作。
-2. 比较本地与远端分支 SHA，确认包含本交接文件、完整 V1.1 方案和移动 CSS 修复。
-3. 阅读本文件及 `docs/FEIROO_VISUAL_LAB_PROPOSAL.md`，复核本地预览及移动端修复。
-4. 等用户明确开始开发后，按 V1.1 阶段一进行隔离骨架与参数契约；后续依阶段验收，不自动固化设计、推送或部署。
+```powershell
+git clone --branch dev/local-review-20261016 --single-branch https://github.com/senorfairy-cpu/my-files.git feiroo-visual-lab-20261016
+cd feiroo-visual-lab-20261016
+git rev-parse HEAD
+git ls-remote origin refs/heads/dev/local-review-20261016
+git status --short
+node --test tools/visual-lab/*.test.js
+node tools/visual-lab/check-production.js
+node tools/visual-lab/server.js
+```
 
-## 本次交接提交文件
+成功标志：本地/远端 SHA 一致，status 无输出，25 项测试通过，终端给出 http://127.0.0.1:4185/__visual-lab/ 。
 
-- `public/styles.css`：已认可的移动响应式修复。
-- `docs/FEIROO_VISUAL_LAB_PROPOSAL.md`：完整 V1.1 方案，保持原文。
-- `HANDOFF.md`：本交接说明。
+Visual Lab 只用 Node 内置模块，**无需 npm install**。不运行 npm start（原站服务），不运行任何 Netlify 命令，不导入生产凭据。
 
-本轮已检查工作区，变更恰为上述三个文件。对这三个文件执行常见 Token、私钥、凭据赋值、邮箱及手机号规则扫描，未发现匹配，并人工检查了 CSS 差异和文档内容；扫描不构成对整个历史仓库的安全审计。方案副本与原 V1.1 文档 SHA-256 相同：`DD2AAA132C3C6044976D9EF4AEAC98B369640D4DF52829C88ABB617E7F104941`。此次仅提交、推送指定开发分支；生产基准及生产分支不变。
+打开该地址 → 展开“草稿与设计包” → 选择自己携带的 .feiroo.zip → 核对摘要并确认 → 检查背景、光源/顺序/显隐、桌面/移动、中英文和图片 → 另存本机草稿。
 
-不要提交原始会话、外部 outputs 目录、运行缓存、凭据、临时图片、开发服务器日志或本地依赖目录。
+若 SHA 不同、测试失败、包不兼容或素材缺失，保留包和错误原文并报告，不强行覆盖、合并、改生产或部署。
+
+## 下次开发
+
+先等用户今晚实体机导入结果，再按新授权处理待修复项。没有新授权不继续第三阶段，不提交、推送、建 PR 或部署。

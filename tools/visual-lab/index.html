@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FEIROO Visual Lab · 背景与光影</title>
+<link rel="stylesheet" href="/__visual-lab/panel.css">
+<script src="/__visual-lab/lights.js" defer></script>
+<script src="/__visual-lab/schema.js" defer></script>
+<script src="/__visual-lab/image-file.js" defer></script>
+<script src="/__visual-lab/lights-panel.js" defer></script>
+<script src="/__visual-lab/design-package.js" defer></script>
+<script src="/__visual-lab/drafts.js" defer></script>
+<script src="/__visual-lab/storage-panel.js" defer></script>
+<script src="/__visual-lab/panel.js" defer></script>
+</head>
+<body>
+<header class="toolbar">
+  <div class="identity"><strong>FEIROO <span>Visual Lab</span></strong><small>V1.1 · 第二阶段</small></div>
+  <button id="panelToggle" aria-controls="panel" aria-expanded="true">收起面板</button>
+  <label>语言 <select id="language" disabled><option value="zh">中文</option><option value="en">English</option></select></label>
+  <label>设备 <select id="device" disabled><option value="desktop">桌面</option><option value="mobile">移动</option></select></label>
+  <label>预览宽度 <select id="width" disabled><option>320</option><option>375</option><option>390</option><option>430</option><option>768</option><option>1024</option><option selected>1440</option></select> px</label>
+</header>
+<div class="workspace">
+  <aside id="panel">
+    <p class="kicker">原始预设 / 本地内容种子</p>
+    <h1>从真实首页开始</h1>
+    <p class="muted">背景与光影实时预览，保留原站动画。常用参数直接调节，滤镜与光影按需展开。</p>
+    <details id="storagePanel" class="control-group"><summary>草稿与设计包 <small id="saveState" aria-live="polite"></small></summary>
+      <div class="control"><label for="draftName">设计名称</label><input id="draftName" type="text" maxlength="80" placeholder="未命名设计">
+      <label for="draftList">本机草稿 <small id="draftCount"></small></label><select id="draftList"><option value="">新草稿（最多 10 份）</option></select></div>
+      <div class="storage-actions"><button id="saveDraft">保存草稿</button><button id="openDraft">打开草稿</button><button id="deleteDraft">删除草稿</button><button id="exportPackage">导出设计包</button></div>
+      <label class="control" for="importPackage">导入设计包<input id="importPackage" type="file" accept=".feiroo.zip"></label>
+      <p id="storageMessage" class="muted" role="status">手动保存；草稿只在此浏览器和此本地地址有效。跨电脑请导出设计包。</p>
+      <p class="session-note">ZIP 包含全部覆盖参数与引用图片；需要相同代码基准的 Visual Lab。清除浏览器数据会删除本机草稿。</p>
+    </details>
+    <nav class="categories" aria-label="参数分类">
+      <button data-category="background" aria-pressed="true">背景与光影</button>
+      <button data-category="text" aria-pressed="false">文字</button>
+      <button data-category="components" aria-pressed="false">按钮与基础组件</button>
+      <button data-category="layout" aria-pressed="false">整体布局</button>
+    </nav>
+    <h2 id="categoryTitle">背景与光影</h2>
+    <div id="objects" class="objects" aria-label="Banner 对象"></div>
+    <section class="selection"><p id="selectedObject">Banner › 背景与光影</p><span class="badge" id="scopeLabel">原站自适应 / 继承</span>
+    <p id="futureControls" class="muted" hidden>文字、按钮与布局调节留待后续阶段。</p></section>
+    <section id="backgroundControls" aria-label="背景与光影参数"></section>
+    <details><summary>参数契约</summary><dl><dt>模型</dt><dd>schemaVersion 1</dd><dt>断点</dt><dd>≤ 680px 移动覆盖</dd><dt>默认值</dt><dd>空覆盖，继承原站</dd><dt>设计基准</dt><dd>2e8d26d</dd></dl></details>
+    <p class="note">本地设计数据与发布目录隔离；代码固化尚未开放。</p>
+  </aside>
+  <main class="preview-area">
+    <div class="preview-caption"><span id="viewportLabel">桌面 · 1440px</span><span>真实网页预览</span><button id="lightEditToggle" aria-pressed="false">编辑光源</button><button id="replay">重播入场</button><button id="home">返回首页</button></div>
+    <div id="previewScroll"><iframe id="preview" title="FEIROO 真实首页预览" sandbox="allow-scripts allow-same-origin" src="/?visualLab=1"></iframe></div>
+  </main>
+</div>
+<dialog id="restoreDialog" aria-labelledby="restoreTitle"><h2 id="restoreTitle">确认草稿或设计包操作</h2><p id="restoreSummary"></p><div class="storage-actions"><button id="cancelRestore">取消</button><button id="confirmRestore">确认操作</button></div></dialog>
+<footer role="status" id="status" aria-live="polite">正在连接本地预览…</footer>
+</body></html>

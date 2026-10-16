@@ -1,0 +1,40 @@
+/* Preview-only layers; no animation properties are overridden. */
+#cover .feiroo-lab-image,#cover .feiroo-lab-image-shade,#cover .feiroo-lab-light{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat}
+#cover .feiroo-lab-image{transform-origin:center;will-change:auto}
+#cover .feiroo-lab-image[hidden],#cover .feiroo-lab-image-shade[hidden],#cover .feiroo-lab-light[hidden]{display:none}
+#cover .feiroo-lab-image-shade{z-index:1}
+#cover.feiroo-lab-themed{isolation:isolate}
+#cover .feiroo-lab-light{z-index:2}
+#cover.feiroo-lab-themed::after{background:var(--feiroo-lab-mask,none);mix-blend-mode:normal}
+#cover.feiroo-lab-light-components .hero-wall img{filter:saturate(.95) contrast(1.03)}
+#cover.feiroo-lab-light-components .hero-wall figure{outline:1px solid #b8c4cf66;box-shadow:0 8px 20px #20304026}
+#cover.feiroo-lab-light-components .hero-mark{color:#425265;background:rgba(255,255,255,.86);border-color:#b8c4cf;box-shadow:0 10px 28px #2030401f,inset 0 1px 0 #fff}
+#cover.feiroo-lab-light-components .hero-mark strong{color:#233143}
+/* These classes are set only by an explicit palette button, never by theme selection. */
+#cover.feiroo-lab-palette-light .hero-copy>.eyebrow{color:#725222}
+#cover.feiroo-lab-palette-light #profileName{color:#1d2730}
+#cover.feiroo-lab-palette-light #profileIntro{color:#4c5964}
+#cover.feiroo-lab-palette-light .hero-actions .primary{color:#fff;background:#293b45;border-color:#293b45}
+#cover.feiroo-lab-palette-light .hero-actions .ghost{color:#24343d;background:#ffffffa6;border-color:#6e7d88}
+#cover.feiroo-lab-palette-light .hero-actions .primary:hover{background:#172a34}
+#cover.feiroo-lab-palette-light .hero-actions .ghost:hover{background:#e3eaf0}
+#cover.feiroo-lab-palette-dark .hero-copy>.eyebrow{color:#df7b2f}
+#cover.feiroo-lab-palette-dark #profileName{color:#fff4e8}
+#cover.feiroo-lab-palette-dark #profileIntro{color:#ffe7cec7}
+#cover.feiroo-lab-palette-dark .hero-actions .primary{color:#080807;background:#df7b2f;border-color:#5c280d80}
+#cover.feiroo-lab-palette-dark .hero-actions .ghost{color:#fff3e8db;background:#ffffff09;border-color:#ffebdc3d}
+#cover.feiroo-lab-palette-dark .hero-actions .primary:hover{background:#ed984e}
+#cover.feiroo-lab-palette-dark .hero-actions .ghost:hover{background:#ffffff0f}
+/* Each light blends directly with the Banner backdrop; only editing guides accept pointer input. */
+#cover.feiroo-multilight{isolation:isolate}
+#cover.feiroo-multilight .feiroo-lab-light{display:none}
+#cover.feiroo-multilight:not(.feiroo-lab-themed)::after{background:linear-gradient(90deg,rgba(5,4,3,.78) 0%,rgba(5,4,3,.34) 42%,rgba(142,64,19,.08) 100%),linear-gradient(180deg,rgba(8,6,4,.12) 0%,rgba(6,4,3,.72) 100%)}
+#cover.feiroo-multilight .hero-copy,#cover.feiroo-multilight .hero-mark{z-index:4}
+#cover .feiroo-multi-light{position:absolute;z-index:3;pointer-events:none;transform-origin:center}
+#cover .feiroo-multi-light[hidden]{display:none}
+#cover .feiroo-light-guide{position:absolute;z-index:6;pointer-events:none;outline:1px dashed #08a8dc;box-shadow:0 0 0 1px #ffffffa8 inset;border-radius:50%;transform-origin:center}
+#cover .feiroo-light-guide.is-hidden-source{outline-style:dotted;opacity:.6}
+#cover .feiroo-light-point{position:absolute;left:50%;top:50%;width:30px;height:30px;padding:0;border:2px solid #fff;border-radius:50%;background:#007ca6;color:#fff;font:20px/26px system-ui;box-shadow:0 0 0 1px #004456,0 2px 8px #0006;pointer-events:auto;touch-action:none;cursor:grab;user-select:none}
+#cover .feiroo-light-point.dragging{cursor:grabbing}
+#cover .feiroo-light-point:focus-visible{outline:3px solid #ffc875;outline-offset:3px}
+#cover .feiroo-light-label{position:absolute;left:50%;top:50%;margin-top:-19px;white-space:nowrap;padding:3px 7px;border-radius:4px;background:#12333eed;color:#fff;font:11px/1.5 system-ui;pointer-events:none}
