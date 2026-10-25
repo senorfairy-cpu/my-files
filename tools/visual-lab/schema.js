@@ -34,8 +34,10 @@
     Object.hasOwn(x, "value") && Object.hasOwn(x, "unit") &&
     number(0, 4096)(x.value) && oneOf("px", "%", "vh", "rem")(x.unit));
   const text = x => typeof x === "string" && x.length <= 4000;
+  const wallImageRules={opacity:number(0,1),brightness:number(0,2),saturation:number(0,2),zIndex:x=>Number.isInteger(x)&&x>=1&&x<=20};
+  const wallImages=x=>plain(x)&&Object.keys(x).length<=6&&Object.entries(x).every(([id,fields])=>assetId(id)&&!["__proto__","constructor","prototype"].includes(id)&&plain(fields)&&Object.entries(fields).every(([key,v])=>Object.hasOwn(wallImageRules,key)&&wallImageRules[key](v)));
   const textRules = {
-    font: oneOf("site", "system"), fontSize: dimension, weight: number(100,900),
+    font: oneOf("site", "judou", "system"), fontSize: dimension, weight: number(100,900),
     letterSpacing: number(-10,40), lineHeight: number(.5,4), color,
     opacity: number(0,1), maxWidth: dimension, align: oneOf("left","center","right"),
     gap: dimension, offsetX: number(-200,200), offsetY: number(-200,200)
@@ -67,9 +69,9 @@
     eyebrow: textRules, title: textRules, intro: textRules,
     primary: appearance, secondary: appearance,
     wall: { visible: x=>typeof x === "boolean", x: number(-200,200), y: number(-200,200),
-      scale: number(.1,3), rotation: number(-180,180), opacity: number(0,1) },
+      scale: number(.1,3), rotation: number(-180,180), opacity: number(0,1),density:number(.25,1.5),images:wallImages },
     mark: { visible: x=>typeof x === "boolean", x: number(-200,200), y: number(-200,200),
-      width: dimension, height: dimension, radius: dimension, opacity: number(0,1) },
+      width: dimension, height: dimension, radius: dimension, opacity: number(0,1),backgroundOpacity:number(0,1),shadowStrength:number(0,2),blur:number(0,40) },
     layout: { width: dimension, maxWidth: dimension, minHeight: dimension,
       paddingTop: dimension, paddingRight: dimension, paddingBottom: dimension,
       paddingLeft: dimension, marginTop: dimension, marginBottom: dimension,
@@ -138,6 +140,10 @@
         if(id==="background" && Object.hasOwn(fields,"theme") && fields.theme!==(previous.theme??"dark"))
           previous=Object.fromEntries(Object.entries(previous).filter(([key])=>["assetId","palette","fit","scale","positionX","positionY","brightness","opacity","blur"].includes(key)));
         merged[id]={...previous,...fields};
+        if(id==="wall"&&fields.images){
+          merged[id].images={...previous.images};
+          for(const [imageId,values]of Object.entries(fields.images))merged[id].images[imageId]={...previous.images?.[imageId],...values};
+        }
       }
     return merged;
   }
@@ -176,5 +182,31 @@
     if(Object.values(design.content).some(layer=>Object.keys(layer).length)) errors.push("Text editing is not enabled");
     return {ok:errors.length===0,errors};
   }
-  return Object.freeze({BASE_COMMIT,PACKAGE_LIMITS,objects,validateDesign,resolveOverrides,backgroundDefaults,backgroundValues,validateBackgroundDesign,lights});
+  const textIds=Object.freeze(["eyebrow","title","intro"]);
+  const textKeys=Object.freeze(["font","fontSize","weight","letterSpacing","lineHeight","color","opacity","maxWidth","align"]);
+  function validateLabDesign(design) {
+    const result=validateDesign(design);if(!result.ok)return result;
+    const errors=[];
+    for(const layer of [design.base,design.desktop,design.mobile,...Object.values(design.localeStyles)])
+      for(const [id,fields]of Object.entries(layer)){
+        if(id!=="background"&&!textIds.includes(id))errors.push("Only background and Banner text are enabled in phase 3.1");
+        if(textIds.includes(id))for(const [key,value]of Object.entries(fields)){
+          if(!textKeys.includes(key))errors.push("Text layout offsets are not enabled");
+          if(key==="fontSize"&&(!plain(value)||value.unit!=="px"||value.value<8||value.value>200))errors.push("Font size must be 8–200 px");
+          if(key==="maxWidth"&&value!=="auto"&&(!plain(value)||!oneOf("px","%","rem")(value.unit)||value.value<=0))errors.push("Invalid text width");
+        }
+      }
+    for(const fields of Object.values(design.content))if(Object.keys(fields).some(id=>!textIds.includes(id)))errors.push("Button text is not enabled in phase 3.1");
+    return {ok:!errors.length,errors};
+  }
+  function validateComponentDesign(design){
+    const check=validateDesign(design);if(!check.ok)return check;
+    const reduced=structuredClone(design),errors=[];
+    for(const layer of [reduced.base,reduced.desktop,reduced.mobile,...Object.values(reduced.localeStyles)]){
+      if(layer.wall){if(Object.keys(layer.wall).some(key=>!["x","y","scale","opacity","density","images"].includes(key)))errors.push("Only wall presentation parameters are enabled");delete layer.wall;}
+      if(layer.mark){if(Object.keys(layer.mark).some(key=>!["backgroundOpacity","radius","shadowStrength","blur"].includes(key))|| (layer.mark.radius!==undefined&&(!plain(layer.mark.radius)||layer.mark.radius.unit!=="px"||layer.mark.radius.value>100)))errors.push("Only card surface parameters are enabled");delete layer.mark;}
+    }
+    errors.push(...validateLabDesign(reduced).errors);return{ok:!errors.length,errors};
+  }
+  return Object.freeze({BASE_COMMIT,PACKAGE_LIMITS,objects,textIds,textKeys,validateDesign,resolveOverrides,backgroundDefaults,backgroundValues,validateBackgroundDesign,validateLabDesign,validateComponentDesign,lights});
 });

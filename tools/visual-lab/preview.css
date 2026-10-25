@@ -1,4 +1,8 @@
 /* Preview-only layers; no animation properties are overridden. */
+#cover [data-feiroo-component-selected]{outline:1px dashed #4dc7ee;outline-offset:4px}#cover #heroWall img,#cover .hero-mark{cursor:pointer}
+/* Only the local preview lets clicks pass through the copy wrapper's empty area. */
+#cover .hero-copy{pointer-events:none}#cover .hero-copy>*{pointer-events:auto}
+#cover [data-feiroo-text-selected]{outline:1px dashed #4dc7ee;outline-offset:5px}#cover .hero-copy>.eyebrow,#cover #profileName,#cover #profileIntro{cursor:text}
 #cover .feiroo-lab-image,#cover .feiroo-lab-image-shade,#cover .feiroo-lab-light{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat}
 #cover .feiroo-lab-image{transform-origin:center;will-change:auto}
 #cover .feiroo-lab-image[hidden],#cover .feiroo-lab-image-shade[hidden],#cover .feiroo-lab-light[hidden]{display:none}

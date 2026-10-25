@@ -5,9 +5,9 @@
   const initial=await fetch("/__visual-lab/defaults.json").then(r=>{if(!r.ok)throw new Error("默认值加载失败");return r.json();});
   let design=structuredClone(initial),session=null,requested=0,connectionTimer,sendFrame=0,selected="background",categoryId="background",uploadVersion=0;
   const urls={},names={},blobs={};
-  const valid=schema.validateBackgroundDesign(design);if(!valid.ok)throw new Error(valid.errors.join("; "));
+  const valid=schema.validateComponentDesign(design);if(!valid.ok)throw new Error(valid.errors.join("; "));
   design.lighting??=schema.lights.create();
-  let lightPanel,storagePanel;
+  let lightPanel,storagePanel,textPanel,componentsPanel;
   const target=()=>Number(width.value)<=680?"mobile":"desktop";
   const effective=()=>schema.resolveOverrides(design,Number(width.value),language.value).background||{};
   const currentValues=()=>schema.backgroundValues(effective());
@@ -18,7 +18,7 @@
     for(const id of Object.keys(design.assets))if(!used.has(id)){
       delete design.assets[id];const old=urls[id];delete urls[id];delete names[id];delete blobs[id];if(old)setTimeout(()=>URL.revokeObjectURL(old),1000);
     }
-    const result=schema.validateBackgroundDesign(design);
+    const result=schema.validateComponentDesign(design);
     if(!result.ok){status.textContent="参数未应用："+result.errors.join("; ");return;}
     if(sendFrame)cancelAnimationFrame(sendFrame);
     sendFrame=requestAnimationFrame(()=>{sendFrame=0;send("set-design",{design,assetUrls:urls,requestId:++requested,lightAck:lightPanel?.acknowledgement()});});
@@ -107,7 +107,7 @@
   }
   function buildControls(){
     const holder=document.getElementById("backgroundControls");holder.hidden=categoryId!=="background";
-    if(holder.hidden){refreshBadges();return;}
+    if(holder.hidden){refreshBadges();textPanel?.refresh();componentsPanel?.refresh();return;}
     // Preserve which advanced groups are open across device/category changes.
     const opened=new Set(Array.from(holder.querySelectorAll("details[open] summary")).map(e=>e.textContent));
     holder.replaceChildren();holder.append(node("p",target()==="mobile"?"移动图未设置时继承桌面；单项 ↶ 可恢复继承。":"桌面修改会作用于仍在继承的移动参数。","muted"));
@@ -156,7 +156,8 @@
     resetDevice.addEventListener("click",()=>{uploadVersion++;const layer=design[target()],palette=layer.background?.palette;delete layer.background;if(palette!==undefined)layer.background={palette};buildControls();commit();});
     resetAll.addEventListener("click",()=>{uploadVersion++;const palettes={};for(const scope of ["base","desktop","mobile"])if(Object.hasOwn(design[scope].background||{},"palette"))palettes[scope]=design[scope].background.palette;
       for(const url of Object.values(urls))setTimeout(()=>URL.revokeObjectURL(url),1000);for(const id of Object.keys(urls)){delete urls[id];delete names[id];delete blobs[id];}
-      const lighting=design.lighting;design=structuredClone(initial);design.lighting=lighting;for(const [scope,palette]of Object.entries(palettes))design[scope].background={palette};buildControls();commit();});
+      for(const scope of ["base","desktop","mobile","zh","en"]){const layer=["zh","en"].includes(scope)?design.localeStyles[scope]:design[scope];delete layer.background;}
+      for(const [scope,palette]of Object.entries(palettes))design[scope].background={palette};buildControls();commit();});
     actions.append(resetDevice,resetAll,node("small","背景恢复保留主动应用的推荐配色；可在上方单独撤回。"));holder.append(actions);refreshBadges();
   }
   function updateWidth(){const value=Number(width.value);frame.style.width=value+"px";frame.style.height="900px";
@@ -168,6 +169,14 @@
     const data=event.data;if(!data||data.channel!=="feiroo.visualLab.v1")return;
     if(data.type==="ready"&&/^[a-f0-9]{48}$/.test(data.session)){clearTimeout(connectionTimer);session=data.session;send("initialize",{design,assetUrls:urls,language:language.value,requestId:++requested});lightPanel?.refresh();return;}
     if(!session||data.session!==session)return;
+    if(data.type==="select-component"&&["wall","mark"].includes(data.id)&&(data.imageId==null||typeof data.imageId==="string"&&/^[A-Za-z0-9_-]{1,96}$/.test(data.imageId))){
+      lightPanel.exit();selected=data.id;category("components");componentsPanel.select(data.id,data.imageId||null);const panel=document.getElementById("panel");panel.hidden=false;document.getElementById("panelToggle").setAttribute("aria-expanded","true");document.getElementById("panelToggle").textContent="收起面板";return;
+    }
+    if(data.type==="component-state"&&data.requestId>=requested&&data.language===language.value&&data.viewportWidth===Number(width.value)){componentsPanel?.receive(data.metrics);return;}
+    if(data.type==="select-text"&&schema.textIds.includes(data.id)){
+      lightPanel.exit();selected=data.id;category("text");const panel=document.getElementById("panel");panel.hidden=false;document.getElementById("panelToggle").setAttribute("aria-expanded","true");document.getElementById("panelToggle").textContent="收起面板";return;
+    }
+    if(data.type==="text-state"&&data.requestId>=requested&&data.language===language.value&&data.viewportWidth===Number(width.value)){textPanel?.receive(data.metrics);return;}
     if(data.type==="light-position"){lightPanel?.onPosition(data);return;}
     if(data.type==="light-editor-exit"){lightPanel?.exit();return;}
     if(data.type==="state"&&data.requestId>=requested){language.value=data.language;storagePanel?.changed();status.textContent="实时预览 · "+data.viewportWidth+"px · "+(data.language==="zh"?"中文":"English")+" · 本地会话"+(data.appliedRevision<data.requestId?" · 正在应用…":"");}
@@ -182,18 +191,22 @@
   width.addEventListener("change",updateWidth);device.addEventListener("change",()=>{width.value=device.value==="mobile"?"390":"1440";updateWidth();});
   document.getElementById("replay").addEventListener("click",()=>send("replay"));
   document.getElementById("panelToggle").addEventListener("click",event=>{const p=document.getElementById("panel");p.hidden=!p.hidden;event.currentTarget.setAttribute("aria-expanded",String(!p.hidden));event.currentTarget.textContent=p.hidden?"展开面板":"收起面板";});
-  const titles={background:"背景与光影",text:"文字",components:"按钮与基础组件",layout:"整体布局"};
+  const titles={background:"背景与光影",text:"文字",components:"照片墙与浮卡",layout:"整体布局"};
   function selectObject(id){selected=id;document.getElementById("selectedObject").textContent="Banner › "+schema.objects[id].label;
-    document.querySelectorAll("[data-object]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.object===id)));window.dispatchEvent(new CustomEvent("feiroo-lab:selection",{detail:{id}}));}
+    document.querySelectorAll("[data-object]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.object===id)));window.dispatchEvent(new CustomEvent("feiroo-lab:selection",{detail:{id}}));
+    send("text-selection",{id:schema.textIds.includes(id)?id:null});textPanel?.select(id);
+    send("component-selection",{id:["wall","mark"].includes(id)?id:null,imageId:null});componentsPanel?.select(id);}
   function category(id){categoryId=id;document.getElementById("categoryTitle").textContent=titles[id];document.querySelectorAll("[data-category]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.category===id)));
-    const container=document.getElementById("objects");container.replaceChildren();const entries=Object.entries(schema.objects).filter(([,o])=>o.category===id);
+    const container=document.getElementById("objects");container.hidden=id==="components";container.replaceChildren();const entries=Object.entries(schema.objects).filter(([key,o])=>o.category===id&&(id!=="components"||["wall","mark"].includes(key)));
     for(const [objectId,object]of entries){const button=node("button",object.label);button.dataset.object=objectId;button.addEventListener("click",()=>selectObject(objectId));container.append(button);}
     selectObject(entries.some(([key])=>key===selected)?selected:entries[0][0]);buildControls();
-    document.getElementById("futureControls").hidden=id==="background";}
+    document.getElementById("futureControls").hidden=["background","text","components"].includes(id);}
   document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>category(b.dataset.category)));
   window.addEventListener("pagehide",()=>{for(const url of Object.values(urls))URL.revokeObjectURL(url);});
-  window.FeirooLab=Object.freeze({validateDesign:schema.validateBackgroundDesign,resolveOverrides:schema.resolveOverrides,getDesign:()=>structuredClone(design),getObjects:()=>structuredClone(schema.objects)});
+  window.FeirooLab=Object.freeze({validateDesign:schema.validateComponentDesign,resolveOverrides:schema.resolveOverrides,getDesign:()=>structuredClone(design),getObjects:()=>structuredClone(schema.objects)});
   lightPanel=window.FeirooLightPanel.create({design:()=>design,target,currentValues,values:currentValues,commit,send});
+  textPanel=window.FeirooTextPanel.create({design:()=>design,target,width:()=>Number(width.value),language:()=>language.value,active:()=>categoryId==="text",commit});
+  componentsPanel=window.FeirooComponentsPanel.create({design:()=>design,target,width:()=>Number(width.value),language:()=>language.value,active:()=>categoryId==="components",commit,send,onSelect:(id,imageId)=>{selected=id;document.getElementById("selectedObject").textContent="Banner › "+(imageId?"单张图片 · "+imageId:schema.objects[id].label);}});
   category("background");updateWidth();
   storagePanel=window.FeirooStoragePanel.create({snapshot:()=>({design:structuredClone(design),view:{language:language.value,width:Number(width.value)},blobs:{...blobs}}),restore:async bundle=>{
     // Prepare all URLs before replacing anything; revocation only follows a successful swap.

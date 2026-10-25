@@ -8,12 +8,12 @@
   const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))).map(x=>x.toString(16).padStart(2,'0')).join('');
   function validate(record){
     exact(record,['format','version','name','createdAt','view','design','extensions']);
-    if(record.format!=='feiroo.visual-lab'||record.version!==1)fail('设计包版本不兼容，需要对应版本的 Visual Lab');
+    if(record.format!=='feiroo.visual-lab'||![1,2,3].includes(record.version))fail('设计包版本不兼容，需要对应版本的 Visual Lab');
     if(typeof record.name!=='string'||!record.name.trim()||record.name.length>80)fail('名称必须为 1–80 字');
     if(typeof record.createdAt!=='string'||!Number.isFinite(Date.parse(record.createdAt)))fail('创建时间无效');
     exact(record.view,['language','width']);if(!['zh','en'].includes(record.view.language)||![320,375,390,430,768,1024,1440].includes(record.view.width))fail('预览配置无效');
     exact(record.extensions,[]); // Reserved; never silently discard future editing features.
-    const check=schema.validateBackgroundDesign(record.design);if(!check.ok)fail('参数不兼容：'+check.errors.join('; '));
+    const check=(record.version===1?schema.validateBackgroundDesign:record.version===2?schema.validateLabDesign:schema.validateComponentDesign)(record.design);if(!check.ok)fail('参数不兼容：'+check.errors.join('; '));
     if(!record.design.lighting)fail('缺少完整多光源配置，请重新导出设计包');
     const used=new Set([record.design.base,record.design.desktop,record.design.mobile,...Object.values(record.design.localeStyles)].map(x=>x.background?.assetId).filter(Boolean));
     if(Object.keys(record.design.assets).some(id=>!used.has(id)))fail('存在未引用素材');

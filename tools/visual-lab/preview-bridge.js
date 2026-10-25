@@ -5,6 +5,8 @@
   const session=document.currentScript.dataset.session,channel="feiroo.visualLab.v1";
   const schema=window.FeirooSchema,adapter=window.FeirooBackground;
   const multi=window.FeirooMultiLights;
+  const text=window.FeirooText;
+  const components=window.FeirooComponents;
   let lightEditor={enabled:false,selectedId:"main"};
   let requestId=0,initialized=false,design=null,assetUrls={},version=0,frame=0,appliedRevision=0;
   const decoded=new Map();
@@ -23,18 +25,27 @@
     if(!initialized || !portfolio) return;
     const p=schema.resolveOverrides(design,innerWidth,currentLang).background || {};
     const url=p.assetId ? assetUrls[p.assetId] : null;
+    function applyText(){const metrics=text?.apply(design,innerWidth,currentLang);if(metrics)post("text-state",{metrics,language:currentLang,viewportWidth:innerWidth,requestId});}
+    function applyComponents(){const metrics=components?.apply(design,innerWidth,currentLang);if(metrics)post("component-state",{metrics,language:currentLang,viewportWidth:innerWidth,requestId});}
+    // Typography must remain live even while a background replacement is decoding.
+    applyText();
+    applyComponents();
     try {
       if(p.assetId && !url) throw new Error("Missing session image; please select it again");
       if(url && schema.backgroundValues(p).imageVisible && p.mode!=="original") await decode(url);
       if(current!==version) return;
-      adapter.apply(p,url);multi?.render(design.lighting,p,lightEditor,post);appliedRevision=requestId;state();
+      adapter.apply(p,url);multi?.render(design.lighting,p,lightEditor,post);
+      applyComponents();
+      applyText();
+      appliedRevision=requestId;state();
     } catch(error) {if(current===version)post("error",{message:"图片未应用，已保留上一预览："+error.message});}
   }
   function schedule() {version++;if(frame)cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{frame=0;apply();});}
   const originalRender=render;
   render=function(...args) {
+    components?.restore();
     const result=originalRender.apply(this,args);
-    adapter.capture();schedule();state();
+    adapter.capture();text?.capture(currentLang);components?.capture(typeof heroWallAssets==="function"?heroWallAssets():[]);schedule();state();
     window.dispatchEvent(new CustomEvent("feiroo-lab:render",{detail:{language:currentLang}}));
     return result;
   };
@@ -53,6 +64,15 @@
     if(data.type==="hello"){post("ready");return;}
     if(data.session!==session) return;
     try {
+      if(data.type==="component-selection"){
+        if(data.id!==null&&!["wall","mark"].includes(data.id))throw new Error("Invalid component selection");
+        if(data.imageId!=null&&(typeof data.imageId!=="string"||!/^[A-Za-z0-9_-]{1,96}$/.test(data.imageId)))throw new Error("Invalid wall image selection");
+        components?.select(data.id,data.imageId||null);return;
+      }
+      if(data.type==="text-selection"){
+        if(data.id!==null&&!schema.textIds.includes(data.id))throw new Error("Invalid text selection");
+        text?.select(data.id);return;
+      }
       if(data.type==="light-editor"){
         if(typeof data.enabled!=="boolean" || (data.selectedId!==null&&!(typeof data.selectedId==="string"&&/^[a-z][a-z0-9_-]{0,63}$/.test(data.selectedId))))throw new Error("Invalid light editor state");
         lightEditor={enabled:data.enabled,selectedId:data.selectedId};schedule();return;
@@ -60,7 +80,7 @@
       if(!["initialize","set-design","set-language","inspect","replay"].includes(data.type)) return;
       if(!["inspect","replay"].includes(data.type) && (!Number.isSafeInteger(data.requestId) || data.requestId<requestId)) return;
       if(data.type==="initialize" || data.type==="set-design") {
-        const result=schema.validateBackgroundDesign(data.design);
+        const result=schema.validateComponentDesign(data.design);
         if(!result.ok) throw new Error(result.errors.join("; "));
         validateUrls(data.design,data.assetUrls || {});
         multi?.acknowledge(data.lightAck);
@@ -82,6 +102,8 @@
     } catch(error){post("error",{message:error.message});}
   });
   window.addEventListener("resize",()=>{if(initialized)schedule();});
-  if(portfolio)adapter.capture();
+  text?.connect(post);
+  components?.connect(post);
+  if(portfolio){adapter.capture();text?.capture(currentLang);components?.capture(typeof heroWallAssets==="function"?heroWallAssets():[]);}
   post("ready");
 })();

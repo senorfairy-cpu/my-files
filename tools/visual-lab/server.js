@@ -6,7 +6,7 @@ const crypto = require("node:crypto");
 const root = path.resolve(__dirname,"../..");
 const publicDir=path.join(root,"public");
 const labDir=__dirname;
-const staticNames=new Set(["design-package.js","drafts.js","storage-panel.js","lights.js","lights-panel.js","lights-preview.js","panel.css","panel.js","schema.js","defaults.json","preview-bridge.js","preview.css","background-adapter.js","image-file.js","diagnostics.js","diagnostic.html","diagnostic-child.html"]);
+const staticNames=new Set(["components-panel.js","components-preview.js","text-panel.js","text-preview.js","design-package.js","drafts.js","storage-panel.js","lights.js","lights-panel.js","lights-preview.js","panel.css","panel.js","schema.js","defaults.json","preview-bridge.js","preview.css","background-adapter.js","image-file.js","diagnostics.js","diagnostic.html","diagnostic-child.html"]);
 const types={".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",
   ".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",
   ".jpg":"image/jpeg",".jpeg":"image/jpeg",".png":"image/png",".webp":"image/webp",
@@ -63,7 +63,7 @@ function createLabServer() {
       if (mapped==="/index.html" && url.searchParams.get("visualLab")==="1") {
         const injection='<link rel="stylesheet" href="/__visual-lab/preview.css">' +
           '<script src="/__visual-lab/lights.js"></script><script src="/__visual-lab/schema.js"></script>' +
-          '<script src="/__visual-lab/background-adapter.js"></script><script src="/__visual-lab/lights-preview.js"></script><script src="/__visual-lab/preview-bridge.js" data-session="'+session+'"></script>';
+          '<script src="/__visual-lab/background-adapter.js"></script><script src="/__visual-lab/lights-preview.js"></script><script src="/__visual-lab/text-preview.js"></script><script src="/__visual-lab/components-preview.js"></script><script src="/__visual-lab/preview-bridge.js" data-session="'+session+'"></script>';
         body=Buffer.from(body.toString("utf8").replace("</body>",injection+"</body>"));
       }
       send(200,body,types[path.extname(actual)] || "application/octet-stream");

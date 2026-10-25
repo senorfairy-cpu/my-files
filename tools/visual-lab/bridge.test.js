@@ -5,7 +5,7 @@ const vm=require("node:vm");
 const fs=require("node:fs");
 const schema=require("./schema");
 const defaults=require("./defaults.json");
-test("bridge preserves render, applies background only, and validates parent/origin/session",async()=>{
+test("bridge preserves render and validates parent/origin/session while rejecting unimplemented component edits",async()=>{
   const messages=[],events=[],listeners={};
   const parent={postMessage:(message,origin)=>messages.push({message,origin})};
   const originalPortfolio={profile:{title:"Original"}};
@@ -29,7 +29,7 @@ test("bridge preserves render, applies background only, and validates parent/ori
   send({type:"initialize",design:defaults,language:"en",requestId:1,session:"wrong"});
   assert.equal(messages.length,initialCount);
   assert.equal(context.currentLang,"zh");
-  const changed=structuredClone(defaults);changed.base.title={opacity:0};
+  const changed=structuredClone(defaults);changed.base.primary={opacity:0};
   send({type:"initialize",design:changed,language:"en",requestId:1});
   assert.equal(messages.at(-1).message.type,"error");
   assert.equal(renderCount,0);

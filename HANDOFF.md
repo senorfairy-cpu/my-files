@@ -1,76 +1,87 @@
 # FEIROO Visual Lab 跨设备交接
 
-更新：2026-10-16（Asia/Shanghai）。今日停止新增功能；等待用户今晚真机导入验收，不自动进入第三阶段。
+更新：2026-10-25（Asia/Shanghai）。3.1文字排版和照片墙/浮卡模块均已完成初步验收；暂停新功能，本次仅提交、推送开发分支以便跨设备继续测试。
 
-## 仓库、版本和安全边界
+## 仓库、分支与版本
 
-- 仓库：https://github.com/senorfairy-cpu/my-files ，远程 origin；本次只提交、推送 dev/local-review-20261016。
-- 起始完整 SHA：2e8d26d182174b99478307d3310fc9302637088f。当前设计参数 baseCommit 仍指该原站设计基准，不是本次工具代码提交的 HEAD。
-- 生产分支 portfolio-site 的交接前 SHA：1487507325d369107e16bf5e86ab1bfa6d529841。禁止修改或推送生产分支。
-- 今天未修改 public/、正式 server.js、netlify.toml；已认可的移动 CSS 修复包含在起始提交中，继续保留。
-- 用户此前亲自确认 Netlify 只部署生产分支 portfolio-site，开发分支普通推送不触发正式部署。本轮不改配置、不建 PR、不调用部署接口；没有新增 GitHub Actions 工作流。
-- 交接提交 SHA 由推送后的 git rev-parse HEAD 和 git ls-remote 核对，不在提交内自引用尚未生成的 SHA。
+- 正确仓库：https://github.com/senorfairy-cpu/my-files
+- 开发分支：`dev/local-review-20261016`。
+- 本轮开发起点：`2a6af37ac01bd060a184859ffecfde05ce9d4f61`。
+- 生产分支：`portfolio-site`；推送前核验SHA为 `1487507325d369107e16bf5e86ab1bfa6d529841`。禁止修改、合并或推送该分支。
+- 设计参数中的 `baseCommit` 固定为原站设计基准 `2e8d26d182174b99478307d3310fc9302637088f`，不要替换为工具代码HEAD。`schemaVersion`仍为1；新草稿/ZIP的 `manifest.version` 为3，三者含义不同。
+- 本次交接提交SHA以推送后最终回复和Git记录为准，不能在提交内自引用尚未生成的SHA。另一台电脑必须核对最终回复中的完整SHA。
+- 原 `senorfairy-cpu/portfolio-site` 仓库地址错误，不能作为项目来源。
+- 已批准的完整方案：[docs/FEIROO_VISUAL_LAB_PROPOSAL.md](docs/FEIROO_VISUAL_LAB_PROPOSAL.md)。实际交付功能以本文件和工具README为准，未实现的方案内容不视为已开发。
 
-## 今日完成
+## 已验收功能
 
-### 独立工具、背景与主题
+- 独立本地服务与真实首页iframe，中英文切换、七档预览宽度，桌面/移动独立稀疏参数与继承。
+- 背景图片、深浅/自定义主题、渐变、遮罩及独立图层开关；最多5个光源，位置、颜色、尺寸、混合模式、列表顺序/命名等既有交互。
+- 3.1文字：眉题、主标题、简介（副标题）可点击选中；中英文内容独立；字体、字号、字重、颜色、行高、字距、透明度、文本最大宽度、对齐；单项和单对象恢复。
+- 照片墙整体：相对原响应式位置的X/Y（px）、独立scale、附加透明度、间距系数。透明度为原动画效果的0–1乘数，1保留原样；不强行把原0.62最终透明度改成1。
+- 单图：按原图库asset ID选择，透明度、相对原主题滤镜的亮度/饱和度、墙内z-index。不改变DOM顺序、不提升整墙越过标题/遮罩。当前种子2张墙图，保留原站前5张显示和移动裁切规则，不新增/替换墙图。
+- 浮卡：背景透明度、圆角、阴影强度、backdrop模糊；不影响标签和数字透明度。点击真实墙图或浮卡自动打开对应属性。
+- 原有动画结构、响应式规则、按钮链接和内容结构保留；默认空覆盖还原原站视觉。只使用项目字体及系统字体。
+- IndexedDB手动草稿（最多10份），包含替换图片；ZIP导入先校验与摘要确认，失败/取消不替换当前设计。
 
-- tools/visual-lab/ 独立入口，专用只读服务绑定 127.0.0.1:4185；真实首页 iframe，保留动画、中英文及七档预览宽度。
-- 图片替换、缩放、X/Y、亮度、透明度、模糊；深色/亮色/自定义主题；纯色、渐变、图片、光源、遮罩独立开关。亮色真实白底，不被原黑色遮罩压暗。
-- 推荐文字/按钮配色必须主动应用；照片墙/浮卡仅作可关闭的亮底预览适配，未重构组件。
-- 桌面为移动默认继承来源，移动可独立稀疏覆盖；原始空覆盖保持默认视觉。
+## 开发边界与生产隔离
 
-### 多光源与列表交互
+- 按用户调整后的计划，跳过Banner整体布局。没有开放Banner高度、主布局或按钮编辑，没有新增照片墙素材管理、自由排布、撤销重做或代码固化。
+- 本轮相对开发起点未修改 `public/`、正式 `server.js`、`netlify.toml`、`package.json`、`.gitignore`，未新增依赖或下载字体。更早已验收的移动溢出修复在开发起点中继续保留。
+- 本地工具仅绑定 `127.0.0.1:4185`，只读本地种子及静态资源；拒绝写请求、管理/Netlify路由、非法Host/Origin及路径越界。不会访问生产Blobs或线上后台数据。
+- 仅专用服务对预览首页注入桥接；普通首页源码没有调试入口。编辑器均在 `tools/visual-lab/`，不进入Netlify发布目录 `public`。
+- 用户此前已在Netlify后台核验：Production branch为 `portfolio-site`；Branch deploys为 `Deploy only the production branch`；Deploy Previews针对生产/部署分支的PR。普通推送当前开发分支不发布正式站。本次不修改这些设置、不创建PR、不调用部署接口。
+- 当前树没有GitHub Actions工作流；没有自定义Git钩子或core.hooksPath。本轮仅使用显式开发分支refspec推送，不进行生产分支或标签推送。
 
-- 最多五个稳定 ID 柔光；名称、顺序、增删共用；defaults/base/desktop/mobile 逐层覆盖。
-- 每源颜色/HEX、X/Y、宽高、旋转、强度、柔化、模糊、normal/screen/lighten/multiply/soft-light。底层环境光独立，不占五个名额。
-- 画布中心点拖动、方向键微调、Shift 加速、Esc 退出；pointer capture、唯一手势 ID 和最终落点回执避免旧回传覆盖。尺寸/旋转仍用面板。
-- 新增入口置顶，紧随列表；单击行或名称选中并同步画布，双击名称行内编辑；Enter 确认、Esc 取消、失焦确认，空名保留旧名。
-- 新增/复制名称避重，显隐/上下排序保留；复制、删除在属性标题旁；属性独立滚动，切换其他光源回顶部。交互优化只改面板，不改模型、渲染或存储格式。
-- 切换设备/语言/主题不清源、不重写已有混合模式；亮底新源默认 multiply，深底 screen；保留原始橙色主光源和动画。
+## 草稿与ZIP版本兼容
 
-### 本机草稿与 ZIP 设计包
+- 新保存/导出为v3；新版继续读取v1（背景）和v2（背景+文字）。旧记录只在主动保存时转成新版本，不自动改写已有草稿。
+- v3增加 `wall`、`wall.images` 与 `mark` 的受限字段。单图按asset ID逐图逐字段合并，桌面/移动覆盖和0值完整保留。旧工具不能读v3，必须使用本次交接代码。
+- 包含当前设计参数、设备/语言/预览宽度、光源、文字与组件效果，以及引用的替换背景图片字节和SHA-256；不保存临时blob URL或绝对磁盘路径。
+- 原站内置照片墙图片、字体和种子来自配套同基准仓库，设计包不是完整网站安装包。不导出后台数据或凭据。
+- 草稿按浏览器和origin（协议/主机/端口）隔离，不随Git迁移。跨电脑请先手动导出自己的 `.feiroo.zip`，再在新电脑导入；不要将私人草稿或ZIP提交仓库。
+- 包限单文件20MiB、ZIP/解压总量各100MiB、100条目、清单2MiB；标准ZIP STORE。未知版本/字段、非法路径、重复/特殊条目、CRC/哈希错误、缺失或伪装素材等均拒绝。
 
-- IndexedDB 手动保存参数与图片 Blob，最多十份，支持名称、保存时间、打开/删除、未保存状态；刷新后主动打开，不自动保存滑块操作。
-- .feiroo.zip 含格式版本、名称/创建时间、完整 Banner 参数、双端继承和覆盖、中英配置、预览语言/宽度、被任一图层引用的替换图片字节及 SHA-256 关系。
-- 导入先校验、展示摘要，再确认替换；失败不改当前设计和已有草稿。导入后可另存本机草稿；不会将草稿写入 public。
-- 标准 ZIP STORE，无新增依赖；单文件 20 MiB、ZIP/解压总量各 100 MiB、100 条目，清单另限 2 MiB。拒绝路径穿越、重复、软链接/特殊属性、加密、压缩/ZIP64、多磁盘、CRC/哈希错误、缺失素材、未知字段/版本；图片须签名匹配且实际可解码。
-- 包只在内存读取，不执行脚本、不解压写源码、不依赖云端；不保存绝对路径或临时 blob URL，恢复时重建当前 origin 的 URL。
-- 原站内置素材、字体、内容种子由同基准仓库提供，设计包不是独立网站安装包。未来文字/按钮/布局通过版本扩展；当前不静默丢弃未知字段。
-- IndexedDB 按浏览器及 origin（协议/主机/端口）隔离，不能靠 Git 搬走草稿；跨设备需携带 ZIP。
+## 验证结果与已知问题
 
-## 待修复与限制（本轮不修）
+- 本次交接前重新运行完整自动测试：37项通过、0失败；生产隔离检查PASS，`git diff --check`通过。
+- 既有浏览器验收：中英文 × 1440/390px × 深浅主题八组回归；无新增横向溢出；默认空覆盖没有多余墙/图片/浮卡内联样式；按钮仍指向 `#chapters` 和 `/blog`。
+- 实际v1/v2/v3草稿读取、v3保存刷新恢复及ZIP导出再导入通过。自动v3往返含真实JPEG、双语文字、设备参数、光源和组件效果；重复滤镜、CSSStyleRule嵌套兼容有回归覆盖。
+- 当前内置浏览器 `prefers-reduced-motion: reduce`。重播和最终状态已测，未覆盖原transform/opacity/transition；普通慢速入场仍需另一电脑在普通动效环境目视确认。
+- 既有问题未修：已有草稿不能直接改名；同名下载产生 `xxx.feiroo (1).zip` 时需要手动改成以 `.feiroo.zip` 结尾；英文768px原站导航溢出；内置浏览器iframe的历史MutationObserver异常。
+- 移动端继续使用原裁切边界，大位移/缩放可能被裁掉；层次只在墙内生效。不存在的墙图保留其参数并提示，不擅自增图或删除参数。
+- IndexedDB仍是当前浏览器本机数据；本轮验证不等于另一台实体电脑的v3最终验收。
+- 不刷新有未保存修改的旧标签。代码更新后旧标签不会热更新：先保存/导出，再刷新并主动打开草稿或导入ZIP。
 
-1. **用户指定：已有本机草稿保存后，无法直接修改草稿名称。** 下次确认重命名流程与更新语义，今天只记录。
-2. 文件名需以 .feiroo.zip 结尾；同名下载若变成 xxx.feiroo (1).zip，先手动改为 xxx-副本.feiroo.zip 再导入。今天不调整文件名识别。
-3. 英文 768px 原站导航横向溢出，scrollWidth 约 828/clientWidth 753；未注入工具也复现。候选最小方案为 681–980px 导航换行，正式 CSS 未改。
-4. MutationObserver.observe 异常在无网站脚本的最小 iframe 也复现，指向内置浏览器 iframe 检测/注入路径，未定位宿主内部行号；保留 diagnostic.html，不为此改原站 JS。
-5. 没有撤销重做、拖拽缩放/旋转、复杂光源动画、3D、代码固化、云同步或账户系统；第三阶段完整文字/按钮/布局编辑未授权。
-6. 已做同机 4186 独立 origin 空存储迁移模拟，**尚未完成两台实体 Windows 验收**。用户已自行导出设计包，今晚携带测试。
-7. 旧标签不会热更新。更新工具代码前先保存/导出，再刷新并打开草稿或导入，不丢弃未保存设计。
+## 另一台电脑恢复步骤
 
-当前约定开发范围已完成，没有失败自动测试或未完成的关键实现项；上述待修复/限制保留，不擅自扩展开发。
+安装/确认Git和Node.js 24 LTS。Visual Lab只用Node内置模块，**无需npm install**；不运行原站 `npm start`、任何Netlify命令或生产凭据。
 
-## 今日代码与验证
+### 没有该项目：新目录克隆
 
-- 新增 tools/visual-lab/：独立服务、编辑器、schema/默认值、背景适配、光源模型/面板/渲染、桥接、图片检查、IndexedDB、ZIP 编解码、诊断入口及测试。
-- package.json 仅增加 lab、lab:check，无新依赖；.gitignore 排除本地数据、work/outputs、ZIP、截图目录、缓存和密钥。
-- 文档：本文件、方案当前状态、tools/visual-lab/README.md 与 STORAGE.md。
-- 最终全量 node --test tools/visual-lab/*.test.js：25 项通过、0 失败；生产隔离检查通过，工具语法检查通过。提交前检查 git diff --check 与暂存名单。
-- 原版默认样式对照一致；黑橙、白橙蓝、黑底多色、独立图层、中英文/设备切换实测通过。
-- 390/768px 拖动坐标通过；列表回归从 X=32/Y=40 拖动约 5%/4% 得到 X=36.98/Y=44.02，像素舍入误差约 0.02%；移动独立 X=68 保留。
-- 单击、双击、Enter/Esc、失焦、排序、复制删除、隐藏、属性滚动复位实测通过；名称和参数经草稿/ZIP 恢复保留。
-- 含 JPEG 草稿刷新恢复，十份上限/第十一份拒绝，清空草稿后只凭 ZIP 恢复图片，4186 空存储重建自身 blob URL，通过。
-- 浏览器实测未来版本/CRC 错误/取消导入不替换设计；自动化覆盖缺失/伪装素材、超限、非法路径、重复/特殊条目、未知字段/版本。
-- 仅显式暂存 .gitignore、HANDOFF.md、方案、package.json、tools/visual-lab/；不提交本机 IndexedDB、设计包、测试截图、work、outputs、日志、缓存、node_modules、.env 或密钥。
-
-## 今晚另一台 Windows 恢复
-
-准备 Git 和 Node.js 24 LTS，在新的父目录运行。若目标目录已存在请换一个新名字，不覆盖旧目录：
+先确认目标目录不存在；若已存在则换一个新名字，不覆盖、合并或删除旧目录。
 
 ```powershell
-git clone --branch dev/local-review-20261016 --single-branch https://github.com/senorfairy-cpu/my-files.git feiroo-visual-lab-20261016
-cd feiroo-visual-lab-20261016
+git --version
+node --version
+git clone --single-branch --branch dev/local-review-20261016 https://github.com/senorfairy-cpu/my-files.git feiroo-visual-lab-handoff
+cd feiroo-visual-lab-handoff
+```
+
+### 已有开发副本：先检查，再快进获取
+
+先进入正确项目，运行 `git status --short` 和 `git remote -v`。有本地修改、仓库来源错误、分支不符或提交分叉时停止，不强行reset/合并；可在另一个独立新目录克隆。确认工作区干净后：
+
+```powershell
+git fetch origin dev/local-review-20261016
+git switch dev/local-review-20261016
+git pull --ff-only origin dev/local-review-20261016
+```
+
+### 核对版本、测试、启动
+
+```powershell
+git branch --show-current
 git rev-parse HEAD
 git ls-remote origin refs/heads/dev/local-review-20261016
 git status --short
@@ -79,14 +90,18 @@ node tools/visual-lab/check-production.js
 node tools/visual-lab/server.js
 ```
 
-成功标志：本地/远端 SHA 一致，status 无输出，25 项测试通过，终端给出 http://127.0.0.1:4185/__visual-lab/ 。
+预期：分支为 `dev/local-review-20261016`；本地/远端SHA与本次最终交接回复一致；工作区干净；37项通过、0失败；隔离检查PASS。若SHA不同或测试失败，保留错误并报告，不改源码、不强行覆盖。
 
-Visual Lab 只用 Node 内置模块，**无需 npm install**。不运行 npm start（原站服务），不运行任何 Netlify 命令，不导入生产凭据。
+打开 http://127.0.0.1:4185/__visual-lab/ 。必须使用127.0.0.1和4185保持origin一致；端口占用时先查原因，不结束未知进程。编辑器页标题应包含“文字、照片墙与光影”，分类应有“照片墙与浮卡”。
 
-打开该地址 → 展开“草稿与设计包” → 选择自己携带的 .feiroo.zip → 核对摘要并确认 → 检查背景、光源/顺序/显隐、桌面/移动、中英文和图片 → 另存本机草稿。
+展开“草稿与设计包” → 导入自己携带的 `.feiroo.zip` → 核对摘要及版本 → 确认 → 检查中英文、桌面/移动、背景、光源、文字、单图、浮卡 → 另存本机草稿。在普通动效环境检查照片墙重播。私人ZIP不要复制进仓库。
 
-若 SHA 不同、测试失败、包不兼容或素材缺失，保留包和错误原文并报告，不强行覆盖、合并、改生产或部署。
+## 下一步
 
-## 下次开发
+暂停新功能。先完成另一台电脑的v3设计包恢复与普通动效验收，报告差异；等待用户新授权，再处理具体问题或继续后续模块。不要自行开发按钮、Banner整体布局，或执行代码固化、PR、合并和部署。
 
-先等用户今晚实体机导入结果，再按新授权处理待修复项。没有新授权不继续第三阶段，不提交、推送、建 PR 或部署。
+## 本次提交内容与排除项
+
+只提交 `HANDOFF.md` 以及 `tools/visual-lab/` 中的实现、正式自动测试、README和STORAGE。`*.test.js`是持续回归测试，并非临时测试产物。
+
+不提交IndexedDB内容、个人设计草稿、下载ZIP、验收截图、临时测试脚本、outputs/work/tmp、缓存、日志、node_modules、.env或密钥。`.gitignore`保留既有排除规则。本轮没有删除用户本机草稿、设计包或旧目录。

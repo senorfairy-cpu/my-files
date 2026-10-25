@@ -12,7 +12,7 @@ test('package round trip retains every field, device inheritance, language, ligh
 test('bad versions, unknown future fields, wrong baseline and missing or spoofed assets are rejected without mutating source',async()=>{
   const r=sample(),before=structuredClone(r);await assert.rejects(pack.encode(r,{}),/素材/);assert.deepEqual(r,before);
   await assert.rejects(pack.encode(r,{[id]:new Blob([Buffer.alloc(data.length)])}),/真实|校验/);assert.deepEqual(r,before);
-  for(const change of [x=>x.version=2,x=>x.extensions.future={},x=>x.design.baseCommit='a'.repeat(40),x=>x.view.language='fr',x=>x.design.future={}]){const bad=structuredClone(r);change(bad);assert.throws(()=>pack.validate(bad));}
+  for(const change of [x=>x.version=4,x=>x.extensions.future={},x=>x.design.baseCommit='a'.repeat(40),x=>x.view.language='fr',x=>x.design.future={}]){const bad=structuredClone(r);change(bad);assert.throws(()=>pack.validate(bad));}
 });
 test('ZIP rejects CRC corruption, truncation, traversal, scripts, duplicate entries, oversized archives and incomplete manifests',async()=>{
   const raw=new Uint8Array(await(await pack.encode(sample(),{[id]:new Blob([data])})).arrayBuffer());
