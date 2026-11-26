@@ -1,4 +1,23 @@
 let data = null;
+let dataReady = false, readProof = null, writesAllowed = false, actionBusy = false;
+const safetyNotice = document.createElement("p");
+safetyNotice.className = "admin-storage-notice";
+safetyNotice.setAttribute("role", "alert");
+safetyNotice.style.cssText = "margin:12px 24px;padding:12px;border:1px solid #c89045;border-radius:8px";
+safetyNotice.textContent = "正在安全加载作品数据，保存和发布暂不可用。";
+document.getElementById("adminApp").prepend(safetyNotice);
+function lockStorage(message) {
+  dataReady = false; readProof = null; writesAllowed = false;
+  safetyNotice.hidden = false; safetyNotice.textContent = message;
+  setActionBusy(false);
+}
+function receiveProof(res) {
+  const proof = res.headers.get("X-Portfolio-Read-Proof");
+  if (!proof) throw new Error("服务未返回安全读取状态，请先导出编辑内容，再重新加载。");
+  readProof = proof;
+  writesAllowed = res.headers.get("X-Portfolio-Writes-Enabled") === "true";
+}
+function writable() { return dataReady && writesAllowed && Boolean(readProof); }
 let mode = "projects";
 let currentProject = 0;
 let currentArticle = 0;
@@ -100,8 +119,13 @@ function showStatus(message, type = "success") {
 }
 
 function setActionBusy(isBusy) {
-  document.getElementById("saveBtn").disabled = isBusy;
-  publishBtn.disabled = isBusy;
+  actionBusy = isBusy;
+  document.getElementById("saveBtn").disabled = isBusy || !writable();
+  publishBtn.disabled = isBusy || !writable();
+  document.getElementById("exportBtn").disabled = !data;
+  const workspace = document.querySelector(".admin-shell");
+  if (workspace) { workspace.inert = !dataReady; workspace.hidden = !dataReady; }
+  document.querySelectorAll('input[type="file"]').forEach(input => { input.disabled = isBusy || !writable(); });
 }
 
 async function responseErrorMessage(res, fallback) {
@@ -133,22 +157,31 @@ function unlockAdmin() {
 }
 
 async function loadData() {
-  const res = await fetch("/api/draft");
-  data = await res.json();
-  data.projects = data.projects || [];
-  data.articles = data.articles || [];
-  data.gallery = data.gallery || [];
-  data.chapters = data.chapters || [];
-  data.profile = data.profile || {};
-  data.contact = normalizeContact(data.contact || {}, data.profile);
-  data.projects.forEach((project, index) => project.order = project.order ?? index);
-  data.gallery.forEach((asset, index) => {
-    asset.id = asset.id || `gallery-${index}-${Date.now()}`;
-    asset.id = String(asset.id);
-    asset.order = asset.order ?? index;
-    asset.filename = asset.filename || asset.src?.split("/").pop() || "";
-  });
-  render();
+  dataReady = false; readProof = null; writesAllowed = false; setActionBusy(true);
+  try {
+    const res = await fetch("/api/draft", { cache: "no-store" });
+    if (!res.ok) throw new Error(await responseErrorMessage(res, "作品数据加载失败。"));
+    const loaded = await res.json();
+    if (!loaded || loaded.error || !loaded.profile || !loaded.contact ||
+        ["projects", "articles", "gallery", "chapters", "stats"].some(k => !Array.isArray(loaded[k])))
+      throw new Error("作品数据无效，未开放保存或发布。");
+    receiveProof(res);
+    data = loaded;
+    data.contact = normalizeContact(data.contact, data.profile);
+    data.projects.forEach((project, index) => project.order = project.order ?? index);
+    data.gallery.forEach((asset, index) => {
+      asset.id = String(asset.id || `gallery-${index}-${Date.now()}`);
+      asset.order = asset.order ?? index;
+      asset.filename = asset.filename || asset.src?.split("/").pop() || "";
+    });
+    render();
+    dataReady = true;
+    safetyNotice.hidden = writesAllowed;
+    safetyNotice.textContent = writesAllowed ? "" : "已载入真实数据；当前处于只读保护模式，保存、发布和上传未启用。可导出 JSON。";
+  } catch (error) {
+    lockStorage(error.message + " 当前编辑不会自动覆盖。重新加载前请先导出未保存内容。");
+    showStatus(error.message, "error");
+  } finally { setActionBusy(false); }
 }
 
 function normalizeContact(contact = {}, profile = {}) {
@@ -705,44 +738,11 @@ function renderProjectAssets() {
   });
 }
 
-async function save(options = {}) {
-  if (options.alertOnSuccess !== false) showStatus("正在保存草稿...", "loading");
-  setActionBusy(true);
-  if (!options.skipCommit) commitCurrentForm();
-  data.projects.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
-  data.articles.sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
-  data.gallery.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
-  const res = await fetch("/api/draft", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    if (res.status === 401) alert("登录已失效，请重新登录。");
-    throw new Error("保存失败");
-  }
-  if (options.alertOnSuccess !== false) alert("草稿已保存。前台暂不更新，点击发布后才会更新。");
-  if (options.alertOnSuccess !== false) showStatus("草稿保存成功。前台暂不更新，点击发布后才会更新。");
-  setActionBusy(false);
-  render();
-}
-
-async function publish() {
-  showStatus("正在发布...", "loading");
-  setActionBusy(true);
-  await save({ alertOnSuccess: false });
-  const res = await fetch("/api/publish", { method: "POST" });
-  if (!res.ok) {
-    setActionBusy(false);
-    showStatus(res.status === 401 ? "登录已失效，请重新登录。" : "保存失败，请稍后重试。", "error");
-    if (res.status === 401) alert("登录已失效，请重新登录。");
-    throw new Error("发布失败");
-  }
-  alert("发布成功，前台已更新。");
-}
-
 async function saveWithStatus(options = {}) {
   const shouldNotify = options.alertOnSuccess !== false;
+  if (!writable() || (actionBusy && !options.insidePublish)) {
+    showStatus("尚未安全加载可写数据；请先导出当前编辑并重新加载。", "error"); return false;
+  }
   try {
     if (options.showLoading !== false && shouldNotify) showStatus("正在保存草稿...", "loading");
     setActionBusy(true);
@@ -752,17 +752,19 @@ async function saveWithStatus(options = {}) {
     data.gallery.sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
     const res = await fetch("/api/draft", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Portfolio-Read-Proof": readProof },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
       if (res.status === 401) throw new Error("登录已失效，请重新登录。");
       throw new Error(await responseErrorMessage(res, "保存失败，请稍后重试。"));
     }
+    receiveProof(res);
     if (shouldNotify) showStatus("草稿保存成功。前台暂不更新，点击发布后才会更新。");
     render();
     return true;
   } catch (error) {
+    lockStorage("保存未确认成功，已暂停写入。请先导出当前编辑，再重新加载数据。");
     showStatus(error.message || "保存失败，请稍后重试。", "error");
     return false;
   } finally {
@@ -771,19 +773,22 @@ async function saveWithStatus(options = {}) {
 }
 
 async function publishWithStatus() {
+  if (!writable() || actionBusy) return false;
   try {
     showStatus("正在发布...", "loading");
     setActionBusy(true);
-    const saved = await saveWithStatus({ alertOnSuccess: false, showLoading: false, keepBusy: true });
+    const saved = await saveWithStatus({ alertOnSuccess: false, showLoading: false, keepBusy: true, insidePublish: true });
     if (!saved) return false;
-    const res = await fetch("/api/publish", { method: "POST" });
+    const res = await fetch("/api/publish", { method: "POST", headers: { "X-Portfolio-Read-Proof": readProof } });
     if (!res.ok) {
       if (res.status === 401) throw new Error("登录已失效，请重新登录。");
       throw new Error(await responseErrorMessage(res, "发布失败，请稍后重试。"));
     }
+    receiveProof(res);
     showStatus("发布成功，前台已更新。");
     return true;
   } catch (error) {
+    lockStorage("发布未确认成功，已暂停写入。请先导出当前编辑，再重新加载数据。");
     showStatus(error.message || "发布失败，请稍后重试。", "error");
     return false;
   } finally {
@@ -791,10 +796,11 @@ async function publishWithStatus() {
   }
 }
 
-save = saveWithStatus;
-publish = publishWithStatus;
+const save = saveWithStatus;
+const publish = publishWithStatus;
 
 async function uploadImage(file) {
+  if (!writable() || actionBusy) throw new Error("当前未开放上传，请先安全加载可写数据。");
   const dataUrl = await new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
@@ -802,10 +808,11 @@ async function uploadImage(file) {
   });
   const res = await fetch("/api/upload", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-Portfolio-Read-Proof": readProof },
     body: JSON.stringify({ name: file.name, dataUrl }),
   });
-  if (!res.ok) throw new Error("上传失败");
+  if (!res.ok) { lockStorage("上传失败，已暂停写入。请先导出编辑内容，再重新加载。"); throw new Error("上传失败"); }
+  receiveProof(res);
   return res.json();
 }
 
@@ -1130,4 +1137,5 @@ document.getElementById("qrImageInput").addEventListener("change", async event =
 });
 
 setupAdminForHomepageLayout();
-checkSession();
+setActionBusy(false);
+checkSession().catch(() => lockStorage("无法确认登录或读取状态，保存和发布已关闭。"));

@@ -1,6 +1,8 @@
 async function loadProject() {
-  const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
+  const res = await fetch("/api/portfolio", { cache: "no-store" });
+  if (!res.ok) throw new Error("真实作品暂时无法读取。");
   const data = await res.json();
+  if (!data || data.error || !data.profile || ["projects", "gallery", "chapters", "articles"].some(k => !Array.isArray(data[k]))) throw new Error("作品数据无效。");
   const id = new URLSearchParams(location.search).get("id") || data.projects[0]?.id;
   const project = data.projects.find(item => item.id === id) || data.projects[0];
   const profile = data.profile;
@@ -33,4 +35,4 @@ async function loadProject() {
   `;
 }
 
-loadProject();
+loadProject().catch(() => { const notice=document.createElement("p"); notice.setAttribute("role","alert"); notice.textContent="真实作品暂时无法读取；未使用旧图库，请稍后重试。"; document.body.prepend(notice); });

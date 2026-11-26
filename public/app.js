@@ -29,8 +29,13 @@ function resetHomeScroll() {
 
 async function loadPortfolio() {
   resetHomeScroll();
-  const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
-  portfolio = await res.json();
+  const res = await fetch("/api/portfolio", { cache: "no-store" });
+  if (!res.ok) throw new Error("作品数据暂时无法读取，请稍后重试。");
+  const loaded = await res.json();
+  if (!loaded || loaded.error || !loaded.profile ||
+      ["projects", "gallery", "chapters", "articles"].some(k => !Array.isArray(loaded[k])))
+    throw new Error("作品数据无效，已停止显示初始数据。");
+  portfolio = loaded;
   const langRes = await fetch("/language-content.json").catch(() => null);
   languageContent = langRes?.ok ? await langRes.json() : null;
   render();
@@ -719,4 +724,11 @@ if (mediaPreview) {
   mediaPreview.addEventListener("wheel", handleMediaWheel, { passive: false });
 }
 
-loadPortfolio();
+loadPortfolio().catch(() => {
+  portfolio = null;
+  const notice = document.createElement("p");
+  notice.setAttribute("role", "alert");
+  notice.textContent = currentLang === "en" ? "Portfolio content is temporarily unavailable. Please refresh later." : "作品数据暂时无法加载，请稍后刷新。";
+  notice.style.cssText = "position:fixed;inset:0;z-index:99999;display:grid;place-items:center;margin:0;padding:32px;background:#101010;color:#fff;text-align:center";
+  document.body.appendChild(notice);
+});

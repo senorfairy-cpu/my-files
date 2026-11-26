@@ -4,8 +4,10 @@ let currentLang = localStorage.getItem("portfolioLanguage") || "zh";
 if (!["zh", "en"].includes(currentLang)) currentLang = "zh";
 
 async function loadData() {
-  const res = await fetch("/api/portfolio").catch(() => fetch("/data/portfolio.json"));
+  const res = await fetch("/api/portfolio", { cache: "no-store" });
+  if (!res.ok) throw new Error("真实作品暂时无法读取。");
   portfolio = await res.json();
+  if (!portfolio || portfolio.error || !portfolio.profile || ["projects", "gallery", "chapters", "articles"].some(k => !Array.isArray(portfolio[k]))) throw new Error("作品数据无效。");
   const langRes = await fetch("/language-content.json").catch(() => null);
   languageContent = langRes?.ok ? await langRes.json() : null;
   renderBlog();
@@ -77,4 +79,4 @@ document.getElementById("langToggle").addEventListener("click", () => {
   renderBlog();
 });
 
-loadData();
+loadData().catch(() => { const notice=document.createElement("p"); notice.setAttribute("role","alert"); notice.textContent="真实作品暂时无法读取；未使用旧图库，请稍后重试。"; document.body.prepend(notice); });

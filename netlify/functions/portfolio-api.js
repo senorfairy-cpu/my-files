@@ -1,38 +1,10 @@
-const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
-
-const root = path.resolve(__dirname, "..", "..");
-const localUploadDir = path.join(root, "public", "assets", "uploads");
-const isNetlify = Boolean(process.env.NETLIFY || process.env.NETLIFY_DEV);
-const adminPassword = process.env.PORTFOLIO_ADMIN_PASSWORD || "admin123";
-const sessionSecret = process.env.PORTFOLIO_SESSION_SECRET || adminPassword;
-const sessionMaxAge = 60 * 60 * 24;
-
-const imageTypes = {
-  ".gif": "image/gif",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".png": "image/png",
-  ".webp": "image/webp",
-};
-
-const seedDataFiles = [
-  path.join(root, "data", "portfolio.json"),
-  path.join(process.cwd(), "data", "portfolio.json"),
-  path.join(__dirname, "data", "portfolio.json"),
-  path.join(__dirname, "portfolio.json"),
-];
-const localDraftFile = path.join(root, "data", "portfolio.draft.json");
-let blobLoadError = "";
-let blobLastMode = "";
-
-function manualBlobConfig() {
-  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID || process.env.BLOBS_SITE_ID;
-  const token = process.env.NETLIFY_AUTH_TOKEN || process.env.NETLIFY_BLOBS_TOKEN || process.env.BLOBS_TOKEN;
-  return siteID && token ? { siteID, token } : null;
-}
-
+// Production legacy-data recovery. READ ONLY, no migration and no filesystem fallback.
+const crypto=require('crypto'),path=require('path');
+const EXPECTED_SITE_ID='8cd1208d-730b-4fed-bd11-259d7b61e3a2';
+const adminPassword=process.env.PORTFOLIO_ADMIN_PASSWORD;
+const sessionSecret=process.env.PORTFOLIO_SESSION_SECRET || adminPassword;
+const sessionMaxAge=60*60*24;
+const imageTypes={'.gif':'image/gif','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.webp':'image/webp'};
 function json(statusCode, body, headers = {}) {
   return {
     statusCode,
@@ -91,6 +63,7 @@ function createSessionCookie() {
 }
 
 function isAuthed(headers = {}) {
+  if (!sessionSecret) return false;
   const cookieHeader = headers.cookie || headers.Cookie || "";
   const token = parseCookies(cookieHeader).portfolio_admin;
   if (!token) return false;
@@ -121,232 +94,87 @@ function normalizePath(event) {
     .replace(/^\/+/, "/") || "/";
 }
 
-async function loadBlobGetStore() {
-  try {
-    const { getStore } = require("@netlify/blobs");
-    return getStore;
-  } catch (requireError) {
-    try {
-      const { getStore } = await import("@netlify/blobs");
-      return getStore;
-    } catch (importError) {
-      blobLoadError = importError.message || requireError.message || "unknown module load error";
-      return null;
-    }
-  }
+
+function fail(code,stage,extra={}) { return Object.assign(new Error(code),{safe:true,status:503,code,stage,...extra}); }
+function valid(data) {
+ const object=x=>x&&typeof x==='object'&&!Array.isArray(x);
+ if(!object(data)||!object(data.profile)||!object(data.contact)||['projects','gallery','chapters','articles','stats'].some(k=>!Array.isArray(data[k])||data[k].some(x=>!object(x)))||data.gallery.some(x=>typeof x.src!=='string'||!x.src))throw fail('BLOBS_DATA_INVALID','blobs-validate');
+ return data;
 }
-
-async function withBlobStore(operation) {
-  const getStore = await loadBlobGetStore();
-  if (!getStore) {
-    blobLastMode = "";
-    return null;
-  }
-
-  try {
-    const result = await operation(getStore("portfolio-site"));
-    blobLastMode = "auto";
-    blobLoadError = "";
-    return result;
-  } catch (autoError) {
-    const manualConfig = manualBlobConfig();
-    if (!manualConfig) {
-      blobLastMode = "";
-      blobLoadError = autoError.message || "automatic Netlify Blobs configuration unavailable";
-      return null;
-    }
-
-    const manualAttempts = [
-      () => getStore("portfolio-site", manualConfig),
-      () => getStore({ name: "portfolio-site", ...manualConfig }),
-    ];
-
-    for (const createManualStore of manualAttempts) {
-      try {
-        const result = await operation(createManualStore());
-        blobLastMode = "manual";
-        blobLoadError = "";
-        return result;
-      } catch (manualError) {
-        blobLoadError = `${autoError.message || "auto failed"}; manual fallback failed: ${manualError.message || "unknown error"}`;
-      }
-    }
-
-    blobLastMode = "";
-    return null;
-  }
+function httpStatus(error) {
+ const direct=Number(error.status||error.statusCode||error.response?.status);
+ if(direct>=400&&direct<=599)return direct;
+ const match=/\((\d{3}) status code\)/.exec(String(error.message));return match?Number(match[1]):null;
 }
-
-async function blobStatus() {
-  const manualConfig = manualBlobConfig();
-  try {
-    await withBlobStore(store => store.get("portfolio.json", { type: "json" }));
-    return {
-      available: Boolean(blobLastMode),
-      mode: blobLastMode || null,
-      hasManualFallback: Boolean(manualConfig),
-      error: blobLoadError || null,
-    };
-  } catch (error) {
-    return {
-      available: false,
-      mode: null,
-      hasManualFallback: Boolean(manualConfig),
-      error: error.message,
-    };
-  }
+function errorResponse(error) {
+ return json(503,{error:'真实作品数据暂时无法读取，已停止操作；不会使用旧图库。',code:error.safe?error.code:'STORAGE_UNAVAILABLE',stage:error.safe?error.stage:'request',...(error.safe&&error.upstreamStatus?{upstreamStatus:error.upstreamStatus}:{})},{'X-Portfolio-Writes-Enabled':'false'});
 }
-
-function readSeedPortfolio() {
-  const seedFile = seedDataFiles.find(file => fs.existsSync(file));
-  if (!seedFile) throw new Error("Missing initial data/portfolio.json");
-  return JSON.parse(fs.readFileSync(seedFile, "utf-8"));
+async function openStore(event) {
+ const headers=Object.fromEntries(Object.entries(event.headers||{}).map(([k,v])=>[k.toLowerCase(),v]));
+ const reported=headers['x-nf-site-id'];
+ if(reported&&reported!==EXPECTED_SITE_ID)throw fail('BLOBS_SITE_MISMATCH','site-check');
+ let sdk;try{sdk=require('@netlify/blobs');if(typeof sdk.setEnvironmentContext!=='function'||typeof sdk.connectLambda!=='function')throw Error();}catch{throw fail('BLOBS_SDK_UNAVAILABLE','sdk-load');}
+ // Each request gets its own captured store; never inherit a prior invocation's credentials.
+ sdk.setEnvironmentContext({});
+ let mode,store;
+ if(event.blobs){
+  if(reported!==EXPECTED_SITE_ID)throw fail('BLOBS_SITE_MISMATCH','site-check');
+  try{sdk.connectLambda({...event,headers});store=sdk.getStore({name:'portfolio-site',consistency:'eventual'});mode='auto';}
+  catch{throw fail('BLOBS_CONTEXT_INVALID','blobs-context');}
+ }else{
+  const siteID=process.env.NETLIFY_SITE_ID||process.env.SITE_ID||process.env.BLOBS_SITE_ID;
+  const token=process.env.NETLIFY_AUTH_TOKEN||process.env.NETLIFY_BLOBS_TOKEN||process.env.BLOBS_TOKEN;
+  if(!siteID||!token)throw fail('BLOBS_CONTEXT_MISSING','blobs-context');
+  if(siteID!==EXPECTED_SITE_ID)throw fail('BLOBS_SITE_MISMATCH','site-check');
+  try{store=sdk.getStore({name:'portfolio-site',consistency:'eventual',siteID,token});mode='manual';}
+  catch{throw fail('BLOBS_CONTEXT_INVALID','blobs-context');}
+ }
+ async function read(key,type='json'){
+  const stage=key==='portfolio.json'?'blobs-read-published':key==='portfolio-draft.json'?'blobs-read-draft':'blobs-read-media';
+  try{return await store.get(key,{type,consistency:'eventual'});}
+  catch(error){const status=httpStatus(error);throw fail(status===401||status===403?'BLOBS_AUTH_FAILED':'BLOBS_READ_FAILED',stage,{mode,upstreamStatus:status});}
+ }
+ return {mode,read}; // Intentionally no set/delete/initialize/migration capability.
 }
-
-async function readPortfolio(key = "portfolio.json") {
-  const saved = await withBlobStore(store => store.get(key, { type: "json" }));
-  if (saved) return saved;
-  if (key === "portfolio-draft.json" && fs.existsSync(localDraftFile)) {
-    return JSON.parse(fs.readFileSync(localDraftFile, "utf-8"));
-  }
-  return readSeedPortfolio();
-}
-
-async function writePortfolio(data, key = "portfolio.json") {
-  const saved = await withBlobStore(store => store.set(key, JSON.stringify(data)));
-  if (saved !== null) {
-    return;
-  }
-  if (process.env.LAMBDA_TASK_ROOT || process.env.AWS_LAMBDA_FUNCTION_NAME || root.startsWith("/var/task")) {
-    throw new Error(`Netlify Blobs unavailable (${blobLoadError || "no store"}); refusing to write to read-only function filesystem.`);
-  }
-  const dataFile = key === "portfolio-draft.json" ? localDraftFile : seedDataFiles[0];
-  fs.mkdirSync(path.dirname(dataFile), { recursive: true });
-  fs.writeFileSync(dataFile, JSON.stringify(data, null, 2), "utf-8");
-}
-
-async function readDraftPortfolio() {
-  const draft = await withBlobStore(store => store.get("portfolio-draft.json", { type: "json" }));
-  if (draft) return draft;
-  if (blobLastMode) return readPortfolio("portfolio.json");
-  if (fs.existsSync(localDraftFile)) {
-    return JSON.parse(fs.readFileSync(localDraftFile, "utf-8"));
-  }
-  return readPortfolio("portfolio.json");
-}
-
-async function writeDraftPortfolio(data) {
-  return writePortfolio(data, "portfolio-draft.json");
-}
-
-async function publishDraftPortfolio() {
-  const draft = await readDraftPortfolio();
-  await writePortfolio(draft, "portfolio.json");
-  return draft;
-}
-
-function safeUploadName(name = "upload") {
-  const ext = path.extname(name).toLowerCase();
-  const base = path.basename(name, ext).replace(/[^a-z0-9_-]+/gi, "-").slice(0, 48) || "upload";
-  return `${Date.now()}-${base}${imageTypes[ext] ? ext : ".jpg"}`;
-}
-
-async function saveImage(name, buffer, type) {
-  const fileName = safeUploadName(name);
-  const src = await withBlobStore(async store => {
-    const key = `uploads/${fileName}`;
-    await store.set(key, buffer, {
-      metadata: { contentType: type },
-    });
-    return `/api/media/${encodeURIComponent(fileName)}`;
-  });
-  if (src) return src;
-
-  fs.mkdirSync(localUploadDir, { recursive: true });
-  fs.writeFileSync(path.join(localUploadDir, fileName), buffer);
-  return `/assets/uploads/${fileName}`;
-}
-
-async function readImage(fileName) {
-  const cleanName = path.basename(decodeURIComponent(fileName || ""));
-  const type = imageTypes[path.extname(cleanName).toLowerCase()] || "application/octet-stream";
-  const data = await withBlobStore(store => store.get(`uploads/${cleanName}`, { type: "arrayBuffer" }));
-  if (data) return { data: Buffer.from(data), type };
-  const filePath = path.join(localUploadDir, cleanName);
-  if (!filePath.startsWith(localUploadDir) || !fs.existsSync(filePath)) return null;
-  return { data: fs.readFileSync(filePath), type };
-}
-
 async function handleApi(event) {
-  const method = event.httpMethod || event.method || "GET";
-  const apiPath = normalizePath(event);
-
-  if (method === "GET" && apiPath === "/session") {
-    return json(200, { ok: isAuthed(event.headers) });
+ const method=event.httpMethod||'GET',route=normalizePath(event);
+ if(method==='GET'&&route==='/session')return json(200,{ok:isAuthed(event.headers)});
+ if(method==='POST'&&route==='/login'){
+  if(!adminPassword||!sessionSecret)throw fail('ADMIN_CONFIG_MISSING','admin-config');
+  let body;try{body=bodyJson(event);}catch{return json(400,{error:'请求格式无效。'});}
+  if(body.password!==adminPassword)return json(401,{error:'Invalid password'});
+  return json(200,{ok:true},{'Set-Cookie':sessionCookie(createSessionCookie())});
+ }
+ if(method==='POST'&&route==='/logout')return json(200,{ok:true},{'Set-Cookie':sessionCookie('',0)});
+ if(['/draft','/blob-status'].includes(route)&&!isAuthed(event.headers))return json(401,{error:'Unauthorized'});
+ if(method!=='GET')return json(423,{error:'当前修复版本为只读；保存、发布和上传均关闭。',code:'READ_ONLY'},{'X-Portfolio-Writes-Enabled':'false'});
+ if(!['/portfolio','/draft','/blob-status'].includes(route)&&!route.startsWith('/media/'))return json(404,{error:'Not found'});
+ let storage;
+ try{
+  storage=await openStore(event);
+  if(route==='/blob-status'){
+   const data=await storage.read('portfolio.json');if(data===null)throw fail('PUBLISHED_MISSING','blobs-read-published');valid(data);
+   return json(200,{available:true,mode:storage.mode,siteMatches:true,writesEnabled:false,publishedPresent:true,counts:{projects:data.projects.length,gallery:data.gallery.length,chapters:data.chapters.length,articles:data.articles.length},error:null});
   }
-
-  if (method === "POST" && apiPath === "/login") {
-    const data = bodyJson(event);
-    if (data.password !== adminPassword) return json(401, { error: "Invalid password" });
-    return json(200, { ok: true }, {
-      "Set-Cookie": sessionCookie(createSessionCookie()),
-    });
+  if(route==='/portfolio'){
+   const data=await storage.read('portfolio.json');if(data===null)throw fail('PUBLISHED_MISSING','blobs-read-published');
+   return json(200,valid(data),{'X-Portfolio-Writes-Enabled':'false','X-Portfolio-Data-Source':'blobs'});
   }
-
-  if (method === "POST" && apiPath === "/logout") {
-    return json(200, { ok: true }, {
-      "Set-Cookie": sessionCookie("", 0),
-    });
+  if(route==='/draft'){
+   let data=await storage.read('portfolio-draft.json');
+   // A genuinely absent draft may inherit the real published document; a failed read never does.
+   if(data===null)data=await storage.read('portfolio.json');
+   if(data===null)throw fail('PUBLISHED_MISSING','blobs-read-published');valid(data);
+   const payload=Buffer.from(JSON.stringify({v:'legacy-readonly',revision:crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex'),expires:Math.floor(Date.now()/1000)+sessionMaxAge})).toString('base64url');
+   return json(200,data,{'X-Portfolio-Read-Proof':payload+'.'+sign('readonly:'+payload),'X-Portfolio-Writes-Enabled':'false','X-Portfolio-Data-Source':'blobs'});
   }
-
-  if (method === "GET" && apiPath === "/portfolio") {
-    return json(200, await readPortfolio());
-  }
-
-  if (method === "GET" && apiPath === "/blob-status") {
-    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    return json(200, await blobStatus());
-  }
-
-  if (method === "POST" && apiPath === "/portfolio") {
-    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    await writeDraftPortfolio(bodyJson(event));
-    return json(200, { ok: true, draft: true });
-  }
-
-  if (method === "GET" && apiPath === "/draft") {
-    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    return json(200, await readDraftPortfolio());
-  }
-
-  if (method === "POST" && apiPath === "/draft") {
-    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    await writeDraftPortfolio(bodyJson(event));
-    return json(200, { ok: true, draft: true });
-  }
-
-  if (method === "POST" && apiPath === "/publish") {
-    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    await publishDraftPortfolio();
-    return json(200, { ok: true });
-  }
-
-  if (method === "POST" && apiPath === "/upload") {
-    if (!isAuthed(event.headers)) return json(401, { error: "Unauthorized" });
-    const data = bodyJson(event);
-    const match = /^data:(image\/(?:png|jpeg|jpg|gif|webp));base64,(.+)$/.exec(data.dataUrl || "");
-    if (!match) return json(400, { error: "Unsupported image data" });
-    const src = await saveImage(data.name, Buffer.from(match[2], "base64"), match[1]);
-    return json(200, { src });
-  }
-
-  if (method === "GET" && apiPath.startsWith("/media/")) {
-    const image = await readImage(apiPath.slice("/media/".length));
-    if (!image) return text(404, "Not found");
-    return binary(200, image.data, image.type);
-  }
-
-  return json(404, { error: "Not found" });
+  const name=decodeURIComponent(route.slice('/media/'.length));
+  if(!name||name!==path.basename(name)||name.includes('\\'))return json(400,{error:'Invalid image path'});
+  const data=await storage.read('uploads/'+name,'arrayBuffer');
+  return data===null?text(404,'Not found'):binary(200,data,imageTypes[path.extname(name).toLowerCase()]||'application/octet-stream');
+ }catch(error){
+  if(route==='/blob-status')return json(200,{available:false,writesEnabled:false,mode:storage?.mode||error.mode||null,code:error.safe?error.code:'STORAGE_UNAVAILABLE',stage:error.safe?error.stage:'request',upstreamStatus:error.safe?error.upstreamStatus||null:null,error:'真实Blobs读取失败；没有使用旧图库。'});
+  throw error;
+ }
 }
-
-module.exports = { handleApi };
+module.exports={handleApi,errorResponse};
