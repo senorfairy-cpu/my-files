@@ -109,11 +109,22 @@ function httpStatus(error) {
 function errorResponse(error) {
  return json(503,{error:'真实作品数据暂时无法读取，已停止操作；不会使用旧图库。',code:error.safe?error.code:'STORAGE_UNAVAILABLE',stage:error.safe?error.stage:'request',...(error.safe&&error.upstreamStatus?{upstreamStatus:error.upstreamStatus}:{})},{'X-Portfolio-Writes-Enabled':'false'});
 }
+async function loadBlobsSdk(loadCommonJS=()=>require('@netlify/blobs'),loadESM=()=>import('@netlify/blobs')) {
+ let sdk;
+ try{sdk=loadCommonJS();}
+ catch{
+  // Preserve the production baseline's ESM fallback; both loaders refer only to the installed SDK.
+  try{sdk=await loadESM();}catch{throw fail('BLOBS_SDK_UNAVAILABLE','sdk-load');}
+ }
+ if(typeof sdk?.getStore!=='function'&&sdk?.default)sdk=sdk.default;
+ if(typeof sdk?.getStore!=='function'||typeof sdk?.connectLambda!=='function'||typeof sdk?.setEnvironmentContext!=='function')throw fail('BLOBS_SDK_UNAVAILABLE','sdk-exports');
+ return sdk;
+}
 async function openStore(event) {
  const headers=Object.fromEntries(Object.entries(event.headers||{}).map(([k,v])=>[k.toLowerCase(),v]));
  const reported=headers['x-nf-site-id'];
  if(reported&&reported!==EXPECTED_SITE_ID)throw fail('BLOBS_SITE_MISMATCH','site-check');
- let sdk;try{sdk=require('@netlify/blobs');if(typeof sdk.setEnvironmentContext!=='function'||typeof sdk.connectLambda!=='function')throw Error();}catch{throw fail('BLOBS_SDK_UNAVAILABLE','sdk-load');}
+ const sdk=await loadBlobsSdk();
  // Each request gets its own captured store; never inherit a prior invocation's credentials.
  sdk.setEnvironmentContext({});
  let mode,store;
